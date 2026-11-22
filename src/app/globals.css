@@ -1,0 +1,343 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-paper: #eff1ea;
+  --color-paper-deep: #e3e6db;
+  --color-ink: #191b19;
+  --color-ink-soft: #4a4d46;
+  --color-ink-faint: #66695f;
+  --color-rule: #c3c7b8;
+  --color-rule-strong: #979b8b;
+  --color-signal: #a3311d;
+  --color-blueprint: #2b4a6b;
+  --color-stamp: #2f5b3b;
+  --font-sans: var(--font-archivo);
+  --font-mono: var(--font-martian);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  p,
+  dd,
+  li,
+  figcaption {
+    text-wrap: pretty;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+    font-synthesis-weight: none;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: var(--color-signal);
+    color: var(--color-paper);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 3px;
+  }
+
+  a {
+    text-underline-offset: 0.18em;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-rule-strong) transparent;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+.display {
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 0.9;
+  text-wrap: balance;
+}
+
+.measure {
+  max-width: 58ch;
+}
+
+.label {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  line-height: 1.3;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.grid-paper {
+  background-image:
+    linear-gradient(to right, rgba(151, 155, 140, 0.2) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(151, 155, 140, 0.2) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+.plate {
+  border: 1px solid var(--color-ink);
+  background: var(--color-paper);
+}
+
+/* Signal chain: vertical by default, horizontal only when its plate has room. */
+.chain-frame {
+  container-type: inline-size;
+}
+
+.chain {
+  display: flex;
+  flex-direction: column;
+  gap: 52px;
+}
+
+.chain-step {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.chain-node {
+  position: relative;
+  height: 100%;
+  border: 1px solid var(--color-ink);
+  background: var(--color-paper);
+  padding: 12px 14px;
+}
+
+.chain-kicker {
+  display: block;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-signal);
+}
+
+.chain-title {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.chain-meta {
+  display: block;
+  margin-top: 3px;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  color: var(--color-ink-soft);
+}
+
+.chain-step:not(:last-child) .chain-node::before {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 1px;
+  height: 52px;
+  background: var(--color-rule-strong);
+  transform: translateX(-50%);
+}
+
+.chain-step:not(:last-child) .chain-node::after {
+  content: "";
+  position: absolute;
+  top: calc(100% + 45px);
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  border-right: 1px solid var(--color-rule-strong);
+  border-bottom: 1px solid var(--color-rule-strong);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.chain-proto {
+  position: absolute;
+  top: calc(100% + 17px);
+  left: 50%;
+  z-index: 1;
+  transform: translateX(-50%);
+  background: var(--color-paper);
+  padding: 1px 4px;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink-faint);
+  white-space: nowrap;
+}
+
+.chain-pulse {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  z-index: 2;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-signal);
+  transform: translate(-50%, 0);
+  animation: pulse-down 2.6s cubic-bezier(0.16, 1, 0.3, 1) 0.9s 1 both;
+}
+
+@keyframes pulse-down {
+  0% {
+    transform: translate(-50%, 0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, 52px);
+    opacity: 0;
+  }
+}
+
+@container (min-width: 560px) {
+  .chain {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 64px;
+  }
+
+  .chain-step {
+    display: flex;
+  }
+
+  .chain-node {
+    flex: 1 1 auto;
+  }
+
+  .chain-step:not(:last-child) .chain-node::before {
+    top: 50%;
+    left: 100%;
+    width: 64px;
+    height: 1px;
+    transform: translateY(-50%);
+  }
+
+  .chain-step:not(:last-child) .chain-node::after {
+    top: 50%;
+    left: calc(100% + 57px);
+    transform: translateY(-50%) rotate(-45deg);
+  }
+
+  .chain-proto {
+    top: 50%;
+    left: calc(100% + 32px);
+    transform: translate(-50%, -50%);
+  }
+
+  .chain-pulse {
+    top: 50%;
+    left: 100%;
+    transform: translate(0, -50%);
+    animation-name: pulse-right;
+  }
+}
+
+@keyframes pulse-right {
+  0% {
+    transform: translate(0, -50%);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(64px, -50%);
+    opacity: 0;
+  }
+}
+
+.spec {
+  border-top: 1px solid var(--color-rule);
+}
+
+.spec > div {
+  border-bottom: 1px solid var(--color-rule);
+  padding: 12px 0;
+}
+
+.spec dt {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-signal);
+}
+
+.spec dd {
+  margin-top: 3px;
+  color: var(--color-ink-soft);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+
+@media (min-width: 640px) {
+  .spec {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 32px;
+  }
+}
+
+.section-anchor {
+  scroll-margin-top: 24px;
+}
+
+.link-underline {
+  text-decoration: underline;
+  text-decoration-color: var(--color-rule-strong);
+  text-decoration-thickness: 1px;
+  transition: text-decoration-color 160ms ease, color 160ms ease;
+}
+
+.link-underline:hover {
+  text-decoration-color: var(--color-signal);
+  color: var(--color-signal);
+}
+
+.on-ink :focus-visible {
+  outline-color: var(--color-paper);
+}
+
+.on-ink .link-underline:hover {
+  color: var(--color-paper);
+  text-decoration-color: var(--color-paper);
+}
+
+.on-ink ::selection {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
