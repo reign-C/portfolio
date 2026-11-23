@@ -98,8 +98,12 @@ export const projects: Project[] = [
     summary:
       "A scanning station that turns every borrow and return into a database transaction, so the lab ledger stops being a handwritten log.",
     stack: "ESP32-S3 · 1D/2D scanner · MySQL · Figma · SketchUp",
-    photoPending:
-      "The scanning station at the lab counter: scanner on its stand, ESP32-S3 and wiring inside the printed enclosure, the borrow screen\u00a0lit.",
+    photo: {
+      src: "/work/lab-borrowing-dashboard.jpg",
+      alt: "Borrowing system dashboard: 2,913 total items, 2,902 available, 11 borrowed, 11 overdue, 982 accounts, plus a category distribution chart.",
+      caption:
+        "Screen capture of the admin dashboard, running against the live catalogue: 2,913 items, 982 accounts, nine categories.",
+    },
     facts: {
       problem:
         "Lab equipment was logged by hand, which made borrow and return records slow to write and hard to audit.",
