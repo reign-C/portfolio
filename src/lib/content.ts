@@ -146,8 +146,12 @@ export const projects: Project[] = [
     summary:
       "A walk-in clinic in Bagumbayan needed more than a paper list: a kiosk that issues tickets, a screen that calls the next patient, and a queue that keeps working when the internet does not.",
     stack: "FastAPI · SQLite · Raspberry Pi · USB thermal printer · offline TTS",
-    photoPending:
-      "The kiosk on the clinic counter with the thermal printer beside it, a printed ticket in\u00a0hand.",
+    photo: {
+      src: "/work/clinic-kiosk.jpg",
+      alt: "Queue kiosk screen: five clinic services, each with a waiting count and the ticket now called, General Check-up 001 and Laboratory 001.",
+      caption:
+        "Screen capture from the running app. Five services, live waiting counts, and the ticket now called on the display.",
+    },
     facts: {
       problem:
         "Walk-in patients were queued by hand across three services: TB DOTS, medical certificates, and general check-ups.",

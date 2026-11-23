@@ -12,6 +12,9 @@ photographs should show the thing assembled, wired, mounted, or running.
 1. **Clinic queue kiosk, in the clinic.** The single most valuable image on the
    site: a commissioned system installed at a client site. Get the kiosk screen
    lit, the printer beside it, one hand using it. `clinic-kiosk.jpg`
+   *Status: a screen capture of the running app ships instead
+   (`public/work/clinic-kiosk.jpg`, cropped to keep the clinic unnamed). A
+   physical photo still beats it; replace the `photo.src` when you have one.*
 2. **Capstone station, complete.** Scanner on its stand, ESP32-S3 and wiring
    visible inside the printed enclosure, screen showing the borrow UI.
    `lab-station.jpg`
