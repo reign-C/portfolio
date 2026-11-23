@@ -199,8 +199,12 @@ export const projects: Project[] = [
       "Two robots that sense their own course: one holds a line with eight reflectance sensors, the other hunts an opponent and avoids the ring edge. Both expose a Wi-Fi control page.",
     stack:
       "ESP32-S3 · ESP32-WROOM-32 · QTR-8RC · TCRT5000 · TB6612FNG · XY-160D",
-    photoPending:
-      "Both robots on the course: the line follower mid-lap and the sumobot in the ring, side by\u00a0side.",
+    photo: {
+      src: "/work/line-follower-tuner.jpg",
+      alt: "Line follower control page: PID gain fields, motor speed limits, an eight-sensor calibration table, and live telemetry from the running robot.",
+      caption:
+        "Screen capture of the line follower's Wi-Fi page: PID gains, motor limits, the eight QTR-8RC sensors, and live telemetry from the running robot.",
+    },
     facts: {
       problem:
         "A course requirement and a sumobot competition needed robots that could sense, decide, and drive without a controller.",
