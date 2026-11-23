@@ -255,8 +255,12 @@ export const projects: Project[] = [
     summary:
       "An ESP32, a DFPlayer module, and an amplifier replace a manual bell with scheduled audio across the campus.",
     stack: "ESP32 · DFPlayer · audio amplifier · horn speakers",
-    photoPending:
-      "The bell unit wired into its amplifier and horn speaker, mounted where it actually\u00a0runs.",
+    photo: {
+      src: "/work/school-bell-dashboard.jpg",
+      alt: "School bell dashboard: seven manual bell test buttons, MWF and TTh schedule entry, and an event schedule with a date range.",
+      caption:
+        "Screen capture of the browser dashboard the ESP32 serves: bell tests, the weekly schedule, and event ranges.",
+    },
     facts: {
       problem:
         "The school bell depended on someone operating it on time, every period.",
