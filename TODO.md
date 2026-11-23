@@ -1,0 +1,73 @@
+# TODO
+
+Working backlog for this portfolio. Tick a box when it ships and add the commit
+hash. Anything here can be resumed cold — each item says what to do and what it
+needs.
+
+**To resume:** open this file and say *"pick up the next item in TODO.md"*.
+
+## Blocked on you (nothing else can finish these)
+
+- [ ] **Add GitHub + LinkedIn links.** The page has no code links anywhere; it's
+      the first thing a technical lead clicks. Needs 2 URLs. Where: `site` object
+      in `src/lib/content.ts`, then header + contact block.
+- [ ] **Add a git remote.** 7 commits live on one disk only. Needs a repo URL.
+      `git remote add origin <url> && git push -u origin main`
+- [ ] **Deploy.** Site is fully static and prerendered; Vercel/Netlify/Pages all
+      work with no config. Needs a host choice.
+- [ ] **Real hardware photos.** Every plate is a screen capture: proves the
+      software, says nothing about the wiring. Shot list in `docs/photos.md`;
+      replacing one is `photo.src` + `caption` in `src/lib/content.ts`.
+
+## Next up — plate quality + interactive preview (approved, not started)
+
+Plan is in the current conversation; summary:
+
+- [ ] **Phase 1 — framing and sharpness.** (a) Give `ProjectPhoto` real
+      `width`/`height` and derive `aspect-[w/h]` per image, killing the hard-coded
+      `16/10` that crops 18% off the lab plate and 39% off robotics.
+      (b) Re-capture all four at `--force-device-scale-factor=2` (3200 px wide).
+      (c) Add a 1px-ruled mono title bar so a capture reads as a screen.
+- [ ] **Phase 2 — multi-screen tabs, CSS-only.** Radio-input tabs, no hydration.
+      Clinic: kiosk / admin / TV display. Lab: dashboard / inventory. Robotics:
+      tuner / sumobot page. Bell: dashboard / schedule. Needs extra captures.
+- [ ] **Phase 3 — click-to-enlarge `<dialog>`.** Hold until Phase 2 is seen; tabs
+      may make small text legible enough on their own.
+
+**Open question for Phase 2:** the lab's transactions table contains student
+names and IDs. Capture with those columns cropped, or skip that tab? Decide
+before capturing it.
+
+## Deferred
+
+- [ ] **Classroom management UI** stays in *Also built*. Decision: promoting it
+      would argue against the sensor→firmware→install positioning. Revisit only if
+      the site ever targets a software role. Screenshots exist at
+      `C:\Users\User\Documents\TeacherClassroomManagementSystem\smoke-*.png`.
+- [ ] Lighthouse performance 92 → nothing planned. Remaining 300 ms unused JS and
+      150 ms legacy transform are framework-inherent. Re-measure against the
+      deployed URL instead of chasing it locally.
+
+## Environment notes
+
+- View locally: `npm run dev` → http://localhost:3000 (`npm run build && npm start`
+  for the production view). `?audit` is not a site feature — it belongs to the
+  impeccable tooling in `.opencode/`.
+- Re-capturing a UI: headless Chrome via
+  `--headless=new --screenshot --window-size=W,H --force-device-scale-factor=2`.
+- Clinic queue needs its pinned stack (FastAPI 0.115.5 / Starlette 0.41.3); the
+  system-wide FastAPI 0.133 breaks `TemplateResponse`.
+- Borrowing system must be served from `C:\laragon\www`, not its own folder, or
+  every `/borrowing_system_COE/assets/...` path 404s. MySQL must be running.
+- Captures must keep the clinic unnamed and must not include student names.
+
+## Done
+
+- [x] `687d24a` Content, design system, and pending photo plates.
+- [x] `d55673c` Clinic kiosk plate, cropped to keep the clinic unnamed.
+- [x] `3d22984` Line follower PID tuner plate.
+- [x] `9733f6a` Lab borrowing dashboard plate, cropped above the PII table.
+- [x] `7b3f20b` School bell dashboard plate — all four projects carry an artifact.
+- [x] `43af0f0` Documented that UI captures ship in place of photographs.
+- [x] `367edef` Finish review with measured Lighthouse results (92/100/100/100,
+      CLS 0).
