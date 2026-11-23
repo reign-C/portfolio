@@ -19,6 +19,24 @@ needs.
       software, says nothing about the wiring. Shot list in `docs/photos.md`;
       replacing one is `photo.src` + `caption` in `src/lib/content.ts`.
 
+## Deferred from the 2026-11-23 critique (19/32, "Acceptable")
+
+- [ ] **Plates: aspect and sharpness.** Hard `16/10` + `object-cover` crops 10–39%
+      (sources 1.78, 1.95, 0.98, 1.77). The lab plate renders 817 px but `sizes`
+      declares 790, so a 790 px file is served for an 817 px box. Give
+      `ProjectPhoto` real `width`/`height`, derive the aspect, fix `sizes`,
+      re-capture at `--force-device-scale-factor=2`, drop the stock-doctor screen.
+- [ ] **Ranking: no skim layer.** 9,388 px desktop / 13,438 px mobile; the
+      commissioned clinic gets the same ~1,300 px as a course sumobot. Rank the
+      work, compress two entries to *also built* rows, add per-project anchors.
+- [ ] **`og:image` and tab title.** No share image; the title says "Computer
+      Engineer", not the role — LinkedIn shares render as bare text.
+- [ ] **Kicker-above-heading ban.** `CAPSTONE PROJECT`, `COMMISSIONED THESIS
+      BUILD` etc. sit above every project `h3`. The impeccable craft floor bans
+      eyebrow kickers; the project kind can move into the metadata column.
+- [ ] **Missing contact facts.** No phone number (a real gap for installation
+      work); still no LinkedIn/GitHub.
+
 ## Next up — plate quality + interactive preview (approved, not started)
 
 Plan is in the current conversation; summary:

@@ -33,7 +33,7 @@ export function SiteHeader() {
           ))}
           <a
             href={`mailto:${site.email}`}
-            className="label -my-2 hidden py-2 text-signal transition-colors hover:text-ink sm:inline"
+            className="label -my-2 py-2 text-signal transition-colors hover:text-ink"
           >
             Email
           </a>

@@ -49,44 +49,43 @@ export type Project = {
 export const site = {
   name: "Reign Marc Cipriano",
   shortName: "R. M. Cipriano",
-  role: "Computer engineer",
+  role: "IoT & Automation Engineer",
   location: "Tacurong City, Sultan Kudarat",
   region: "SOCCSKSARGEN, Region XII",
   email: "ciprianoreignmarc@gmail.com",
   resume: "/Resume-Cipriano-Reign-Marc.pdf",
-  availability: "Open to full-time IoT and automation roles",
-  updated: "Rev. 2026.11",
+  availability: "Available immediately — full-time roles and commissioned builds",
 } as const;
 
 export const hero = {
   deck: "I build sensor-driven systems end to end: the board, the firmware, and the install.",
-  body: "Computer engineering graduate (June 2026) with hands-on work in ESP32 and ESP32-S3 prototypes, Raspberry Pi deployments, PCB soldering, and on-site CCTV, PA, and telephony. Based in Tacurong City, open to work in Koronadal and across SOCCSKSARGEN.",
-  bom: "ESP32-S3 · 1D/2D scanner · 5 V supply · printed enclosure",
+  body: "Hands-on work across ESP32 and ESP32-S3 prototypes, Raspberry Pi deployments, PCB soldering, and on-site CCTV, PA, and telephony. Computer engineering graduate, June 2026.",
+  bom: "QTR-8RC \u00d78 \u00b7 TCRT5000 \u00d72 \u00b7 TB6612FNG \u00b7 3S LiPo",
 } as const;
 
 export const heroChain: ChainStep[] = [
   {
-    kicker: "Input",
-    title: "1D/2D scanner",
-    meta: "Reads the item barcode",
-    via: "UART",
+    kicker: "Sense",
+    title: "QTR\u20118RC",
+    meta: "Eight sensors, line",
+    via: "GPIO",
   },
   {
     kicker: "Control",
-    title: "ESP32-S3",
-    meta: "Firmware and Wi-Fi",
-    via: "SQL",
+    title: "ESP32\u2011S3",
+    meta: "PID and match states",
+    via: "PWM",
   },
   {
-    kicker: "Record",
-    title: "MySQL ledger",
-    meta: "Borrow and return rows",
-    via: "Query",
+    kicker: "Drive",
+    title: "TB6612FNG",
+    meta: "H-bridge to motors",
+    via: "12V",
   },
   {
-    kicker: "Interface",
-    title: "Borrow / return UI",
-    meta: "The staff-facing screen",
+    kicker: "Act",
+    title: "Geared motors",
+    meta: "Two driven wheels",
   },
 ];
 
@@ -123,7 +122,7 @@ export const projects: Project[] = [
       },
       {
         kicker: "Control",
-        title: "ESP32-S3",
+        title: "ESP32\u2011S3",
         meta: "Firmware and Wi-Fi",
         via: "SQL",
       },
@@ -136,7 +135,7 @@ export const projects: Project[] = [
       {
         kicker: "Interface",
         title: "Borrow / return UI",
-        meta: "The staff-facing screen",
+        meta: "The staff\u2011facing screen",
       },
     ],
     figure:
@@ -222,7 +221,7 @@ export const projects: Project[] = [
     chain: [
       {
         kicker: "Sense",
-        title: "QTR-8RC / TCRT5000",
+        title: "QTR\u20118RC / TCRT5000",
         meta: "Line, edge, opponent",
         via: "GPIO",
       },
@@ -235,7 +234,7 @@ export const projects: Project[] = [
       {
         kicker: "Drive",
         title: "H-bridge",
-        meta: "TB6612FNG / XY-160D",
+        meta: "TB6612FNG / XY\u2011160D",
         via: "12 V",
       },
       {

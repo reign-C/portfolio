@@ -1,5 +1,5 @@
 import { site } from "@/lib/content";
-import { DownloadIcon, MailIcon } from "@/components/marks";
+import { DownloadIcon } from "@/components/marks";
 
 export function Contact() {
   return (
@@ -19,8 +19,8 @@ export function Contact() {
             </h2>
 
             <p className="mt-5 max-w-[46ch] text-[1.0625rem] leading-relaxed text-paper/80">
-              Open to full-time IoT, automation, and embedded roles in
-              Koronadal and across SOCCSKSARGEN.
+              Available immediately for full-time roles or commissioned builds:
+              installations, prototypes, and the software that runs them.
             </p>
 
             <a
@@ -32,16 +32,9 @@ export function Contact() {
 
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <a
-                href={`mailto:${site.email}`}
-                className="inline-flex items-center gap-2 border border-paper bg-paper px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-signal hover:bg-signal hover:text-paper"
-              >
-                <MailIcon />
-                Email me
-              </a>
-              <a
                 href={site.resume}
                 download
-                className="inline-flex items-center gap-2 border border-paper/40 px-4 py-2.5 text-sm font-semibold text-paper transition-colors hover:border-paper hover:bg-paper hover:text-ink"
+                className="inline-flex items-center gap-2 border border-paper bg-paper px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-signal hover:bg-signal hover:text-paper"
               >
                 <DownloadIcon />
                 Résumé (PDF)
@@ -50,28 +43,20 @@ export function Contact() {
           </div>
 
           <div className="md:col-span-5 md:justify-self-end md:pt-2">
-            <dl className="w-full space-y-5 border border-paper/25 p-5 md:max-w-[320px]">
+            <dl className="w-full space-y-5 border border-paper/40 p-5 md:max-w-[320px]">
               <div>
                 <dt className="label text-paper/60">Based in</dt>
                 <dd className="mt-1 text-sm">{site.location}</dd>
                 <dd className="text-sm text-paper/70">{site.region}</dd>
               </div>
               <div>
-                <dt className="label text-paper/60">Status</dt>
-                <dd className="mt-1 flex items-center gap-2 text-sm">
+                <dt className="label text-paper/60">Available</dt>
+                <dd className="mt-1 flex items-start gap-2 text-sm">
                   <span
-                    className="inline-block h-2 w-2 bg-paper"
+                    className="mt-1.5 inline-block h-2 w-2 shrink-0 bg-paper"
                     aria-hidden="true"
                   />
-                  Open to full-time roles
-                </dd>
-              </div>
-              <div>
-                <dt className="label text-paper/60">Résumé</dt>
-                <dd className="mt-1 text-sm">
-                  <a href={site.resume} download className="link-underline">
-                    PDF download
-                  </a>
+                  <span>Immediately · full-time or commissioned</span>
                 </dd>
               </div>
             </dl>

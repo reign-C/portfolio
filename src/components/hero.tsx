@@ -10,13 +10,8 @@ export function Hero() {
       className="border-b border-rule"
     >
       <div className="mx-auto max-w-[1180px] px-5 md:px-10">
-        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-b border-rule py-2.5">
-          <p className="label text-ink-faint">Portfolio — {site.updated}</p>
-          <p className="label text-ink-faint">{site.location}</p>
-        </div>
-
-        <div className="grid gap-10 py-12 md:grid-cols-12 md:gap-8 md:py-20">
-          <div className="md:col-span-5">
+        <div className="grid gap-10 py-12 md:py-16 lg:grid-cols-12 lg:gap-8 lg:py-20">
+          <div className="lg:col-span-5">
             <h1
               id="hero-title"
               className="display text-[clamp(3rem,7vw,5rem)]"
@@ -25,6 +20,13 @@ export function Hero() {
               <br />
               Cipriano
             </h1>
+
+            <p className="mt-4 text-[1.0625rem] font-semibold tracking-[-0.01em]">
+              {site.role}
+            </p>
+            <p className="label mt-1.5 text-ink-faint">
+              {site.location} · {site.region}
+            </p>
 
             <p className="mt-6 max-w-[34ch] text-[1.375rem] font-medium leading-[1.25] tracking-[-0.015em]">
               {hero.deck}
@@ -52,23 +54,27 @@ export function Hero() {
               </a>
             </div>
 
-            <p className="mt-6 flex items-center gap-2">
-              <span className="inline-block h-2 w-2 bg-signal" aria-hidden="true" />
-              <span className="label text-ink-faint">{site.availability}</span>
+            <p className="mt-6 flex items-start gap-2 text-[0.875rem] leading-relaxed text-ink-soft">
+              <span
+                className="mt-1.5 inline-block h-2 w-2 shrink-0 bg-signal"
+                aria-hidden="true"
+              />
+              <span>{site.availability}</span>
             </p>
           </div>
 
-          <div className="md:col-span-7">
+          <div className="lg:col-span-7">
             <figure className="plate">
               <div className="flex items-center justify-between gap-3 border-b border-ink px-3 py-2">
-                <p className="label text-ink-faint">Signal path — lab tracking unit</p>
-                <p className="label text-ink-faint">Rev. A</p>
+                <p className="label text-ink-faint">
+                  Signal path — line follower
+                </p>
               </div>
 
               <div className="grid-paper chain-frame px-4 py-8 md:px-6 md:py-10">
                 <SignalChain
                   steps={heroChain}
-                  label="Capstone signal path: scanner to ESP32-S3 to MySQL to interface"
+                  label="Line follower signal path: sensor array to ESP32-S3 to H-bridge to motors"
                   pulse
                 />
               </div>
