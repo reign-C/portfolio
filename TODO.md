@@ -21,11 +21,12 @@ needs.
 
 ## Deferred from the 2026-11-23 critique (19/32, "Acceptable")
 
-- [ ] **Plates: aspect and sharpness.** Hard `16/10` + `object-cover` crops 10–39%
-      (sources 1.78, 1.95, 0.98, 1.77). The lab plate renders 817 px but `sizes`
-      declares 790, so a 790 px file is served for an 817 px box. Give
-      `ProjectPhoto` real `width`/`height`, derive the aspect, fix `sizes`,
-      re-capture at `--force-device-scale-factor=2`, drop the stock-doctor screen.
+- [x] **Plates: aspect and sharpness.** Fixed: each `ProjectPhoto` carries its
+      native `width`/`height` and the frame is built from that ratio, so nothing
+      is cropped. `sizes` now matches the 817 px rendered box, `qualities`
+      allowlists 90, and `deviceSizes` is capped at 1600 so Next never upscales.
+      Still open only as an upgrade: re-capture at
+      `--force-device-scale-factor=2` for true retina detail.
 - [ ] **Ranking: no skim layer.** 9,388 px desktop / 13,438 px mobile; the
       commissioned clinic gets the same ~1,300 px as a course sumobot. Rank the
       work, compress two entries to *also built* rows, add per-project anchors.

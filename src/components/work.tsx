@@ -3,13 +3,6 @@ import { alsoBuilt, projects } from "@/lib/content";
 import { PlateZoom } from "@/components/plate-zoom";
 import { SignalChain } from "@/components/signal-chain";
 
-/** Frame shapes for project photographs. Static so Tailwind keeps the classes. */
-const photoFrame = {
-  wide: "aspect-[16/10]",
-  square: "aspect-square",
-  tall: "aspect-[4/5]",
-} as const;
-
 export function Work() {
   return (
     <section
@@ -85,15 +78,17 @@ export function Work() {
               {project.photo ? (
                 <figure className="plate mt-7">
                   <div
-                    className={`relative w-full ${
-                      photoFrame[project.photo.aspect ?? "wide"]
-                    }`}
+                    className="relative w-full"
+                    style={{
+                      aspectRatio: `${project.photo.width} / ${project.photo.height}`,
+                    }}
                   >
                     <Image
                       src={project.photo.src}
                       alt={project.photo.alt}
                       fill
-                      sizes="(min-width: 1180px) 790px, (min-width: 768px) 72vw, 100vw"
+                      sizes="(min-width: 1180px) 817px, (min-width: 768px) 72vw, 100vw"
+                      quality={90}
                       className="object-cover"
                     />
                   </div>
@@ -113,7 +108,8 @@ export function Work() {
               ) : project.photoPending ? (
                 <figure className="plate mt-7">
                   <div
-                    className={`grid-paper flex w-full flex-col items-center justify-center gap-2 px-6 py-8 ${photoFrame.wide}`}
+                    className="grid-paper flex w-full flex-col items-center justify-center gap-2 px-6 py-8"
+                    style={{ aspectRatio: "16 / 10" }}
                   >
                     <span className="label text-signal">Plate pending</span>
                     <p className="max-w-[42ch] text-center font-mono text-[12px] leading-relaxed text-ink-faint">

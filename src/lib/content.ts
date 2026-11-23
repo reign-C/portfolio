@@ -18,8 +18,9 @@ export type ProjectPhoto = {
   alt: string;
   /** One line under the frame. Facts, not adjectives. */
   caption: string;
-  /** Crop of the frame. Defaults to "wide". */
-  aspect?: "wide" | "square" | "tall";
+  /** Native pixel size. Frames the plate at this ratio, so nothing is cropped. */
+  width: number;
+  height: number;
 };
 
 export type Project = {
@@ -125,6 +126,8 @@ export const projects: Project[] = [
     stack: "ESP32-S3 · 1D/2D scanner · MySQL · Figma · SketchUp",
     photo: {
       src: "/work/lab-borrowing-dashboard.jpg",
+      width: 1600,
+      height: 820,
       alt: "Borrowing system dashboard: 2,913 total items, 2,902 available, 11 borrowed, 11 overdue, 982 accounts, plus a category distribution chart.",
       caption:
         "Screen capture of the admin dashboard, running against the live catalogue: 2,913 items, 982 accounts, nine categories.",
@@ -177,6 +180,8 @@ export const projects: Project[] = [
     stack: "FastAPI · SQLite · Raspberry Pi · USB thermal printer · offline TTS",
     photo: {
       src: "/work/clinic-kiosk.jpg",
+      width: 1600,
+      height: 900,
       alt: "Queue kiosk screen: five clinic services, each with a waiting count and the ticket now called, General Check-up 001 and Laboratory 001.",
       caption:
         "Screen capture from the running app. Five services, live waiting counts, and the ticket now called on the display.",
@@ -230,6 +235,8 @@ export const projects: Project[] = [
       "ESP32-S3 · ESP32-WROOM-32 · QTR-8RC · TCRT5000 · TB6612FNG · XY-160D",
     photo: {
       src: "/work/line-follower-tuner.jpg",
+      width: 1000,
+      height: 1020,
       alt: "Line follower control page: PID gain fields, motor speed limits, an eight-sensor calibration table, and live telemetry from the running robot.",
       caption:
         "Screen capture of the line follower's Wi-Fi page: PID gains, motor limits, the eight QTR-8RC sensors, and live telemetry from the running robot.",
@@ -282,6 +289,8 @@ export const projects: Project[] = [
     stack: "ESP32 · DFPlayer · audio amplifier · horn speakers",
     photo: {
       src: "/work/school-bell-dashboard.jpg",
+      width: 1600,
+      height: 905,
       alt: "School bell dashboard: seven manual bell test buttons, MWF and TTh schedule entry, and an event schedule with a date range.",
       caption:
         "Screen capture of the browser dashboard the ESP32 serves: bell tests, the weekly schedule, and event ranges.",
