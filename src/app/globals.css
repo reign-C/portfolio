@@ -341,3 +341,8 @@
   background: var(--color-paper);
   color: var(--color-ink);
 }
+
+/* Plate zoom: the page behind the enlarged capture recedes. */
+dialog::backdrop {
+  background: rgb(25 27 25 / 0.82);
+}

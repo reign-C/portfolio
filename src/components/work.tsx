@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { alsoBuilt, projects } from "@/lib/content";
+import { PlateZoom } from "@/components/plate-zoom";
 import { SignalChain } from "@/components/signal-chain";
 
 /** Frame shapes for project photographs. Static so Tailwind keeps the classes. */
@@ -31,10 +32,35 @@ export function Work() {
           </p>
         </div>
 
+        <ol id="work-index" className="mt-6 scroll-mt-6 border-t border-rule">
+          {projects.map((project, index) => (
+            <li key={project.id} className="border-b border-rule">
+              <a
+                href={`#project-${project.id}`}
+                className="group flex items-baseline gap-4 py-3"
+              >
+                <span className="label w-6 shrink-0 text-signal">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span className="flex-1 text-[1.0625rem] font-semibold leading-snug tracking-[-0.01em] transition-colors group-hover:text-signal">
+                  {project.title}
+                </span>
+                <span className="label hidden text-ink-faint md:inline">
+                  {project.kind}
+                </span>
+                <span className="label shrink-0 text-ink-faint transition-colors group-hover:text-signal">
+                  View
+                </span>
+              </a>
+            </li>
+          ))}
+        </ol>
+
         {projects.map((project) => (
           <article
             key={project.id}
-            className="grid gap-5 border-b border-rule py-10 last:border-b-0 md:grid-cols-12 md:gap-8 md:py-14"
+            id={`project-${project.id}`}
+            className="grid scroll-mt-6 gap-5 border-b border-rule py-10 last:border-b-0 md:grid-cols-12 md:gap-8 md:py-14"
           >
             <div className="md:sticky md:top-6 md:col-span-3 md:self-start">
               <p className="label text-signal">{project.kind}</p>
@@ -71,11 +97,17 @@ export function Work() {
                       className="object-cover"
                     />
                   </div>
-                  <figcaption className="border-t border-ink px-3 py-2 font-mono text-[12px] leading-relaxed text-ink-faint">
-                    <span className="label mr-2 text-signal">Plate</span>
-                    <span className="measure inline-block align-top">
-                      {project.photo.caption}
+                  <figcaption className="flex items-start justify-between gap-3 border-t border-ink px-3 py-2 font-mono text-[12px] leading-relaxed text-ink-faint">
+                    <span className="flex-1">
+                      <span className="label mr-2 text-signal">Plate</span>
+                      <span className="measure inline-block align-top">
+                        {project.photo.caption}
+                      </span>
                     </span>
+                    <PlateZoom
+                      src={project.photo.src}
+                      alt={project.photo.alt}
+                    />
                   </figcaption>
                 </figure>
               ) : project.photoPending ? (
@@ -121,6 +153,13 @@ export function Work() {
                   <span className="measure block">{project.figure}</span>
                 </figcaption>
               </figure>
+
+              <a
+                href="#work-index"
+                className="label mt-8 inline-block text-ink-faint transition-colors hover:text-signal"
+              >
+                Back to index
+              </a>
             </div>
           </article>
         ))}

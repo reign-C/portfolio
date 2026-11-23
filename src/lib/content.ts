@@ -89,6 +89,32 @@ export const heroChain: ChainStep[] = [
   },
 ];
 
+export const about = {
+  paragraphs: [
+    "I'm a computer engineering graduate from Sultan Kudarat State University who learned hardware by taking builds apart and putting them back together. Most of what I know came from commissioned prototypes: wiring sensors, soldering boards, and debugging until the behaviour was right.",
+    "Before graduating I spent a month on site with Unicenter Communications installing CCTV, PA, and telephone systems on client premises, which is where I learned that a setup only counts once it runs in the room it was built for.",
+  ],
+  facts: [
+    {
+      label: "Based in",
+      value: "Tacurong City, Sultan Kudarat — working across SOCCSKSARGEN",
+    },
+    {
+      label: "Education",
+      value:
+        "BS Computer Engineering, Sultan Kudarat State University (June 2026)",
+    },
+    {
+      label: "Certification",
+      value: "TESDA NC II, Computer Systems Servicing",
+    },
+    {
+      label: "Availability",
+      value: "Immediately — full-time roles and commissioned builds",
+    },
+  ],
+} as const;
+
 export const projects: Project[] = [
   {
     id: "lab-tracking",

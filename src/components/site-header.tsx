@@ -3,7 +3,8 @@ import { ChipMark } from "@/components/marks";
 
 const links = [
   { href: "#work", label: "Work", always: true },
-  { href: "#experience", label: "Experience", always: true },
+  { href: "#about", label: "About", always: false },
+  { href: "#experience", label: "Experience", always: false },
   { href: "#capabilities", label: "Capabilities", always: false },
 ];
 
@@ -16,10 +17,13 @@ export function SiteHeader() {
           className="-my-2 flex items-center gap-2 py-2 text-ink transition-colors hover:text-signal"
         >
           <ChipMark className="h-4 w-4" />
-          <span className="label">{site.shortName}</span>
+          <span className="label whitespace-nowrap">{site.shortName}</span>
         </a>
 
-        <nav aria-label="Sections" className="flex items-center gap-4 md:gap-7">
+        <nav
+          aria-label="Sections"
+          className="flex items-center gap-3 md:gap-7"
+        >
           {links.map((link) => (
             <a
               key={link.href}

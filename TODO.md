@@ -71,6 +71,12 @@ before capturing it.
 - View locally: `npm run dev` → http://localhost:3000 (`npm run build && npm start`
   for the production view). `?audit` is not a site feature — it belongs to the
   impeccable tooling in `.opencode/`.
+- **Use `localhost:3000`, not `127.0.0.1:3000`.** Next 16 blocks dev resources
+  from a different origin, so on `127.0.0.1` the client runtime never loads and
+  nothing hydrates (the plates' Enlarge button silently does nothing). Production
+  builds are unaffected.
+- **Don't run `next build` while `next dev` is running** — they share `.next`, and
+  the dev server keeps serving stale assets after a build.
 - Re-capturing a UI: headless Chrome via
   `--headless=new --screenshot --window-size=W,H --force-device-scale-factor=2`.
 - Clinic queue needs its pinned stack (FastAPI 0.115.5 / Starlette 0.41.3); the
@@ -94,3 +100,7 @@ before capturing it.
       date, one email and one résumé action, footer ends on the address, email
       reachable in the mobile nav, and the 768 px two-column collision moved to
       `lg`.
+- [x] **About band + portrait** (`public/portrait.jpg`, cropped from the ID
+      photo), a numbered work index with jump links and "Back to index", and
+      click-to-enlarge plates in a `<dialog>`. Photo is a cropped ID shot — a
+      working photograph at the bench would be better.
