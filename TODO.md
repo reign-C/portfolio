@@ -89,3 +89,8 @@ before capturing it.
 - [x] `43af0f0` Documented that UI captures ship in place of photographs.
 - [x] `367edef` Finish review with measured Lighthouse results (92/100/100/100,
       CLS 0).
+- [x] `92ed559` Fold rework from the critique: role under the name, revision strip
+      deleted, robotics chain in the hero, one availability line with a start
+      date, one email and one résumé action, footer ends on the address, email
+      reachable in the mobile nav, and the 768 px two-column collision moved to
+      `lg`.
