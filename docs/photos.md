@@ -1,5 +1,11 @@
 # Photographs
 
+> **Status: all four projects now ship a screen capture taken from their own
+> source** (`public/work/`), because no hardware photographs exist yet. The shot
+> list below is still the upgrade path — a real photo beats a UI capture for
+> every one of these, and replacing it means swapping `photo.src` and the
+> caption in `src/lib/content.ts`. Nothing about the plates is placeholders now.
+
 The site has one job the text cannot do: prove the hardware was real. Right now
 every figure is a diagram. Photographs are the missing evidence.
 
