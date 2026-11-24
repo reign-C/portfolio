@@ -1,10 +1,10 @@
 import { SiteHeader } from "@/components/site-header";
 import { Hero } from "@/components/hero";
 import { Work } from "@/components/work";
-import { About } from "@/components/about";
+import { Fit } from "@/components/fit";
 import { Experience } from "@/components/experience";
 import { Capabilities } from "@/components/capabilities";
-import { Fit } from "@/components/fit";
+import { About } from "@/components/about";
 import { Contact } from "@/components/contact";
 import { SiteFooter } from "@/components/site-footer";
 
@@ -15,10 +15,10 @@ export default function Home() {
       <main id="main" className="flex-1">
         <Hero />
         <Work />
-        <About />
+        <Fit />
         <Experience />
         <Capabilities />
-        <Fit />
+        <About />
         <Contact />
       </main>
       <SiteFooter />

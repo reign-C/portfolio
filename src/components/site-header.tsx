@@ -1,47 +1,50 @@
 import { site } from "@/lib/content";
-import { ChipMark } from "@/components/marks";
 
 const links = [
-  { href: "#work", label: "Work", always: true },
-  { href: "#about", label: "About", always: false },
-  { href: "#experience", label: "Experience", always: false },
-  { href: "#capabilities", label: "Capabilities", always: false },
+  { href: "#work", label: "Work" },
+  { href: "#experience", label: "Experience" },
+  { href: "#skills", label: "Skills" },
+  { href: "#about", label: "About" },
 ];
 
 export function SiteHeader() {
   return (
-    <header className="border-b border-rule">
-      <div className="mx-auto flex max-w-[1180px] items-center justify-between gap-4 px-5 py-3.5 md:px-10">
+    <header className="sticky top-0 z-40 border-b border-line bg-bg/80 backdrop-blur">
+      <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between gap-6 px-6 md:px-12">
         <a
           href="#top"
-          className="-my-2 flex items-center gap-2 py-2 text-ink transition-colors hover:text-signal"
+          className="text-[15px] font-semibold tracking-[-0.01em]"
         >
-          <ChipMark className="h-4 w-4" />
-          <span className="label whitespace-nowrap">{site.shortName}</span>
+          {site.name}
         </a>
 
-        <nav
-          aria-label="Sections"
-          className="flex items-center gap-3 md:gap-7"
-        >
+        <nav aria-label="Sections" className="hidden items-center gap-6 md:flex">
           {links.map((link) => (
             <a
               key={link.href}
               href={link.href}
-              className={`label -my-2 py-2 text-ink-soft transition-colors hover:text-ink ${
-                link.always ? "" : "hidden sm:inline"
-              }`}
+              className="text-sm text-muted transition-colors duration-200 hover:text-text"
             >
               {link.label}
             </a>
           ))}
+        </nav>
+
+        <div className="flex items-center gap-2">
           <a
             href={`mailto:${site.email}`}
-            className="label -my-2 py-2 text-signal transition-colors hover:text-ink"
+            className="hidden rounded-sm border border-line px-3 py-2 text-sm font-medium transition-colors duration-200 hover:border-text sm:inline-block"
           >
             Email
           </a>
-        </nav>
+          <a
+            href={site.resume}
+            download
+            className="rounded-sm bg-text px-3 py-2 text-sm font-medium text-bg transition-opacity duration-200 hover:opacity-90"
+          >
+            Résumé
+          </a>
+        </div>
       </div>
     </header>
   );

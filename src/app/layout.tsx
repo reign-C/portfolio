@@ -1,52 +1,56 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo, Martian_Mono } from "next/font/google";
+import { Schibsted_Grotesk, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 
-const archivo = Archivo({
-  variable: "--font-archivo",
+const schibsted = Schibsted_Grotesk({
+  variable: "--font-schibsted",
   subsets: ["latin"],
   display: "swap",
 });
 
-const martianMono = Martian_Mono({
-  variable: "--font-martian",
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-plex",
   subsets: ["latin"],
+  weight: ["400", "500"],
   display: "swap",
 });
+
+const title = "Reign Marc Cipriano — IoT and automation engineer";
+const description =
+  "Computer engineering graduate in Tacurong City building sensor-driven systems: ESP32 firmware, Raspberry Pi deployments, and on-site CCTV, PA, and telephony installs across SOCCSKSARGEN.";
 
 export const metadata: Metadata = {
-  title: "Reign Marc Cipriano — Computer Engineer",
-  description:
-    "Computer engineering graduate building ESP32 sensor systems, Raspberry Pi deployments, firmware, and on-site CCTV, PA, and telephony installs. Based in Tacurong City, open to IoT and automation roles across SOCCSKSARGEN.",
+  title,
+  description,
   authors: [{ name: "Reign Marc L. Cipriano" }],
   creator: "Reign Marc L. Cipriano",
   openGraph: {
-    title: "Reign Marc Cipriano — Computer Engineer",
-    description:
-      "ESP32 sensor systems, Raspberry Pi deployments, firmware, and on-site installs. Open to IoT and automation roles in SOCCSKSARGEN.",
+    title,
+    description,
     type: "profile",
     locale: "en_PH",
   },
-  icons: {
-    icon: "/icon.svg",
-  },
+  icons: { icon: "/icon.svg" },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#eff1ea",
-  colorScheme: "light",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f7f8fa" },
+    { media: "(prefers-color-scheme: dark)", color: "#0e1116" },
+  ],
+  colorScheme: "light dark",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${archivo.variable} ${martianMono.variable} h-full antialiased`}
+      className={`${schibsted.variable} ${plexMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
         <a
           href="#main"
-          className="sr-only z-50 bg-ink px-4 py-3 text-sm font-semibold text-paper focus:not-sr-only focus:absolute focus:left-4 focus:top-4"
+          className="sr-only rounded-sm bg-text px-4 py-3 text-sm font-medium text-bg focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50"
         >
           Skip to content
         </a>

@@ -25,6 +25,8 @@ export type ProjectPhoto = {
 
 export type Project = {
   id: string;
+  /** Relevance order for the carousel; the projects are not a sequence. */
+  rank: number;
   kind: string;
   title: string;
   summary: string;
@@ -55,7 +57,7 @@ export const site = {
   region: "SOCCSKSARGEN, Region XII",
   email: "ciprianoreignmarc@gmail.com",
   resume: "/Resume-Cipriano-Reign-Marc.pdf",
-  availability: "Available immediately — full-time roles and commissioned builds",
+  availability: "Available now for full-time roles and commissioned builds",
 } as const;
 
 export const hero = {
@@ -110,15 +112,77 @@ export const about = {
       value: "TESDA NC II, Computer Systems Servicing",
     },
     {
-      label: "Availability",
-      value: "Immediately — full-time roles and commissioned builds",
+      label: "Area open for work",
+      value: "Koronadal and across SOCCSKSARGEN",
     },
   ],
 } as const;
 
+export const credentialFacts = [
+  {
+    value: "BS Computer Engineering",
+    detail: "Sultan Kudarat State University, June 2026",
+  },
+  {
+    value: "Civil Service Professional",
+    detail: "Passer, March 2026",
+  },
+  {
+    value: "TESDA NC II",
+    detail: "Computer Systems Servicing",
+  },
+  {
+    value: "Dean's list",
+    detail: "A.Y. 2024-2025",
+  },
+] as const;
+
+export const team = [
+  {
+    lead: "Install and diagnose on site",
+    body: "CCTV and IP cameras, PA and horn speakers, telephones: mounting, IP configuration, and fault-finding on live client sites.",
+  },
+  {
+    lead: "Build the prototype",
+    body: "ESP32 and ESP32-S3, sensors and actuators, soldering, KiCad boards, and printed enclosures.",
+  },
+  {
+    lead: "Connect it to software",
+    body: "A MySQL schema, barcode input, and the interface staff actually use.",
+  },
+  {
+    lead: "Deploy it where it has to run",
+    body: "A Raspberry Pi serving FastAPI, a USB thermal printer, and a TV display over a clinic's local network.",
+  },
+] as const;
+
+export const skillGroups = [
+  {
+    title: "Embedded and IoT",
+    items:
+      "ESP32, ESP32-S3, ESP32-WROOM-32, Arduino. QTR-8RC, TCRT5000, HC-SR04, Sharp GP2Y0A21YK0F, E18-D80NK, DHT22. TB6612FNG and XY-160D drivers, PID control, 3S LiPo power.",
+  },
+  {
+    title: "Networking and site systems",
+    items:
+      "CCTV and IP cameras, PA and horn speakers, telephone units, LAN and IP configuration, Wi-Fi access points, HC-05 and HC-06 Bluetooth.",
+  },
+  {
+    title: "Software",
+    items:
+      "Python, C++ fundamentals, MySQL, FastAPI, SQLite, React, React Native with Expo, systemd deployment, offline text to speech.",
+  },
+  {
+    title: "Design and fabrication",
+    items:
+      "KiCad, soldering, circuit troubleshooting, 3D enclosure modelling, AutoCAD, SketchUp, Figma.",
+  },
+] as const;
+
 export const projects: Project[] = [
   {
     id: "lab-tracking",
+    rank: 2,
     kind: "Capstone project",
     title: "Lab equipment borrowing, tracked by barcode",
     summary:
@@ -173,6 +237,7 @@ export const projects: Project[] = [
   },
   {
     id: "clinic-queue",
+    rank: 1,
     kind: "Commissioned thesis build",
     title: "A clinic queue that runs on one Raspberry Pi",
     summary:
@@ -227,6 +292,7 @@ export const projects: Project[] = [
   },
   {
     id: "robotics",
+    rank: 3,
     kind: "Course build + competition",
     title: "A PID line follower and an autonomous sumobot",
     summary:
@@ -282,6 +348,7 @@ export const projects: Project[] = [
   },
   {
     id: "school-bell",
+    rank: 4,
     kind: "School build",
     title: "A school bell that keeps its own schedule",
     summary:

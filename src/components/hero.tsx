@@ -1,91 +1,86 @@
-import { hero, heroChain, site } from "@/lib/content";
-import { DownloadIcon, MailIcon } from "@/components/marks";
-import { SignalChain } from "@/components/signal-chain";
+import Image from "next/image";
+import { credentialFacts, hero, site } from "@/lib/content";
 
 export function Hero() {
   return (
     <section
       id="top"
-      aria-labelledby="hero-title"
-      className="border-b border-rule"
+      className="mx-auto max-w-[1200px] px-6 pb-14 pt-12 md:px-12 md:pb-24 md:pt-20"
     >
-      <div className="mx-auto max-w-[1180px] px-5 md:px-10">
-        <div className="grid gap-10 py-12 md:py-16 lg:grid-cols-12 lg:gap-8 lg:py-20">
-          <div className="lg:col-span-5">
-            <h1
-              id="hero-title"
-              className="display text-[clamp(3rem,7vw,5rem)]"
+      <div className="grid gap-10 md:grid-cols-12 md:items-start md:gap-8">
+        <div className="md:col-span-7">
+          <h1 className="text-[44px] leading-[1] tracking-[-0.03em] md:text-[72px]">
+            Reign Marc
+            <br />
+            Cipriano
+          </h1>
+
+          <p className="mt-5 text-[15px] font-medium text-muted">
+            IoT and automation engineer
+          </p>
+
+          <p className="mt-4 max-w-[65ch] text-[18px] leading-[1.55] md:text-[20px]">
+            {hero.deck}
+          </p>
+
+          <p className="mt-4 max-w-[65ch] text-[16px] leading-[1.65] text-muted md:text-[17px]">
+            {hero.body}
+          </p>
+
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <a
+              href={`mailto:${site.email}`}
+              className="rounded-sm bg-text px-4 py-2.5 text-sm font-medium text-bg transition-opacity duration-200 hover:opacity-90"
             >
-              Reign Marc
-              <br />
-              Cipriano
-            </h1>
-
-            <p className="mt-4 text-[1.0625rem] font-semibold tracking-[-0.01em]">
-              {site.role}
-            </p>
-            <p className="label mt-1.5 text-ink-faint">
-              {site.location} · {site.region}
-            </p>
-
-            <p className="mt-6 max-w-[34ch] text-[1.375rem] font-medium leading-[1.25] tracking-[-0.015em]">
-              {hero.deck}
-            </p>
-
-            <p className="measure mt-5 text-[0.9375rem] leading-[1.7] text-ink-soft">
-              {hero.body}
-            </p>
-
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <a
-                href={`mailto:${site.email}`}
-                className="inline-flex items-center gap-2 border border-ink bg-ink px-4 py-2.5 text-sm font-semibold text-paper transition-colors hover:border-signal hover:bg-signal"
-              >
-                <MailIcon />
-                Email me
-              </a>
-              <a
-                href={site.resume}
-                download
-                className="inline-flex items-center gap-2 border border-ink px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-ink hover:text-paper"
-              >
-                <DownloadIcon />
-                Résumé (PDF)
-              </a>
-            </div>
-
-            <p className="mt-6 flex items-start gap-2 text-[0.875rem] leading-relaxed text-ink-soft">
-              <span
-                className="mt-1.5 inline-block h-2 w-2 shrink-0 bg-signal"
-                aria-hidden="true"
-              />
-              <span>{site.availability}</span>
-            </p>
+              Email me
+            </a>
+            <a
+              href={site.resume}
+              download
+              className="rounded-sm border border-line px-4 py-2.5 text-sm font-medium transition-colors duration-200 hover:border-text"
+            >
+              Résumé
+            </a>
           </div>
 
-          <div className="lg:col-span-7">
-            <figure className="plate">
-              <div className="flex items-center justify-between gap-3 border-b border-ink px-3 py-2">
-                <p className="label text-ink-faint">
-                  Signal path — line follower
-                </p>
-              </div>
+          <p className="mt-6 flex items-center gap-2 text-sm text-muted">
+            <span
+              className="inline-block h-2 w-2 rounded-full bg-led"
+              aria-hidden="true"
+            />
+            {site.availability}
+          </p>
+        </div>
 
-              <div className="grid-paper chain-frame px-4 py-8 md:px-6 md:py-10">
-                <SignalChain
-                  steps={heroChain}
-                  label="Line follower signal path: sensor array to ESP32-S3 to H-bridge to motors"
-                  pulse
-                />
-              </div>
-
-              <figcaption className="border-t border-ink px-3 py-2 font-mono text-[12px] leading-relaxed text-ink-faint">
-                <span className="measure block">BOM — {hero.bom}.</span>
-              </figcaption>
-            </figure>
-          </div>
+        <div className="md:col-span-5">
+          <figure>
+            <Image
+              src="/portrait.jpg"
+              alt="Reign Marc Cipriano"
+              width={600}
+              height={750}
+              sizes="(min-width: 768px) 420px, 90vw"
+              className="w-full rounded-lg object-cover shadow-card"
+            />
+            <figcaption className="mt-3 text-[13px] text-subtle">
+              {site.name}, {site.location}
+            </figcaption>
+          </figure>
         </div>
       </div>
+
+      <dl className="mt-14 grid grid-cols-2 gap-x-6 gap-y-6 border-t border-line pt-8 md:mt-16 md:grid-cols-4">
+        {credentialFacts.map((fact) => (
+          <div key={fact.value}>
+            <dt className="text-[17px] font-semibold leading-snug">
+              {fact.value}
+            </dt>
+            <dd className="mt-1 text-sm leading-snug text-muted">
+              {fact.detail}
+            </dd>
+          </div>
+        ))}
+      </dl>
     </section>
   );
 }
