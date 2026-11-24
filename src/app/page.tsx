@@ -1,4 +1,3 @@
-import { SiteHeader } from "@/components/site-header";
 import { Hero } from "@/components/hero";
 import { Work } from "@/components/work";
 import { Fit } from "@/components/fit";
@@ -6,22 +5,17 @@ import { Experience } from "@/components/experience";
 import { Capabilities } from "@/components/capabilities";
 import { About } from "@/components/about";
 import { Contact } from "@/components/contact";
-import { SiteFooter } from "@/components/site-footer";
 
 export default function Home() {
   return (
     <>
-      <SiteHeader />
-      <main id="main" className="flex-1">
-        <Hero />
-        <Work />
-        <Fit />
-        <Experience />
-        <Capabilities />
-        <About />
-        <Contact />
-      </main>
-      <SiteFooter />
+      <Hero />
+      <Work />
+      <Fit />
+      <Experience />
+      <Capabilities />
+      <About />
+      <Contact />
     </>
   );
 }

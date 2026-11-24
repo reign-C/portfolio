@@ -1,10 +1,10 @@
 import { site } from "@/lib/content";
 
 const links = [
-  { href: "#work", label: "Work" },
-  { href: "#experience", label: "Experience" },
-  { href: "#skills", label: "Skills" },
-  { href: "#about", label: "About" },
+  { href: "/#work", label: "Work" },
+  { href: "/#experience", label: "Experience" },
+  { href: "/#skills", label: "Skills" },
+  { href: "/#about", label: "About" },
 ];
 
 export function SiteHeader() {
@@ -12,7 +12,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-line bg-bg/80 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between gap-6 px-6 md:px-12">
         <a
-          href="#top"
+          href="/"
           className="text-[15px] font-semibold tracking-[-0.01em]"
         >
           {site.name}

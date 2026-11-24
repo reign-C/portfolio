@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Schibsted_Grotesk, IBM_Plex_Mono } from "next/font/google";
+import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 import "./globals.css";
 
 const schibsted = Schibsted_Grotesk({
@@ -54,7 +56,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           Skip to content
         </a>
-        {children}
+        <SiteHeader />
+        <main id="main" className="flex-1">
+          {children}
+        </main>
+        <SiteFooter />
       </body>
     </html>
   );
