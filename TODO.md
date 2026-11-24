@@ -38,24 +38,47 @@ needs.
 - [ ] **Missing contact facts.** No phone number (a real gap for installation
       work); still no LinkedIn/GitHub.
 
-## Next up — plate quality + interactive preview (approved, not started)
+## From the 2026-11-24 foundation + hero audit (17/20)
 
-Plan is in the current conversation; summary:
+Nav scroll-spy, anchor offset, the focus ring on the dark band, the hero
+sequence, and the `--subtle` contrast nudge all shipped. What is left:
 
-- [ ] **Phase 1 — framing and sharpness.** (a) Give `ProjectPhoto` real
-      `width`/`height` and derive `aspect-[w/h]` per image, killing the hard-coded
-      `16/10` that crops 18% off the lab plate and 39% off robotics.
-      (b) Re-capture all four at `--force-device-scale-factor=2` (3200 px wide).
-      (c) Add a 1px-ruled mono title bar so a capture reads as a screen.
-- [ ] **Phase 2 — multi-screen tabs, CSS-only.** Radio-input tabs, no hydration.
-      Clinic: kiosk / admin / TV display. Lab: dashboard / inventory. Robotics:
-      tuner / sumobot page. Bell: dashboard / schedule. Needs extra captures.
-- [ ] **Phase 3 — click-to-enlarge `<dialog>`.** Hold until Phase 2 is seen; tabs
-      may make small text legible enough on their own.
+- [ ] **No section nav below 768 px.** The header is name + Résumé only; the
+      page runs ~6,500 px on a phone. Add compact section links or a disclosure,
+      keep 44 px targets. Where: `site-header.tsx`, `nav-links.tsx`.
+- [ ] **Outline buttons are 1.23:1.** `--line` on `--bg` marks the control
+      boundary below the 3:1 WCAG 1.4.11 threshold. Needs a control-border token
+      and a spec change; DESIGN.md currently pins `--line`.
+- [ ] **Contact repeats availability.** "Open to work in Koronadal and across
+      SOCCSKSARGEN" duplicates the "Area open for work" fact in the same block.
+      Delete the sentence in `contact.tsx`.
+- [ ] **Carousel clips the next card.** 560 px + 16 px + 560 px in a 1,104 px
+      container cuts 32 px through the second title at 1440. Use 544 px cards or
+      a trailing inset.
+- [ ] **768 px credential row wraps unevenly.** Four facts in 672 px give two-
+      and three-line cells. Hold the 2×2 grid until `lg`.
 
-**Open question for Phase 2:** the lab's transactions table contains student
-names and IDs. Capture with those columns cropped, or skip that tab? Decide
-before capturing it.
+## Demos shipped 2026-11-24 — real screens from source
+
+Each demo is now the project's own HTML and CSS, ported from its source into
+`public/demos/<project>/` and embedded at its build viewport under
+`/work/[slug]`. No hand-rebuilt lookalikes remain. Known limits, on purpose:
+
+- [ ] **Clinic: no printer, no chime.** The kiosk screen shows a ticket number
+      but there is no thermal-printer animation and no audio. Both need assets
+      and, for audio, a user gesture.
+- [ ] **Clinic admin is trimmed.** Login, statistics tab, pause/skip/recall and
+      the summary sidebar are hidden so only working controls remain.
+- [ ] **Lab dashboard is partial.** The real admin dashboard is ported with mock
+      numbers and mock borrower rows; sidebar links are inert, and the recent
+      activity table is not paged. Needs a static data pass if it should feel
+      fully alive.
+- [ ] **Demo screens pan below 640 px.** Frames stop at 0.55 scale and scroll
+      horizontally; "Full screen" opens the native-size screen. A phone-native
+      crop per screen would be better.
+- [ ] **Robotics tuner is dense at stage width.** It renders at 1600×900 and
+      scales to ~0.69 on a 1440 screen; a wider stage or a 1280 design width
+      would read better.
 
 ## Deferred
 
@@ -66,6 +89,22 @@ before capturing it.
 - [ ] Lighthouse performance 92 → nothing planned. Remaining 300 ms unused JS and
       150 ms legacy transform are framework-inherent. Re-measure against the
       deployed URL instead of chasing it locally.
+
+## Demos shipped 2026-11-24
+
+All four mini demos are live on `/work/[slug]` (see DESIGN.md, Components).
+Deferred on purpose, each a stated gap rather than a bug:
+
+- [ ] **Clinic chime is silent.** "Calling next" animates the TV display but
+      plays no audio, which the earlier spec asked for. Needs a sound asset and
+      an explicit user gesture; browsers block autoplay otherwise.
+- [ ] **No printer-ticket animation.** Issuing a ticket updates the counts and
+      the log but does not animate a slip.
+- [ ] **Demo placements per Impeccable's own evidence rule** (Project 1,
+      "What's Working"): project pages carry their own demo's working controls,
+      and the Home carousel keeps hover and focus only. Loading four demos on
+      the home page would put boot work on the page a recruiter scans first.
+      Revisit only if a recruiter needs to touch a demo without opening work.
 
 ## Environment notes
 

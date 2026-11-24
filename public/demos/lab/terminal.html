@@ -1,0 +1,898 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>COE Terminal UI (Mock)</title>
+  <style>
+    :root {
+      /* Match the admin web UI theme colors (see templates/header.php) */
+      --primary: #10b981;
+      --primary-dark: #059669;
+      --primary-light: #34d399;
+      --primary-bg: #ecfdf5;
+      --sidebar-bg: #064e3b;
+      --sidebar-dark: #022c22;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --info: #3b82f6;
+      --text-dark: #1f2937;
+      --text-muted: #6b7280;
+      --border-color: #e5e7eb;
+      --bg-light: #f9fafb;
+      --bg-white: #ffffff;
+
+      /* Terminal-specific mapping (kept small so it can live on the ESP) */
+      --bg: var(--bg-light);
+      --surface: var(--bg-white);
+      --text: var(--text-dark);
+      --muted: var(--text-muted);
+      --ok: var(--success);
+      --warn: var(--warning);
+      --err: var(--danger);
+
+      --radius: 10px;
+      --pad: 10px;
+      --screen-w: 800px;
+      --screen-h: 480px;
+
+      /* Layout */
+      --toast-h: 46px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: var(--bg-light);
+      color: var(--text-dark);
+      display: grid;
+      min-height: 100vh;
+      place-items: center;
+      padding: 16px;
+    }
+
+    .wrap {
+      display: grid;
+      gap: 12px;
+      align-items: start;
+      justify-items: center;
+      width: min(1100px, 100%);
+    }
+
+    .hint {
+      width: min(900px, 100%);
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.4;
+      opacity: 0.9;
+    }
+
+    /* The simulated TFT screen */
+    .screen {
+      width: var(--screen-w);
+      height: var(--screen-h);
+      background: var(--bg-white);
+      border-radius: 14px;
+      padding: var(--pad);
+      border: 0;
+      box-shadow: 0 18px 40px rgba(17, 24, 39, 0.10);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Frame + rounded-edge border like the reference */
+    .screen::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 18px;
+      background: linear-gradient(180deg, var(--primary) 0%, var(--sidebar-bg) 100%);
+    }
+
+    .screen::after {
+      content: "";
+      position: absolute;
+      inset: 6px;
+      border-radius: 14px;
+      background: var(--bg-white);
+      box-shadow:
+        inset 0 0 0 2px rgba(2, 44, 34, 0.85),
+        inset 0 0 0 4px rgba(255, 255, 255, 0.65);
+    }
+
+    .screen-inner {
+      position: absolute;
+      inset: 10px;
+      border-radius: 12px;
+      overflow: hidden;
+      z-index: 1;
+      background: var(--bg-white);
+      /* Subtle gear pattern (pure CSS via inline SVG) */
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='240' viewBox='0 0 420 240'%3E%3Cg fill='none' stroke='%23dbe5e1' stroke-width='2' opacity='0.55'%3E%3Ccircle cx='92' cy='96' r='56'/%3E%3Ccircle cx='92' cy='96' r='30'/%3E%3Ccircle cx='290' cy='74' r='68'/%3E%3Ccircle cx='290' cy='74' r='36'/%3E%3Ccircle cx='322' cy='176' r='58'/%3E%3Ccircle cx='322' cy='176' r='28'/%3E%3Ccircle cx='178' cy='168' r='84'/%3E%3Ccircle cx='178' cy='168' r='44'/%3E%3C/g%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 420px 240px;
+    }
+
+    /* Fit the 800x480 on smaller screens */
+    @media (max-width: 860px) {
+      .screen {
+        transform: scale(calc((100vw - 40px) / 800));
+        transform-origin: top center;
+        margin-bottom: calc((1 - ((100vw - 40px) / 800)) * 480px);
+      }
+    }
+
+    /* Minimal screen layout */
+    .toast {
+      height: var(--toast-h);
+      border-radius: 999px;
+      border: 0;
+      background: var(--surface);
+      display: none;
+      align-items: center;
+      padding: 8px 12px;
+      gap: 10px;
+      color: var(--text-dark);
+      font-size: 18px;
+      font-weight: 800;
+      box-shadow:
+        0 14px 26px rgba(17, 24, 39, 0.16),
+        0 2px 0 rgba(2, 44, 34, 0.06);
+    }
+
+    .toast-stack {
+      display: grid;
+      gap: 8px;
+    }
+
+    .toast .iconbox {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      background: rgba(255, 255, 255, 0.82);
+      box-shadow: inset 0 0 0 1px rgba(17, 24, 39, 0.08);
+    }
+
+    .toast .iconbox svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .toast .text {
+      flex: 1 1 auto;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .toast .badge {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.2px;
+      box-shadow: 0 6px 12px rgba(17, 24, 39, 0.14);
+    }
+
+    /* WiFi toast/banners */
+    .toast.wifi { display: none; }
+    .state-connected.toast-on .toast.wifi { display: flex; }
+    .state-connected .toast.wifi { display: none; }
+    .state-connected.toast-on .toast.wifi { display: flex; }
+    .state-disconnected .toast.wifi { display: flex; }
+
+    .toast.wifi {
+      background: rgba(255, 255, 255, 0.92);
+      color: rgba(31, 41, 55, 0.92);
+    }
+
+    .state-connected .toast.wifi .badge {
+      display: none;
+    }
+
+    .state-disconnected .toast.wifi {
+      background: linear-gradient(180deg, rgba(239, 68, 68, 0.92), rgba(185, 28, 28, 0.92));
+      color: rgba(255, 255, 255, 0.96);
+    }
+
+    .state-disconnected .toast.wifi .iconbox {
+      background: rgba(255, 255, 255, 0.16);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+    }
+
+    .state-disconnected .toast.wifi .badge {
+      background: rgba(255, 255, 255, 0.92);
+      color: rgba(185, 28, 28, 0.95);
+    }
+
+    /* Action toast (scan feedback: verified/denied/borrow/return) */
+    .toast.action { display: none; }
+    .action-on .toast.action { display: flex; }
+
+    .action-err .toast.action {
+      background: linear-gradient(180deg, rgba(239, 68, 68, 0.92), rgba(185, 28, 28, 0.92));
+      color: rgba(255, 255, 255, 0.96);
+    }
+    .action-err .toast.action .iconbox {
+      background: rgba(255, 255, 255, 0.16);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+    }
+    .action-err .toast.action .badge {
+      background: rgba(255, 255, 255, 0.92);
+      color: rgba(185, 28, 28, 0.95);
+    }
+
+    .action-warn .toast.action {
+      background: linear-gradient(180deg, rgba(245, 158, 11, 0.92), rgba(180, 83, 9, 0.92));
+      color: rgba(255, 255, 255, 0.96);
+    }
+    .action-warn .toast.action .iconbox {
+      background: rgba(255, 255, 255, 0.16);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+    }
+    .action-warn .toast.action .badge {
+      background: rgba(255, 255, 255, 0.92);
+      color: rgba(180, 83, 9, 0.95);
+    }
+
+    .main {
+      height: 100%;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      align-items: center;
+      justify-items: center;
+      padding: 18px 22px;
+    }
+
+    .hero {
+      display: grid;
+      place-items: center;
+      text-align: center;
+      width: 100%;
+    }
+
+    /* Items list (Page 4) */
+    .list {
+      width: min(680px, 100%);
+      border-radius: 16px;
+      border: 1px solid rgba(229, 231, 235, 0.9);
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 16px 34px rgba(17, 24, 39, 0.08);
+      overflow: hidden;
+      text-align: left;
+    }
+
+    .list-row {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 10px;
+      border-top: 1px solid rgba(229, 231, 235, 0.9);
+      color: rgba(31, 41, 55, 0.92);
+      font-size: 16px;
+      font-weight: 650;
+      letter-spacing: 0.1px;
+    }
+
+    .list-row:first-child { border-top: 0; }
+
+    .list-row .idx {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      font-size: 12px;
+      font-weight: 800;
+      color: rgba(2, 44, 34, 0.9);
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+
+    .list-row .name {
+      position: relative;
+      flex: 1 1 auto;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .list-row .tag {
+      flex: 0 0 auto;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.3px;
+      color: rgba(5, 150, 105, 0.95); /* --primary-dark */
+    }
+
+    .list-row .tag.return {
+      color: rgba(107, 114, 128, 0.95); /* --text-muted */
+    }
+
+    .list-row .name span {
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    /* Marquee: scroll back-and-forth for long names */
+    .list-row .name.marquee span {
+      --marquee-distance: 0px;
+      animation: marquee 5.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(var(--marquee-distance)); }
+    }
+
+    .icon {
+      width: 64px;
+      height: 64px;
+      display: grid;
+      place-items: center;
+      margin-top: 14px;
+      margin-bottom: 12px;
+      color: var(--sidebar-bg);
+    }
+
+    .icon svg {
+      width: 64px;
+      height: 64px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .big {
+      font-size: clamp(56px, 9.2vw, 86px);
+      font-weight: 900;
+      letter-spacing: 1.2px;
+      line-height: 1;
+      color: var(--sidebar-bg);
+      margin: 0;
+      text-shadow: 0 2px 0 rgba(2, 44, 34, 0.14);
+    }
+
+    /* List page: make the header smaller so the list is the focus */
+    .screen.is-list .big {
+      font-size: 44px;
+      letter-spacing: 0.6px;
+      margin-top: 6px;
+    }
+
+    .sub:empty { display: none; }
+
+    .sub {
+      margin: 10px 0 0;
+      font-size: 26px;
+      font-weight: 500;
+      color: rgba(31, 41, 55, 0.88);
+    }
+
+    .micro {
+      margin: 14px 0 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(107, 114, 128, 0.95);
+      letter-spacing: 0.2px;
+    }
+
+    .footer-note {
+      font-size: 12px;
+      color: rgba(31, 41, 55, 0.70);
+      padding: 10px 0 4px;
+      text-align: center;
+    }
+
+    /* Optional: show which state this mock represents */
+    .state-pill {
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--primary-bg);
+      color: var(--primary-dark);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      user-select: none;
+    }
+
+    .toprow {
+      width: var(--screen-w);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Preview controls (mock-only; not for device) */
+    .controls {
+      width: var(--screen-w);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      border-radius: 14px;
+      border: 1px solid var(--border-color);
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(6px);
+    }
+
+    .controls .group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .controls .label {
+      font-size: 12px;
+      font-weight: 700;
+      color: rgba(31, 41, 55, 0.7);
+      letter-spacing: 0.2px;
+      margin-right: 4px;
+    }
+
+    .btn {
+      appearance: none;
+      border: 1px solid var(--border-color);
+      background: var(--bg-white);
+      color: var(--text-dark);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      user-select: none;
+      box-shadow: 0 8px 18px rgba(17, 24, 39, 0.05);
+    }
+
+    .btn:hover { border-color: rgba(16, 185, 129, 0.35); }
+    .btn:active { transform: translateY(1px); }
+
+    .btn.active {
+      border-color: rgba(16, 185, 129, 0.45);
+      background: var(--primary-bg);
+      color: var(--primary-dark);
+    }
+
+    .btn.danger.active {
+      border-color: rgba(239, 68, 68, 0.45);
+      background: rgba(239, 68, 68, 0.10);
+      color: rgba(185, 28, 28, 0.95);
+    }
+
+    .btn.warn.active {
+      border-color: rgba(245, 158, 11, 0.45);
+      background: rgba(245, 158, 11, 0.12);
+      color: rgba(180, 83, 9, 0.95);
+    }
+
+    .stepper {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-white);
+    }
+
+    .stepper .value {
+      min-width: 28px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--text-dark);
+    }
+  </style>
+<style>html,body{overflow-x:hidden}</style></head>
+<body>
+  <div class="wrap">
+    <div class="toprow">
+      <div class="hint">
+        Static mock of the TFT terminal screen (800×480). Change the classes/text in the HTML to preview other states.
+      </div>
+      <div class="state-pill" id="statePill">Sample: READY</div>
+    </div>
+
+    <div class="controls" role="group" aria-label="Mock preview controls">
+      <div class="group" role="group" aria-label="Pages">
+        <span class="label">Page</span>
+        <button class="btn active" data-page="LOCKED" type="button">1 LOCKED</button>
+        <button class="btn" data-page="SCAN_USER" type="button">2 Scan User</button>
+        <button class="btn" data-page="SCAN_ITEMS" type="button">3 Start Scanning</button>
+        <button class="btn" data-page="ITEM_LIST" type="button">4 Item List</button>
+      </div>
+
+      <div class="group" role="group" aria-label="WiFi">
+        <span class="label">WiFi</span>
+        <button class="btn" data-wifi="toast" type="button">Connected toast (3s)</button>
+        <button class="btn danger" data-wifi="disconnected" type="button">Disconnected</button>
+      </div>
+
+      <div class="group" role="group" aria-label="Action Toast">
+        <span class="label">Action</span>
+        <button class="btn active" data-action="none" type="button">None</button>
+        <button class="btn danger" data-action="denied" type="button">Denied</button>
+        <button class="btn danger" data-action="invalid" type="button">Invalid</button>
+      </div>
+
+      <div class="group" role="group" aria-label="Items">
+        <span class="label">Items</span>
+        <button class="btn warn" data-item="add" type="button">Add valid item</button>
+        <button class="btn" data-item="addlong" type="button">Add long item</button>
+        <button class="btn" data-item="clear" type="button">Clear</button>
+      </div>
+    </div>
+
+    <!--
+      Minimal display rules (matches esp32_terminal.ino intent):
+        - LOCKED: show only LOCKED + “Scan staff ID”
+        - READY:  show READY + “Scan your QR code”
+        - SESSION: show SESSION + “Scan equipment barcodes” + item counter
+        - WiFi disconnected: show persistent top status
+        - WiFi connected: show top toast briefly (3s on device). Use .toast-on here to preview.
+        - Action toast: brief scan feedback (Verified / Denied / Borrowed / Returned)
+    -->
+    <!--
+      Preview toggles:
+        - WiFi:
+            state-connected toast-on  (connected toast visible)
+            state-connected           (connected toast hidden)
+            state-disconnected        (persistent banner)
+        - Mode text:
+            READY / SESSION / LOCKED
+        - Action toast (scan feedback):
+            action-on action-ok | action-on action-err | action-on action-warn
+    -->
+
+    <div class="screen state-connected" id="terminalScreen">
+      <div class="screen-inner">
+        <div class="toast-stack" aria-live="polite">
+          <div class="toast wifi" id="wifiToast">
+            <div class="iconbox" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M5 9c4.7-4 9.3-4 14 0" />
+                <path d="M7.5 12c3.2-2.7 5.8-2.7 9 0" />
+                <path d="M10 15c1.6-1.3 2.4-1.3 4 0" />
+                <circle cx="12" cy="18" r="1" />
+              </svg>
+            </div>
+            <div class="text" id="wifiToastText">WiFi: COE-LAB</div>
+            <div class="badge" aria-hidden="true">!</div>
+          </div>
+          <div class="toast action" id="actionToast">
+            <div class="iconbox" aria-hidden="true" id="actionToastIcon">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 9v4" />
+                <path d="M12 17h.01" />
+                <path d="M10.5 4h3L21 18H3L10.5 4Z" />
+              </svg>
+            </div>
+            <div class="text" id="actionToastText">Denied</div>
+            <div class="badge" aria-hidden="true">!</div>
+          </div>
+        </div>
+
+        <div class="main">
+          <div></div>
+          <div class="hero" role="group" aria-label="Terminal state">
+            <div class="icon" id="modeIcon" aria-hidden="true"></div>
+            <h1 class="big" id="modeBig">LOCKED</h1>
+            <p class="sub" id="modeSub">Scan Lab Staff ID to Unlock</p>
+            <p class="micro" id="modeMicro">&nbsp;</p>
+
+            <div class="list" id="itemList" hidden>
+              <div class="list-row"><div class="idx">1</div><div class="name"><span></span></div><div class="tag"></div></div>
+              <div class="list-row"><div class="idx">2</div><div class="name"><span></span></div><div class="tag"></div></div>
+              <div class="list-row"><div class="idx">3</div><div class="name"><span></span></div><div class="tag"></div></div>
+              <div class="list-row"><div class="idx">4</div><div class="name"><span></span></div><div class="tag"></div></div>
+              <div class="list-row"><div class="idx">5</div><div class="name"><span></span></div><div class="tag"></div></div>
+            </div>
+          </div>
+          <div class="footer-note" id="footerNote">© 2026 Sultan Kudarat State University - College of Engineering. All rights reserved.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const screen = document.getElementById('terminalScreen');
+      const statePill = document.getElementById('statePill');
+      const modeBig = document.getElementById('modeBig');
+      const modeSub = document.getElementById('modeSub');
+      const modeMicro = document.getElementById('modeMicro');
+      const modeIcon = document.getElementById('modeIcon');
+      const wifiToastText = document.getElementById('wifiToastText');
+      const actionToastText = document.getElementById('actionToastText');
+      const actionToastIcon = document.getElementById('actionToastIcon');
+      const itemList = document.getElementById('itemList');
+      const listRows = Array.from(itemList.querySelectorAll('.list-row'));
+
+      const setActive = (selector, predicate) => {
+        document.querySelectorAll(selector).forEach((btn) => {
+          btn.classList.toggle('active', predicate(btn));
+        });
+      };
+
+      let currentPage = 'LOCKED';
+      let items = [];
+      let nextBorrow = true;
+      let seq = 0;
+      let wifiDisconnected = false;
+      let wifiToastTimer = null;
+
+      const sampleUserFirstName = 'Juan';
+
+      const ICONS = {
+        LOCKED: `
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7 11V8a5 5 0 0 1 10 0v3" />
+            <rect x="5" y="11" width="14" height="10" rx="2" />
+            <path d="M12 16v2" />
+          </svg>
+        `,
+        SCAN_USER: `
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="8" cy="8" r="3" />
+            <path d="M3.5 19a4.5 4.5 0 0 1 9 0" />
+            <rect x="14" y="5" width="7" height="7" rx="1.5" />
+            <path d="M16 7h1M19 7h1M16 10h1" />
+          </svg>
+        `,
+        SCAN_ITEMS: `
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 7V5h2" />
+            <path d="M20 7V5h-2" />
+            <path d="M4 17v2h2" />
+            <path d="M20 17v2h-2" />
+            <path d="M7 9v6" />
+            <path d="M10 9v6" />
+            <path d="M13 9v6" />
+            <path d="M16 10v4" />
+          </svg>
+        `,
+        ITEM_LIST: `
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="5" y="4.5" width="14" height="15" rx="2" />
+            <path d="M8 9h8" />
+            <path d="M8 12h8" />
+            <path d="M8 15h5" />
+            <path d="M8 15l1.5 1.5L12.5 13.5" />
+          </svg>
+        `,
+      };
+
+      const pageText = {
+        LOCKED: { big: 'LOCKED', sub: "Scan Lab Staff ID to Unlock", showList: false },
+        SCAN_USER: { big: 'READY', sub: "Scan User's QR Code to Start", showList: false },
+        SCAN_ITEMS: { big: () => `HI! ${sampleUserFirstName}`, sub: 'Start Scanning Equipment and Materials', showList: false },
+        ITEM_LIST: { big: 'SCANNING', sub: '', showList: true },
+      };
+
+      const applyPage = (page) => {
+        currentPage = page;
+        const cfg = pageText[page];
+        modeBig.textContent = (typeof cfg.big === 'function') ? cfg.big() : cfg.big;
+        modeSub.textContent = cfg.sub;
+        modeMicro.textContent = '\u00A0';
+        statePill.textContent = `Sample: ${page.replace('_', ' ')}`;
+        itemList.hidden = !cfg.showList;
+        screen.classList.toggle('is-list', !!cfg.showList);
+        modeIcon.innerHTML = ICONS[page] || ICONS.LOCKED;
+        setActive('[data-page]', (b) => b.dataset.page === page);
+        renderList();
+      };
+
+      const setMarqueeIfNeeded = (nameEl) => {
+        const span = nameEl.querySelector('span');
+        nameEl.classList.remove('marquee');
+        span.style.removeProperty('--marquee-distance');
+
+        // Measure overflow
+        const overflow = span.scrollWidth - nameEl.clientWidth;
+        if (overflow > 8) {
+          nameEl.classList.add('marquee');
+          span.style.setProperty('--marquee-distance', `${-overflow}px`);
+        }
+      };
+
+      const renderList = () => {
+        // Show up to 5, oldest at top, newest at bottom
+        const shown = items.slice(0, 5);
+        listRows.forEach((row, i) => {
+          const idxEl = row.querySelector('.idx');
+          const nameEl = row.querySelector('.name');
+          const span = row.querySelector('.name span');
+          const tagEl = row.querySelector('.tag');
+          const it = shown[i] || null;
+          if (idxEl) idxEl.textContent = it ? String(it.seq) : '';
+          span.textContent = it ? it.name : '';
+
+          if (tagEl) {
+            tagEl.textContent = it ? (it.action === 'return' ? 'RETURN' : 'BORROW') : '';
+            tagEl.classList.toggle('return', !!it && it.action === 'return');
+          }
+          // Force reflow before measuring marquee
+          requestAnimationFrame(() => setMarqueeIfNeeded(nameEl));
+        });
+      };
+
+      const applyWifi = (mode) => {
+        if (wifiToastTimer) {
+          clearTimeout(wifiToastTimer);
+          wifiToastTimer = null;
+        }
+
+        wifiDisconnected = (mode === 'disconnected');
+        screen.classList.toggle('state-disconnected', wifiDisconnected);
+        screen.classList.toggle('state-connected', !wifiDisconnected);
+        screen.classList.remove('toast-on');
+
+        if (wifiDisconnected) {
+          wifiToastText.textContent = 'No router connection (WiFi disconnected)';
+        } else {
+          wifiToastText.textContent = 'WiFi: COE-LAB';
+          if (mode === 'toast') {
+            screen.classList.add('toast-on');
+            wifiToastTimer = setTimeout(() => screen.classList.remove('toast-on'), 3000);
+          }
+        }
+
+        setActive('[data-wifi]', (b) => b.dataset.wifi === mode);
+      };
+
+      const hideAction = () => {
+        screen.classList.remove('action-on', 'action-ok', 'action-warn', 'action-err');
+        setActive('[data-action]', (b) => b.dataset.action === 'none');
+      };
+
+      const showAction = (kind, text) => {
+        screen.classList.add('action-on');
+        screen.classList.remove('action-ok', 'action-warn', 'action-err');
+        if (kind === 'ok') screen.classList.add('action-ok');
+        if (kind === 'warn') screen.classList.add('action-warn');
+        if (kind === 'err') screen.classList.add('action-err');
+        actionToastText.textContent = text;
+
+        if (actionToastIcon) {
+          // Denied = user QR (staff/faculty/student). Invalid = equipment/material scan.
+          const isInvalid = text.toLowerCase().includes('invalid');
+          actionToastIcon.innerHTML = isInvalid
+            ? `
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 7V5h2" />
+                <path d="M20 7V5h-2" />
+                <path d="M4 17v2h2" />
+                <path d="M20 17v2h-2" />
+                <path d="M7 9v6" />
+                <path d="M10 9v6" />
+                <path d="M13 9v6" />
+                <path d="M16 10v4" />
+                <path d="M7 7l10 10" />
+              </svg>
+            `
+            : `
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="7" r="3" />
+                <path d="M5 21a7 7 0 0 1 14 0" />
+                <path d="M17 8l4 4" />
+                <path d="M21 8l-4 4" />
+              </svg>
+            `;
+        }
+      };
+
+      const applyAction = (action) => {
+        if (action === 'none') {
+          hideAction();
+          return;
+        }
+        if (action === 'denied') showAction('err', 'Denied');
+        if (action === 'invalid') showAction('err', 'Invalid. Please scan again.');
+        setActive('[data-action]', (b) => b.dataset.action === action);
+      };
+
+      const addItem = (name, action) => {
+        // Newest at bottom; keep only 5 (so 6th pushes the top out)
+        seq += 1;
+        items.push({ seq, name, action });
+        while (items.length > 5) items.shift();
+        // Valid scan: no notification
+        hideAction();
+        applyPage('ITEM_LIST');
+      };
+
+      document.addEventListener('click', (e) => {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+
+        if (btn.dataset.page) {
+          applyPage(btn.dataset.page);
+          // Switching pages doesn't change toast state by itself
+          return;
+        }
+        if (btn.dataset.wifi) {
+          applyWifi(btn.dataset.wifi);
+          return;
+        }
+        if (btn.dataset.action) {
+          applyAction(btn.dataset.action);
+          return;
+        }
+        if (btn.dataset.item) {
+          if (btn.dataset.item === 'clear') {
+            items = [];
+            seq = 0;
+            renderList();
+            return;
+          }
+          if (btn.dataset.item === 'add') {
+            const samples = [
+              'Digital Multimeter',
+              'Oscilloscope Probe',
+              'Soldering Iron',
+              'RJ45 Crimping Tool',
+              'Breadboard Kit',
+              'HDMI Cable',
+            ];
+            const action = nextBorrow ? 'borrow' : 'return';
+            nextBorrow = !nextBorrow;
+            addItem(samples[Math.floor(Math.random() * samples.length)], action);
+            return;
+          }
+          if (btn.dataset.item === 'addlong') {
+            const action = nextBorrow ? 'borrow' : 'return';
+            nextBorrow = !nextBorrow;
+            addItem('Very Long Equipment Name Example - Laboratory Precision Measurement Instrument (Model ABC-1234)', action);
+            return;
+          }
+        }
+      });
+
+      // Default preview state
+      applyPage('LOCKED');
+      applyWifi('toast');
+      hideAction();
+    })();
+  </script>
+<style>.toprow,.controls{display:none!important} body{background:#eef0f4} .wrap{padding-top:24px}</style>
+<script>
+(function(){
+  var screen=document.getElementById('terminalScreen');
+  var pill=document.getElementById('statePill');
+  screen.style.cursor='pointer';
+  screen.setAttribute('role','button');
+  screen.setAttribute('tabindex','0');
+  var steps={'LOCKED':'[data-page="SCAN_USER"]','SCAN USER':'[data-page="SCAN_ITEMS"]','SCAN ITEMS':'[data-page="ITEM_LIST"]','ITEM LIST':'[data-item="add"]'};
+  function advance(){
+    var state=(pill.textContent||'').replace('Sample: ','').trim();
+    var next=steps[state];
+    if(next){var el=document.querySelector(next); if(el) el.click();}
+  }
+  screen.addEventListener('click',advance);
+  screen.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();advance();}});
+})();
+</script></body>
+</html>

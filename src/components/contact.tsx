@@ -5,7 +5,7 @@ export function Contact() {
     <section
       id="contact"
       aria-labelledby="contact-title"
-      className="bg-[#12161c] text-[#f7f8fa]"
+      className="on-dark bg-stage text-stage-ink"
     >
       <div className="mx-auto max-w-[1200px] px-6 py-16 md:px-12 md:py-24">
         <div className="grid gap-10 md:grid-cols-12 md:gap-8">
@@ -32,7 +32,7 @@ export function Contact() {
             <a
               href={site.resume}
               download
-              className="mt-8 inline-block rounded-sm bg-[#f7f8fa] px-4 py-2.5 text-sm font-medium text-[#12161c] transition-opacity duration-200 hover:opacity-90"
+              className="mt-8 inline-flex min-h-11 items-center rounded-sm bg-stage-ink px-4 text-sm font-medium text-stage transition-opacity duration-200 hover:opacity-90"
             >
               Résumé
             </a>

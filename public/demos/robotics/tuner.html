@@ -1,0 +1,416 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Line Follower PID</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; padding: 12px; background: #f6f7f9; color: #111; }
+    .top { position: sticky; top: 0; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 10px 12px; display: flex; gap: 10px; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .top .meta { font-size: 13px; color: #374151; }
+    .top h2 { margin: 0; font-size: 16px; }
+    .btn { appearance: none; border: 1px solid #d1d5db; background: #fff; border-radius: 10px; padding: 10px 12px; font-weight: 600; cursor: pointer; }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary { background: #111; color: #fff; border-color: #111; }
+    .btn-danger { background: #b91c1c; color: #fff; border-color: #991b1b; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+    .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px; }
+    .card h3 { margin: 0 0 10px 0; font-size: 14px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    label { display: block; font-size: 12px; color: #374151; margin-bottom: 4px; }
+    input[type=number], input[type=text] { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 10px; font-size: 14px; }
+    .checks { display: flex; gap: 10px; flex-wrap: wrap; font-size: 13px; color: #111; }
+    .checks label { margin: 0; font-size: 13px; color: #111; }
+    .checks input { transform: translateY(1px); }
+    .stat { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 12px; white-space: pre-wrap; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 10px; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th, td { padding: 6px; border-bottom: 1px solid #eee; text-align: left; }
+    canvas { width: 100%; height: 140px; display: block; border: 1px solid #e5e7eb; border-radius: 10px; background: #fff; }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <div>
+      <h2>Line Follower PID</h2>
+      <div class="meta">SSID <b>LineFollower</b> • IP 192.168.4.1</div>
+    </div>
+    <form method="POST" action="/estop" id="form-estop" style="margin:0">
+      <button class="btn btn-danger" type="submit">EMERGENCY STOP</button>
+    </form>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Error Graph (last few seconds)</h3>
+      <canvas id="g" width="600" height="200"></canvas>
+    </div>
+
+    <div class="card">
+      <h3>PID Tuning</h3>
+      <form method="POST" action="/set" id="form-set">
+        <div class="row">
+          <div><label>Kp</label><input type="number" step="0.000001" name="kp" value="0.250000"></div>
+          <div><label>Ki</label><input type="number" step="0.000001" name="ki" value="0.000000"></div>
+          <div><label>Kd</label><input type="number" step="0.000001" name="kd" value="2.000000"></div>
+          <div><label>PID output clamp (0..1023)</label><input type="number" name="clamp" value="850"></div>
+        </div>
+        <div style="height:10px"></div>
+        <div class="checks">
+          <label><input type="checkbox" name="usep" checked> P enabled</label>
+          <label><input type="checkbox" name="usei" checked> I enabled</label>
+          <label><input type="checkbox" name="used" checked> D enabled</label>
+        </div>
+        <div style="height:10px"></div>
+        <button class="btn btn-primary" type="submit">Save PID / Limits</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h3>Presets</h3>
+      <form method="POST" action="/preset" id="form-preset" style="margin:0">
+        <label>Technique presets</label>
+        <select name="id" id="preset-id" style="width:100%;padding:10px;border:1px solid #d1d5db;border-radius:10px;font-size:14px">
+          <option value="custom" selected>Custom (current)</option>
+          <option value="pd_tune">PD (tuning start, stable)</option>
+          <option value="pid_gentle">PID (gentle, handles drift)</option>
+          <option value="aggressive">Aggressive (sharp turns)</option>
+          <option value="slow_safe">Slow & safe (first runs)</option>
+          <option value="fast">Fast (needs good calibration)</option>
+        </select>
+        <div style="height:10px"></div>
+        <button class="btn btn-primary" type="submit">Apply Preset</button>
+      </form>
+      <div style="height:8px"></div>
+      <div class="meta">Tip: PD tuning often works well; start slow and increase Base/Max after stable tracking.</div>
+    </div>
+
+    <div class="card">
+      <h3>Motor Control</h3>
+      <form method="POST" action="/set" id="form-motor">
+        <div class="row">
+          <div><label>Base speed (0..1023)</label><input type="number" name="base" value="550"></div>
+          <div><label>Max speed (0..1023)</label><input type="number" name="max" value="850"></div>
+        </div>
+        <div style="height:10px"></div>
+        <div class="checks">
+          <label><input type="checkbox" name="csEn" checked> Curve speed (slow in turns)</label>
+        </div>
+        <div style="height:10px"></div>
+        <div class="row">
+          <div><label>Min base speed</label><input type="number" name="csMin" value="260"></div>
+          <div><label>Slowdown by error (%)</label><input type="number" name="csE" value="55"></div>
+          <div><label>Slowdown by dError (%)</label><input type="number" name="csD" value="45"></div>
+          <div><label>Base now (runtime)</label><input type="text" id="base-now" value="550" readonly></div>
+        </div>
+        <div style="height:10px"></div>
+        <button class="btn btn-primary" type="submit">Save Speeds</button>
+      </form>
+      <div style="height:10px"></div>
+      <form method="POST" action="/motors" id="form-motors" style="margin:0">
+        <input type="hidden" name="enable" value="0" id="motors-enable">
+        <button class="btn" type="submit" id="motors-btn">Stop Motors</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h3>Navigation</h3>
+      <form method="POST" action="/set" id="form-nav" style="margin:0">
+        <label>Line polarity</label>
+        <select name="polm" style="width:100%;padding:10px;border:1px solid #d1d5db;border-radius:10px;font-size:14px">
+          <option value="0" selected>Auto</option>
+          <option value="1">Black line</option>
+          <option value="2">White line</option>
+        </select>
+        <div style="height:10px"></div>
+        <label class="checks" style="margin:0"><label><input type="checkbox" name="adpth" checked> Adaptive thresholds</label></label>
+        <div style="height:10px"></div>
+        <label>Decision policy</label>
+        <select name="navp" style="width:100%;padding:10px;border:1px solid #d1d5db;border-radius:10px;font-size:14px">
+          <option value="0" selected>Straight-first (anti-loop)</option>
+          <option value="1">Left-hand rule</option>
+          <option value="2">Right-hand rule</option>
+        </select>
+        <div style="height:10px"></div>
+        <div class="row">
+          <div><label>Stop after markers</label><input type="number" name="stopm" value="2"></div>
+          <div><label>Markers seen</label><input type="text" id="markers-seen" value="0" readonly></div>
+        </div>
+        <div style="height:10px"></div>
+        <button class="btn btn-primary" type="submit">Save Navigation</button>
+      </form>
+      <div style="height:8px"></div>
+      <div class="meta">If it returns to the same intersection, it will try a different exit.</div>
+    </div>
+
+    <div class="card">
+      <h3>Sensor Calibration</h3>
+      <form method="POST" action="/calibrate" id="form-calibrate" style="margin:0">
+        <button class="btn btn-primary" type="submit">Calibrate (saves to LittleFS)</button>
+      </form>
+      <div style="height:10px"></div>
+      <div class="meta" id="fs">LittleFS: OK (preview)</div>
+      <div style="height:10px"></div>
+      <table>
+        <thead><tr><th>Sensor</th><th>Min</th><th>Max</th></tr></thead>
+        <tbody id="cal"></tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Live Runtime</h3>
+      <div class="stat" id="st">loading...</div>
+    </div>
+  </div>
+
+  <script>
+    const isLocalPreview = true;
+
+    const st = document.getElementById('st');
+    const cal = document.getElementById('cal');
+    const motorsBtn = document.getElementById('motors-btn');
+    const motorsEnable = document.getElementById('motors-enable');
+
+    const cvs = document.getElementById('g');
+    const ctx = cvs.getContext('2d');
+    const hist = [];
+    const HIST_MAX = 120;
+
+    function drawGraph() {
+      ctx.clearRect(0, 0, cvs.width, cvs.height);
+      ctx.strokeStyle = '#e5e7eb';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(0, cvs.height / 2);
+      ctx.lineTo(cvs.width, cvs.height / 2);
+      ctx.stroke();
+
+      if (hist.length < 2) return;
+      let max = 1;
+      for (const v of hist) {
+        const a = Math.abs(v);
+        if (a > max) max = a;
+      }
+      ctx.strokeStyle = '#111';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      for (let i = 0; i < hist.length; i++) {
+        const x = i * (cvs.width / (HIST_MAX - 1));
+        const y = (cvs.height / 2) - (hist[i] / max) * (cvs.height * 0.45);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
+
+    function fillCal(mins, maxs) {
+      let html = '';
+      for (let i = 0; i < Math.min(mins.length, maxs.length); i++) {
+        html += `<tr><td>${i + 1}</td><td>${mins[i]}</td><td>${maxs[i]}</td></tr>`;
+      }
+      cal.innerHTML = html;
+    }
+
+    function showStatus(j) {
+      st.textContent = `mode=${j.mode ?? ''}\nnav=${j.navPolicy ?? ''}\nmarkers=${j.markerCount ?? 0}/${j.stopAfterMarkers ?? ''} finished=${j.finished ? 'true' : 'false'}\npolarityMode=${j.polarityMode ?? ''} (lineIsBlack=${j.lineIsBlack ? 'true' : 'false'})\nlineOnThreshold=${j.lineOnThreshold ?? ''} adaptive=${j.adaptiveThresholds ? 'true' : 'false'}\ncurveSpeed=${j.curveSpeedEnabled ? 'true' : 'false'} baseNow=${j.baseCurrent ?? ''}\n\npos=${j.position}\nerr=${j.error}\ncorr=${j.correction} (clamp=${j.pidClamp})\nL=${j.left} R=${j.right}\nmotorsEnabled=${j.motorsEnabled}` + (j.preset ? `\npreset=${j.preset}` : '');
+      const mk = document.getElementById('markers-seen');
+      if (mk && typeof j.markerCount !== 'undefined') mk.value = String(j.markerCount);
+      const bn = document.getElementById('base-now');
+      if (bn && typeof j.baseCurrent !== 'undefined') bn.value = String(j.baseCurrent);
+      if (Array.isArray(j.sensorMin) && Array.isArray(j.sensorMax)) {
+        fillCal(j.sensorMin, j.sensorMax);
+      }
+      hist.push(j.error || 0);
+      while (hist.length > HIST_MAX) hist.shift();
+      drawGraph();
+    }
+
+    // Local preview simulation
+    const sim = {
+      t: 0,
+      position: 3500,
+      error: 0,
+      correction: 0,
+      left: 0,
+      right: 0,
+      motorsEnabled: true,
+      pidClamp: 850,
+      preset: 'custom',
+      navPolicy: 'straight_first',
+      mode: 'follow',
+      markerCount: 0,
+      stopAfterMarkers: 2,
+      finished: false,
+      polarityMode: 'auto',
+      lineIsBlack: true,
+      lineOnThreshold: 600,
+      adaptiveThresholds: true,
+      curveSpeedEnabled: true,
+      curveMinBaseSpeed: 260,
+      curveErrSlowPct: 55,
+      curveDerivSlowPct: 45,
+      baseCurrent: 550,
+      sensorMin: Array.from({ length: 8 }, (_, i) => 200 + i * 10),
+      sensorMax: Array.from({ length: 8 }, (_, i) => 2600 + i * 20),
+    };
+
+    const PRESETS = {
+      pd_tune:     { kp: 0.12, ki: 0.0,    kd: 6.0,  usep: true, usei: false, used: true,  base: 380, max: 700,  clamp: 650 },
+      pid_gentle:  { kp: 0.20, ki: 0.0003, kd: 3.0,  usep: true, usei: true,  used: true,  base: 500, max: 850,  clamp: 750 },
+      aggressive:  { kp: 0.35, ki: 0.0,    kd: 8.0,  usep: true, usei: false, used: true,  base: 520, max: 950,  clamp: 900 },
+      slow_safe:   { kp: 0.15, ki: 0.0,    kd: 2.5,  usep: true, usei: false, used: true,  base: 280, max: 520,  clamp: 450 },
+      fast:        { kp: 0.28, ki: 0.0002, kd: 6.5,  usep: true, usei: true,  used: true,  base: 650, max: 1023, clamp: 1023 },
+    };
+
+    function applyPresetLocal(id) {
+      if (id === 'custom') {
+        sim.preset = 'custom';
+        return;
+      }
+      const p = PRESETS[id];
+      if (!p) return;
+
+      document.querySelector('input[name="kp"]').value = p.kp.toFixed(6);
+      document.querySelector('input[name="ki"]').value = p.ki.toFixed(6);
+      document.querySelector('input[name="kd"]').value = p.kd.toFixed(6);
+      document.querySelector('input[name="clamp"]').value = String(p.clamp);
+      document.querySelector('input[name="base"]').value = String(p.base);
+      document.querySelector('input[name="max"]').value = String(p.max);
+
+      document.querySelector('input[name="usep"]').checked = !!p.usep;
+      document.querySelector('input[name="usei"]').checked = !!p.usei;
+      document.querySelector('input[name="used"]').checked = !!p.used;
+
+      sim.preset = id;
+    }
+
+    function computeSimStep() {
+      sim.t += 1;
+      const base = Number(document.querySelector('input[name="base"]').value || 550);
+      const max = Number(document.querySelector('input[name="max"]').value || 850);
+      const clamp = Number(document.querySelector('input[name="clamp"]').value || 850);
+      sim.pidClamp = clamp;
+
+      // Curve speed params (preview simulation)
+      sim.curveSpeedEnabled = !!document.querySelector('input[name="csEn"]')?.checked;
+      sim.curveMinBaseSpeed = Number(document.querySelector('input[name="csMin"]')?.value ?? 260);
+      sim.curveErrSlowPct = Number(document.querySelector('input[name="csE"]')?.value ?? 55);
+      sim.curveDerivSlowPct = Number(document.querySelector('input[name="csD"]')?.value ?? 45);
+
+      // Navigation fields (for preview display)
+      const navp = String(document.querySelector('select[name="navp"]')?.value ?? '0');
+      sim.navPolicy = navp === '1' ? 'left_hand' : navp === '2' ? 'right_hand' : 'straight_first';
+      sim.stopAfterMarkers = Number(document.querySelector('input[name="stopm"]')?.value ?? 2);
+      sim.mode = sim.finished ? 'finished' : (sim.motorsEnabled ? 'follow' : 'stopped');
+
+      const polm = String(document.querySelector('select[name="polm"]')?.value ?? '0');
+      sim.polarityMode = polm === '1' ? 'black' : polm === '2' ? 'white' : 'auto';
+      sim.adaptiveThresholds = !!document.querySelector('input[name="adpth"]')?.checked;
+      sim.lineIsBlack = (sim.polarityMode === 'white') ? false : true;
+      sim.lineOnThreshold = sim.adaptiveThresholds ? 520 : 600;
+
+      // fake line movement
+      const wave = Math.sin(sim.t / 8) * 1400;
+      sim.position = Math.round(3500 + wave);
+      sim.error = Math.round((sim.position - 3500) / 10);
+
+      // dynamic base: reduce with |error| and |dError|
+      const errN = Math.min(1, Math.abs(sim.error) / 350);
+      const dErrN = Math.min(1, Math.abs(sim.error - (sim._lastErr ?? 0)) / 350);
+      sim._lastErr = sim.error;
+      let baseNow = base;
+      if (sim.curveSpeedEnabled) {
+        let scale = 1;
+        scale -= (sim.curveErrSlowPct / 100) * errN;
+        scale -= (sim.curveDerivSlowPct / 100) * dErrN;
+        scale = Math.max(0, Math.min(1, scale));
+        const minBase = Math.max(0, Math.min(base, sim.curveMinBaseSpeed));
+        const minScale = base > 0 ? (minBase / base) : 0;
+        scale = Math.max(scale, minScale);
+        baseNow = Math.round(base * scale);
+      }
+      sim.baseCurrent = baseNow;
+
+      // fake correction, then clamp
+      let corr = Math.round(sim.error * 2);
+      corr = Math.max(-clamp, Math.min(clamp, corr));
+      sim.correction = corr;
+
+      let left = baseNow + corr;
+      let right = baseNow - corr;
+      left = Math.max(-max, Math.min(max, left));
+      right = Math.max(-max, Math.min(max, right));
+
+      sim.left = Math.round(left);
+      sim.right = Math.round(right);
+    }
+
+    async function tickFetch() {
+      try {
+        const r = await fetch('/status', { cache: 'no-store' });
+        const j = await r.json();
+        showStatus(j);
+      } catch (e) {
+        st.textContent = 'offline';
+      }
+    }
+
+    function wireLocalPreviewForms() {
+      // Prevent submits when running locally; keep UI interactive.
+      function intercept(formId) {
+        const form = document.getElementById(formId);
+        form.addEventListener('submit', (ev) => {
+          ev.preventDefault();
+          computeSimStep();
+          showStatus(sim);
+        });
+      }
+
+      intercept('form-set');
+      intercept('form-motor');
+      intercept('form-nav');
+      intercept('form-calibrate');
+
+      document.getElementById('form-preset').addEventListener('submit', (ev) => {
+        ev.preventDefault();
+        const id = document.getElementById('preset-id').value;
+        applyPresetLocal(id);
+        computeSimStep();
+        showStatus(sim);
+      });
+
+      document.getElementById('form-estop').addEventListener('submit', (ev) => {
+        ev.preventDefault();
+        sim.motorsEnabled = false;
+        motorsBtn.textContent = 'Enable Motors';
+        motorsEnable.value = '1';
+        computeSimStep();
+        showStatus(sim);
+      });
+
+      document.getElementById('form-motors').addEventListener('submit', (ev) => {
+        ev.preventDefault();
+        sim.motorsEnabled = !sim.motorsEnabled;
+        motorsBtn.textContent = sim.motorsEnabled ? 'Stop Motors' : 'Enable Motors';
+        motorsEnable.value = sim.motorsEnabled ? '0' : '1';
+        computeSimStep();
+        showStatus(sim);
+      });
+    }
+
+    if (isLocalPreview) {
+      wireLocalPreviewForms();
+      fillCal(sim.sensorMin, sim.sensorMax);
+      setInterval(() => {
+        computeSimStep();
+        showStatus(sim);
+      }, 250);
+      computeSimStep();
+      showStatus(sim);
+    } else {
+      setInterval(tickFetch, 250);
+      tickFetch();
+    }
+  </script>
+</body>
+</html>

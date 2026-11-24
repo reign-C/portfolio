@@ -1,7 +1,8 @@
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { projects } from "@/lib/content";
+import ProjectDemo from "@/components/project-demo";
+import ProjectNav from "@/components/project-nav";
 
 export function generateStaticParams() {
   return projects.map((project) => ({ slug: project.id }));
@@ -18,19 +19,18 @@ export default async function ProjectPage({
   if (index === -1) notFound();
 
   const project = ordered[index];
-  const previous = ordered[index - 1];
-  const next = ordered[index + 1];
 
   return (
-    <article className="mx-auto max-w-[1200px] px-6 pb-20 pt-10 md:px-12 md:pt-14">
+    <article className="mx-auto max-w-[1200px] px-6 pb-20 pt-8 md:px-12 md:pt-10">
       <Link
         href="/#work"
-        className="text-sm text-muted transition-colors duration-200 hover:text-text"
+        className="inline-flex min-h-11 items-center gap-2 rounded-sm border border-line px-3 text-sm font-medium transition-colors duration-200 hover:border-text"
       >
-        Back to work
+        <span aria-hidden="true">←</span>
+        Back to portfolio
       </Link>
 
-      <header className="mt-6 max-w-[65ch]">
+      <header className="mt-8 max-w-[65ch]">
         <h1 className="text-[32px] leading-[1.1] tracking-[-0.02em] md:text-[48px]">
           {project.title}
         </h1>
@@ -50,19 +50,9 @@ export default async function ProjectPage({
         </dl>
       </header>
 
-      {project.photo ? (
-        <figure className="mt-10 overflow-hidden rounded-md border border-line bg-surface shadow-card">
-          <Image
-            src={project.photo.src}
-            alt={project.photo.alt}
-            width={project.photo.width}
-            height={project.photo.height}
-            sizes="(min-width: 1200px) 1104px, 100vw"
-            quality={90}
-            className="h-auto w-full"
-          />
-        </figure>
-      ) : null}
+      <div className="mt-10 md:mt-14">
+        <ProjectDemo slug={project.id} />
+      </div>
 
       <div className="mt-10 grid gap-10 md:mt-14 md:grid-cols-12 md:gap-8">
         <div className="md:col-span-8">
@@ -93,29 +83,7 @@ export default async function ProjectPage({
         </dl>
       </div>
 
-      <nav
-        aria-label="Project navigation"
-        className="mt-16 flex flex-col gap-4 border-t border-line pt-6 sm:flex-row sm:justify-between"
-      >
-        {previous ? (
-          <Link
-            href={`/work/${previous.id}`}
-            className="max-w-[45ch] text-sm text-muted transition-colors duration-200 hover:text-text"
-          >
-            Previous: <span className="font-medium">{previous.title}</span>
-          </Link>
-        ) : (
-          <span />
-        )}
-        {next ? (
-          <Link
-            href={`/work/${next.id}`}
-            className="max-w-[45ch] text-sm text-muted transition-colors duration-200 hover:text-text sm:text-right"
-          >
-            Next: <span className="font-medium">{next.title}</span>
-          </Link>
-        ) : null}
-      </nav>
+      <ProjectNav current={project.id} />
     </article>
   );
 }

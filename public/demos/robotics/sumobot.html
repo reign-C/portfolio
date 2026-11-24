@@ -1,0 +1,208 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SumoBot</title>
+  <style>
+    *{box-sizing:border-box}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;padding:12px;background:#f6f7f9;color:#111}
+    .top{position:sticky;top:0;background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:10px 12px;display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:12px}
+    .top .meta{font-size:13px;color:#374151}
+    .top h2{margin:0;font-size:16px}
+    .btn{appearance:none;border:1px solid #d1d5db;background:#fff;border-radius:10px;padding:10px 12px;font-weight:600;cursor:pointer}
+    .btn:active{transform:translateY(1px)}
+    .btn-primary{background:#111;color:#fff;border-color:#111}
+    .btn-danger{background:#b91c1c;color:#fff;border-color:#991b1b}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+    .card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:12px}
+    .card h3{margin:0 0 10px 0;font-size:14px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    label{display:block;font-size:12px;color:#374151;margin-bottom:4px}
+    input[type=number],select{width:100%;padding:10px;border:1px solid #d1d5db;border-radius:10px;font-size:14px}
+    .checks{display:flex;gap:10px;flex-wrap:wrap;font-size:13px;color:#111}
+    .checks label{margin:0;font-size:13px;color:#111}
+    .checks input{transform:translateY(1px)}
+    .stat{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:12px;white-space:pre-wrap;background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:10px}
+  </style>
+</head>
+<body>
+  <div class="top">
+    <div>
+      <h2>SumoBot</h2>
+      <div class="meta">SSID <b>SumoBot</b> • IP 192.168.4.1</div>
+    </div>
+    <form method="POST" action="/estop" style="margin:0"><button class="btn btn-danger" type="submit">EMERGENCY STOP</button></form>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Presets</h3>
+      <form method="POST" action="/preset" style="margin:0">
+        <label>Strategy preset</label>
+        <select name="id" id="preset">
+          <option value="custom">Custom (current)</option>
+          <option value="rush_aggr">Rush (aggressive)</option>
+          <option value="hook_left">Hook Left</option>
+          <option value="hook_right">Hook Right</option>
+          <option value="safe">Safe (first test)</option>
+        </select>
+        <div style="height:10px"></div>
+        <button class="btn btn-primary" type="submit">Apply Preset</button>
+      </form>
+      <div style="height:8px"></div>
+      <div class="meta">Tip: Start with Safe, then Rush once edge sensing is reliable.</div>
+    </div>
+
+    <div class="card">
+      <h3>Strategy</h3>
+      <form method="POST" action="/set" style="margin:0">
+        <label>Opening</label>
+        <select name="opening" id="opening">
+          <option value="0">Rush</option>
+          <option value="1">Hook Left</option>
+          <option value="2">Hook Right</option>
+          <option value="3">Spin</option>
+        </select>
+        <div style="height:10px"></div>
+        <div class="row">
+          <div><label>Start delay</label><input type="number" value="5000" readonly></div>
+          <div><label>Opponent hold (ms)</label><input type="number" name="ohm" id="ohm"></div>
+        </div>
+        <div style="height:10px"></div>
+        <div class="row">
+          <div><label>Opening speed (0..1023)</label><input type="number" name="ops" id="ops"></div>
+          <div><label>Opening forward (ms)</label><input type="number" name="ofm" id="ofm"></div>
+          <div><label>Opening turn (ms)</label><input type="number" name="otm" id="otm"></div>
+          <div><label>Turn gain</label><input type="number" name="tgn" id="tgn"></div>
+        </div>
+        <div style="height:10px"></div>
+        <button class="btn btn-primary" type="submit">Save Strategy</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h3>Speeds</h3>
+      <form method="POST" action="/set" style="margin:0">
+        <div class="row">
+          <div><label>Search spin</label><input type="number" name="sss" id="sss"></div>
+          <div><label>Search switch (ms)</label><input type="number" name="ssm" id="ssm"></div>
+          <div><label>Track speed</label><input type="number" name="trs" id="trs"></div>
+          <div><label>Attack speed</label><input type="number" name="ats" id="ats"></div>
+        </div>
+        <div style="height:10px"></div>
+        <button class="btn btn-primary" type="submit">Save Speeds</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h3>Edge Avoid</h3>
+      <form method="POST" action="/set" style="margin:0">
+        <div class="checks">
+          <label><input type="checkbox" name="eah" id="eah"> Edge active HIGH</label>
+        </div>
+        <div style="height:10px"></div>
+        <div class="row">
+          <div><label>Debounce (ms)</label><input type="number" name="edb" id="edb"></div>
+          <div><label>Back speed</label><input type="number" name="ebs" id="ebs"></div>
+          <div><label>Back time (ms)</label><input type="number" name="ebm" id="ebm"></div>
+          <div><label>Turn speed</label><input type="number" name="ets" id="ets"></div>
+          <div><label>Turn time (ms)</label><input type="number" name="etm" id="etm"></div>
+        </div>
+        <div style="height:10px"></div>
+        <button class="btn btn-primary" type="submit">Save Edge Settings</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h3>Motors</h3>
+      <form method="POST" action="/motors" style="margin:0">
+        <input type="hidden" name="enable" value="1" id="men">
+        <button class="btn" type="submit" id="menBtn">Disable Motors</button>
+      </form>
+      <div style="height:10px"></div>
+      <div class="meta">Use E-STOP for immediate stop.</div>
+    </div>
+
+    <div class="card">
+      <h3>Live Status</h3>
+      <div class="stat" id="st">loading...</div>
+    </div>
+  </div>
+
+  <script>
+    const st = document.getElementById('st');
+    const men = document.getElementById('men');
+    const menBtn = document.getElementById('menBtn');
+
+    function setVal(id, v) { const el = document.getElementById(id); if (el) el.value = String(v); }
+    function setChk(id, v) { const el = document.getElementById(id); if (el) el.checked = !!v; }
+
+    function show(j) {
+      setVal('preset', j.preset || 'custom');
+      setVal('opening', j.openingId ?? 0);
+      setVal('ohm', j.opponentHoldMs ?? 250);
+      setVal('ops', j.openingSpeed ?? 780);
+      setVal('ofm', j.openingForwardMs ?? 280);
+      setVal('otm', j.openingTurnMs ?? 180);
+      setVal('tgn', j.turnGain ?? 260);
+
+      setVal('sss', j.searchSpinSpeed ?? 560);
+      setVal('ssm', j.searchSwitchMs ?? 900);
+      setVal('trs', j.trackSpeed ?? 700);
+      setVal('ats', j.attackSpeed ?? 920);
+
+      setChk('eah', j.edgeActiveHigh);
+      setVal('edb', j.edgeDebounceMs ?? 20);
+      setVal('ebs', j.edgeBackSpeed ?? 760);
+      setVal('ebm', j.edgeBackMs ?? 260);
+      setVal('ets', j.edgeTurnSpeed ?? 820);
+      setVal('etm', j.edgeTurnMs ?? 240);
+
+      const enabled = !!j.motorsEnabled;
+      men.value = enabled ? '0' : '1';
+      menBtn.textContent = enabled ? 'Disable Motors' : 'Enable Motors';
+
+      st.textContent =
+        `mode=${j.mode}\n` +
+        `preset=${j.preset}\n` +
+        `opening=${j.opening}\n` +
+        `oppMask=0b${(j.oppMask>>>0).toString(2).padStart(5,'0')} dir=${j.oppDir} lastSeenAgeMs=${j.oppAgeMs}\n` +
+        `edgeMask=0b${(j.edgeMask>>>0).toString(2).padStart(3,'0')}\n` +
+        `motorsEnabled=${enabled}`;
+    }
+
+    async function poll() {
+      try {
+        const r = await fetch('/status', { cache: 'no-store' });
+        const j = await r.json();
+        show(j);
+      } catch (e) {
+        st.textContent = 'status error (preview if opened as file://)';
+      }
+      setTimeout(poll, 200);
+    }
+
+    // If opened as a local preview (file://), show a dummy status.
+    if (true) {
+      show({
+        mode: 'search', preset: 'safe', opening: 'spin', openingId: 3,
+        motorsEnabled: false,
+        edgeActiveHigh: true,
+        oppMask: 0b00011,
+        oppDir: 1,
+        oppAgeMs: 0,
+        edgeMask: 0b000,
+        startDelayMs: 1200, opponentHoldMs: 250,
+        openingSpeed: 650, openingForwardMs: 0, openingTurnMs: 0,
+        searchSpinSpeed: 520, searchSwitchMs: 1000,
+        trackSpeed: 650, attackSpeed: 880, turnGain: 220,
+        edgeDebounceMs: 20, edgeBackSpeed: 700, edgeBackMs: 280,
+        edgeTurnSpeed: 780, edgeTurnMs: 260
+      });
+    } else {
+      poll();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Dashboard - Laboratory Equipment and Materials Borrowing System</title>
+    
+    
+    <!-- jQuery - Load first so it's available for inline scripts; add CDN fallback -->
+    <script src="assets/js/jquery.min.js"></script>
+    
+    <!-- Fonts: keep system/local-only for offline mode -->
+    
+    <!-- Font Awesome (local) -->
+    <link href="assets/vendor/fontawesome/css/all.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap 5 (local) -->
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- DataTables CSS (local) -->
+    <link href="assets/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="assets/vendor/datatables/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    
+    <!-- DataTables JS - Load early for inline scripts; CDN fallback if local is blocked -->
+    <script src="assets/js/dataTables.min.js"></script>
+    <script src="assets/js/dataTables.bootstrap5.min.js"></script>
+
+    <script>
+        (function () {
+            try {
+                var stored = localStorage.getItem('theme');
+                var prefersDark = false;
+                var theme = stored ? stored : (prefersDark ? 'dark' : 'light');
+                if (theme === 'dark') {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                } else {
+                    document.documentElement.removeAttribute('data-theme');
+                }
+            } catch (e) {
+                // If storage is blocked, silently fall back to light.
+            }
+        })();
+    </script>
+    
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #34d399;
+            --primary-bg: #ecfdf5;
+            --sidebar-bg: #064e3b;
+            --sidebar-dark: #022c22;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --text-dark: #1f2937;
+            --text-muted: #6b7280;
+            --text-light: #9ca3af;
+            --border-color: #e5e7eb;
+            --bg-light: #f9fafb;
+            --bg-white: #ffffff;
+            --on-primary: #ffffff;
+        }
+
+        html[data-theme="dark"] {
+            --primary-bg: rgba(16, 185, 129, 0.15);
+            /* Softer, lower-contrast dark palette (closer to modern chat UI) */
+            --text-dark: #e2e8f0;
+            --text-muted: #aab8cc;
+            --text-light: #7a90ad;
+            --border-color: #2a3a52;
+            --bg-light: #0f172a;
+            --bg-white: #1e2938;
+            --on-primary: #06281e;
+
+            /* Bootstrap alignment (prevents "black" defaults in dark mode) */
+            --bs-body-bg: var(--bg-light);
+            --bs-body-color: var(--text-dark);
+            --bs-heading-color: var(--text-dark);
+            --bs-border-color: var(--border-color);
+            --bs-secondary-color: var(--text-muted);
+            --bs-tertiary-color: var(--text-light);
+
+            /* Hint native widgets (select dropdown, scrollbars) to render for dark */
+            color-scheme: dark;
+        }
+        
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            font-size: 0.9375rem;
+            overflow-x: auto;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 260px;
+            height: 100vh;
+            background: linear-gradient(180deg, var(--sidebar-bg) 0%, var(--sidebar-dark) 100%);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+        
+        .sidebar-brand-icon {
+            width: 56px;
+            height: 56px;
+            background: transparent;
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .sidebar-brand-icon i {
+            color: #fff;
+            font-size: 1.125rem;
+        }
+
+        .sidebar-brand-icon img {
+            width: 56px;
+            height: 56px;
+            object-fit: contain;
+            display: block;
+        }
+        
+        .sidebar-brand-text {
+            color: #fff;
+            font-weight: 600;
+            font-size: 1rem;
+            line-height: 1.2;
+        }
+        
+        .sidebar-brand-text small {
+            display: block;
+            font-weight: 400;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+        
+        .nav-section {
+            padding: 0.75rem 1.5rem 0.5rem;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .nav-item {
+            padding: 0 0.75rem;
+            margin-bottom: 2px;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link.active {
+            color: var(--sidebar-bg);
+            background: #fff;
+        }
+        
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+            font-size: 1rem;
+        }
+        
+        .nav-link.active i {
+            color: var(--primary);
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            width: calc(100% - 260px);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+        
+        /* Top Navbar */
+        .navbar-top {
+            background: var(--bg-white);
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .page-title h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin: 0;
+        }
+        
+        .page-title .breadcrumb {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: flex;
+            gap: 0.35rem;
+            background: none;
+            font-size: 0.8125rem;
+        }
+        
+        .page-title .breadcrumb-item {
+            color: var(--text-muted);
+        }
+        
+        .page-title .breadcrumb-item a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 0.6rem;
+            border-radius: 999px;
+            background: var(--bg-light);
+            border: 1px solid var(--border-color);
+        }
+
+        .theme-toggle .theme-icon {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1;
+        }
+
+        .theme-toggle .form-check {
+            margin: 0;
+        }
+
+        .theme-toggle .form-check-input {
+            cursor: pointer;
+            background-color: var(--border-color);
+            border-color: var(--border-color);
+        }
+
+        .theme-toggle .form-check-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
+        }
+
+        .theme-toggle .form-check-input:checked {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .user-dropdown {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg-light);
+            border-radius: 8px;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            color: var(--text-dark);
+        }
+
+        html[data-theme="dark"] .user-dropdown {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+        }
+        
+        .user-dropdown:hover {
+            background: var(--border-color);
+        }
+
+        html[data-theme="dark"] .user-dropdown:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+        
+        .user-info {
+            text-align: left;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+            line-height: 1.2;
+        }
+        
+        .user-role {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        /* Content Area */
+        .content-wrapper {
+            padding: 1.5rem;
+        }
+        
+        /* Cards */
+        .card {
+            background: var(--bg-white);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            background: transparent;
+        }
+        
+        .card-header h5, .card-header h6 {
+            margin: 0;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Dark-mode-friendly Bootstrap defaults */
+        html[data-theme="dark"] .dropdown-menu {
+            background-color: var(--bg-white);
+            border-color: var(--border-color);
+        }
+
+        html[data-theme="dark"] .dropdown-item {
+            color: var(--text-dark);
+        }
+
+        html[data-theme="dark"] .dropdown-item:hover,
+        html[data-theme="dark"] .dropdown-item:focus {
+            background-color: rgba(148, 163, 184, 0.12);
+            color: var(--text-dark);
+        }
+
+        html[data-theme="dark"] .dropdown-divider {
+            border-top-color: var(--border-color);
+        }
+
+        html[data-theme="dark"] .text-muted {
+            color: var(--text-muted) !important;
+        }
+
+        html[data-theme="dark"] .text-secondary {
+            color: var(--text-muted) !important;
+        }
+
+        html[data-theme="dark"] .text-dark {
+            color: var(--text-dark) !important;
+        }
+
+        html[data-theme="dark"] .bg-white {
+            background-color: var(--bg-white) !important;
+        }
+
+        html[data-theme="dark"] .bg-light {
+            /* Bootstrap's bg-light is a surface tint, not the page background */
+            background-color: rgba(255, 255, 255, 0.04) !important;
+        }
+
+        html[data-theme="dark"] .badge.bg-light {
+            background-color: rgba(255, 255, 255, 0.06) !important;
+            border: 1px solid var(--border-color);
+        }
+
+        html[data-theme="dark"] .badge.bg-light.text-dark {
+            color: var(--text-dark) !important;
+        }
+
+        html[data-theme="dark"] .badge.bg-light.text-muted {
+            color: var(--text-muted) !important;
+        }
+
+        html[data-theme="dark"] .form-control,
+        html[data-theme="dark"] .form-select {
+            background-color: rgba(255, 255, 255, 0.04) !important;
+            border-color: var(--border-color) !important;
+            color: var(--text-dark) !important;
+        }
+
+        /* Native <select> dropdown list (options) readability in dark mode */
+        html[data-theme="dark"] select,
+        html[data-theme="dark"] option,
+        html[data-theme="dark"] optgroup {
+            color: var(--text-dark);
+        }
+
+        html[data-theme="dark"] select option,
+        html[data-theme="dark"] select optgroup {
+            background-color: var(--bg-white);
+        }
+
+        html[data-theme="dark"] select option:disabled {
+            color: var(--text-light);
+        }
+
+        html[data-theme="dark"] .form-control::placeholder {
+            color: var(--text-light) !important;
+        }
+
+        html[data-theme="dark"] .form-control:focus,
+        html[data-theme="dark"] .form-select:focus {
+            background-color: rgba(255, 255, 255, 0.06) !important;
+            border-color: var(--primary) !important;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.18);
+            color: var(--text-dark) !important;
+        }
+
+        html[data-theme="dark"] .input-group-text {
+            background-color: rgba(255, 255, 255, 0.04) !important;
+            border-color: var(--border-color) !important;
+            color: var(--text-muted) !important;
+        }
+
+        html[data-theme="dark"] .modal-content {
+            background-color: var(--bg-white);
+            border-color: var(--border-color);
+            color: var(--text-dark);
+        }
+
+        html[data-theme="dark"] .modal-header,
+        html[data-theme="dark"] .modal-footer {
+            border-color: var(--border-color);
+        }
+
+        html[data-theme="dark"] .table {
+            --bs-table-color: var(--text-dark);
+            --bs-table-border-color: var(--border-color);
+            --bs-table-striped-color: var(--text-dark);
+            --bs-table-striped-bg: rgba(255, 255, 255, 0.02);
+            --bs-table-active-color: var(--text-dark);
+            --bs-table-active-bg: rgba(16, 185, 129, 0.12);
+            --bs-table-hover-color: var(--text-dark);
+            --bs-table-hover-bg: rgba(255, 255, 255, 0.03);
+            color: var(--text-dark);
+        }
+
+        html[data-theme="dark"] .table > :not(caption) > * > * {
+            background-color: var(--bg-white);
+            border-color: var(--border-color);
+        }
+
+        html[data-theme="dark"] .table thead th {
+            color: var(--text-muted);
+        }
+
+        html[data-theme="dark"] .table thead.table-light {
+            --bs-table-bg: rgba(255, 255, 255, 0.02);
+            --bs-table-color: var(--text-muted);
+            --bs-table-border-color: var(--border-color);
+        }
+
+        /* Many pages use section header rows like: <tr class="table-light"><th colspan="2">...</th></tr> */
+        html[data-theme="dark"] .table-light {
+            --bs-table-bg: rgba(255, 255, 255, 0.03);
+            --bs-table-color: var(--text-muted);
+            --bs-table-border-color: var(--border-color);
+            color: var(--text-muted) !important;
+        }
+
+        html[data-theme="dark"] tr.table-light > th,
+        html[data-theme="dark"] tr.table-light > td {
+            color: var(--text-muted) !important;
+        }
+
+        html[data-theme="dark"] .dataTables_wrapper .dataTables_length,
+        html[data-theme="dark"] .dataTables_wrapper .dataTables_filter,
+        html[data-theme="dark"] .dataTables_wrapper .dataTables_info,
+        html[data-theme="dark"] .dataTables_wrapper .dataTables_paginate {
+            color: var(--text-muted) !important;
+        }
+
+        html[data-theme="dark"] .dataTables_wrapper .dataTables_filter input,
+        html[data-theme="dark"] .dataTables_wrapper .dataTables_length select {
+            background-color: rgba(255, 255, 255, 0.04) !important;
+            border: 1px solid var(--border-color) !important;
+            color: var(--text-dark) !important;
+        }
+
+        html[data-theme="dark"] .dataTables_wrapper .dataTables_filter input::placeholder {
+            color: var(--text-light) !important;
+        }
+
+        html[data-theme="dark"] .btn-outline-secondary {
+            color: var(--text-dark);
+            border-color: var(--border-color);
+        }
+
+        html[data-theme="dark"] .btn-outline-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.12);
+            color: var(--text-dark);
+        }
+
+        /* Keep warning badges readable: they intentionally need dark text */
+        html[data-theme="dark"] .bg-warning.text-dark,
+        html[data-theme="dark"] .badge.bg-warning.text-dark,
+        html[data-theme="dark"] .btn.bg-warning.text-dark {
+            color: #0b1220 !important;
+        }
+
+        /* Inventory units panel uses Bootstrap var(--bs-light); make it dark-friendly */
+        html[data-theme="dark"] .unit-panel {
+            background: rgba(255, 255, 255, 0.03) !important;
+        }
+        
+        /* Stats Cards */
+        .stat-card {
+            padding: 1.25rem;
+        }
+        
+        .stat-card .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: #fff;
+        }
+        
+        .stat-card .stat-icon.primary { background: var(--primary); }
+        .stat-card .stat-icon.success { background: var(--success); }
+        .stat-card .stat-icon.warning { background: var(--warning); }
+        .stat-card .stat-icon.danger { background: var(--danger); }
+        .stat-card .stat-icon.info { background: var(--info); }
+        
+        .stat-card .stat-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-card .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            line-height: 1;
+        }
+        
+        /* Buttons */
+        .btn {
+            font-weight: 500;
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+        
+        .btn-outline-primary {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .btn-outline-primary:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+        
+        .btn-success { background: var(--success); border-color: var(--success); }
+        .btn-warning { background: var(--warning); border-color: var(--warning); }
+        .btn-danger { background: var(--danger); border-color: var(--danger); }
+        .btn-info { background: var(--info); border-color: var(--info); }
+        
+        /* Tables */
+        .table {
+            margin: 0;
+        }
+        
+        .table thead th {
+            background: var(--bg-light);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+            color: var(--text-muted);
+            padding: 0.875rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.875rem;
+        }
+        
+        .table tbody tr:hover {
+            background: var(--bg-light);
+        }
+        
+        /* Badges */
+        .badge {
+            font-weight: 500;
+            font-size: 0.75rem;
+            padding: 0.375rem 0.625rem;
+            border-radius: 6px;
+        }
+        
+        .badge-primary { background: var(--primary-bg); color: var(--primary-dark); }
+        .badge-success { background: #dcfce7; color: #166534; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
+        .badge-danger { background: #fee2e2; color: #991b1b; }
+        .badge-info { background: #dbeafe; color: #1e40af; }
+        .badge-secondary { background: #f3f4f6; color: #4b5563; }
+        
+        /* Forms */
+        .form-control, .form-select {
+            font-size: 0.875rem;
+            padding: 0.625rem 0.875rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-white);
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+        
+        .form-label {
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Status Indicator */
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        .status-dot.online {
+            background: var(--success);
+            animation: pulse 2s infinite;
+        }
+        
+        .status-dot.offline {
+            background: var(--danger);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* Dropdown */
+        .dropdown-menu {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem;
+        }
+        
+        .dropdown-item {
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            color: var(--text-dark);
+        }
+        
+        .dropdown-item:hover {
+            background: var(--bg-light);
+        }
+        
+        .dropdown-item i {
+            width: 20px;
+            margin-right: 0.5rem;
+            color: var(--text-muted);
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-light);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--text-light);
+            border-radius: 3px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 991.98px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .navbar-top {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+
+            .navbar-actions {
+                width: 100%;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 0.75rem;
+            }
+
+            .user-dropdown {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .card-header.d-flex {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .card-header .btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .content-wrapper {
+                padding: 1rem;
+            }
+
+            .row.g-4, .row.g-3 {
+                --bs-gutter-x: 1rem;
+                --bs-gutter-y: 1rem;
+
+            /* Page transition (progressive enhancement) */
+            .page-transition-enabled .content-wrapper {
+                opacity: 0;
+                transform: translateY(6px);
+                transition: opacity 180ms ease, transform 180ms ease;
+                will-change: opacity, transform;
+            }
+
+            .page-transition-enabled .content-wrapper.page-enter {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .page-transition-enabled .content-wrapper.page-exit {
+                opacity: 0;
+                transform: translateY(-6px);
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                .page-transition-enabled .content-wrapper {
+                    transition: none;
+                    transform: none;
+                    opacity: 1;
+                }
+            }
+            }
+
+            .card-body[style*="height: 300px"] {
+                height: auto !important;
+                min-height: 240px;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .user-info {
+                display: none;
+            }
+
+            .card-body {
+                padding: 1rem;
+            }
+
+            .table {
+                font-size: 0.8125rem;
+            }
+        }
+        
+        /* Sidebar Footer */
+        .sidebar-footer {
+            padding: 1rem;
+            margin-top: auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .terminal-status {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .terminal-status h6 {
+            color: #fff;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .terminal-status p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.75rem;
+            margin: 0;
+        }
+
+        /* Pagination (match docs/terminal_ui_mock.html pill style) */
+        .pagination,
+        .dataTables_wrapper .dataTables_paginate .pagination {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 10px;
+            border-radius: 999px;
+            background: var(--bg-white);
+            border: 1px solid var(--border-color);
+            margin: 0;
+            width: fit-content;
+            max-width: 100%;
+            box-shadow: none;
+            filter:
+                drop-shadow(0 14px 26px rgba(17, 24, 39, 0.12))
+                drop-shadow(0 2px 0 rgba(2, 44, 34, 0.05));
+        }
+
+        /* Undo Bootstrap's connected-border pagination look */
+        .pagination .page-item:not(:first-child) .page-link {
+            margin-left: 0;
+        }
+
+        .pagination .page-link {
+            border: 0;
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: 600;
+            min-width: 34px;
+            height: 34px;
+            padding: 0 12px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .pagination .page-link:hover {
+            background: transparent;
+            color: var(--primary-dark);
+        }
+
+        .pagination .page-link:focus {
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
+        }
+
+        .pagination .page-item.active .page-link,
+        .pagination .page-item.active > span.page-link {
+            background: var(--primary);
+            color: var(--on-primary);
+            box-shadow: 0 10px 18px rgba(16, 185, 129, 0.22);
+        }
+
+        .pagination .page-item.disabled .page-link,
+        .pagination .page-item.disabled > span.page-link {
+            opacity: 0.55;
+            pointer-events: none;
+        }
+
+        .pagination .page-link i {
+            font-size: 0.875rem;
+        }
+
+        /* DataTables core CSS adds a black gradient hover on `.paginate_button`.
+           Override it so our pill pagination remains clean. */
+        .dataTables_wrapper .dataTables_paginate .paginate_button,
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover,
+        .dataTables_wrapper .dataTables_paginate .paginate_button:active,
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+            background: transparent !important;
+            border: 0 !important;
+            box-shadow: none !important;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover,
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover .page-link {
+            color: var(--primary-dark) !important;
+        }
+
+        /* Keep DataTables info subtle (pairs well with pill pagination) */
+        .dataTables_wrapper .dataTables_info {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            padding-top: 0.75rem;
+        }
+    </style>
+<style>html,body{overflow-x:hidden}</style></head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="#" onclick="return false" class="sidebar-brand">
+                <div class="sidebar-brand-icon">
+                    <span aria-hidden="true" style="display:grid;place-items:center;width:100%;height:100%;font-size:11px;font-weight:800;color:#10b981">SKSU</span>
+                </div>
+                <div class="sidebar-brand-text">
+                    Lab Equipment<br>and Materials
+                    <small>Borrowing System</small>
+                </div>
+            </a>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-section">Main</div>
+            
+            <div class="nav-item">
+                <a href="#" onclick="return false" class="nav-link active">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+            </div>
+            
+            <div class="nav-item">
+                <a href="#" onclick="return false" class="nav-link ">
+                    <i class="fas fa-tablet-alt"></i>
+                    <span>Terminal Monitor</span>
+                </a>
+            </div>
+            
+            <div class="nav-section">Management</div>
+            
+            <div class="nav-item">
+                <a href="#" onclick="return false" class="nav-link ">
+                    <i class="fas fa-boxes-stacked"></i>
+                    <span>Inventory</span>
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="#" onclick="return false" class="nav-link ">
+                    <i class="fas fa-box-open"></i>
+                    <span>Kits</span>
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="#" onclick="return false" class="nav-link ">
+                    <i class="fas fa-folder"></i>
+                    <span>Categories</span>
+                </a>
+            </div>
+            
+            <div class="nav-item">
+                <a href="#" onclick="return false" class="nav-link ">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+            </div>
+            
+            <div class="nav-item">
+                <a href="#" onclick="return false" class="nav-link ">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Admins</span>
+                </a>
+            </div>
+            
+            <div class="nav-section">Reports</div>
+            
+            <div class="nav-item">
+                <a href="#" onclick="return false" class="nav-link ">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Transactions</span>
+                </a>
+            </div>
+            
+            <div class="nav-item">
+                <a href="#" onclick="return false" class="nav-link ">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reports</span>
+                </a>
+            </div>
+            
+                        
+            <div class="nav-section">System</div>
+            
+            <div class="nav-item">
+                <a href="#" onclick="return false" class="nav-link ">
+                    <i class="fas fa-history"></i>
+                    <span>Activity Logs</span>
+                </a>
+            </div>
+            
+            <div class="nav-item">
+                                <a href="#" onclick="return false" class="nav-link ">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+                            </div>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="terminal-status">
+                <h6><i class="fas fa-microchip me-2"></i>Scanning Terminal</h6>
+                <p><span id="terminalStatusDot" class="status-dot offline me-1"></span> <span id="terminalStatusText">Checking...</span></p>
+            </div>
+        </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Navbar -->
+        <nav class="navbar-top">
+            <div class="page-title">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#" onclick="return false"><i class="fas fa-home"></i></a></li>
+                        <li class="breadcrumb-item active">Dashboard</li>
+                    </ol>
+                </nav>
+                <h1>Dashboard</h1>
+            </div>
+            
+            <div class="navbar-actions">
+                <!-- Server Time Display -->
+                <div class="server-time d-none d-md-flex align-items-center me-3" title="Server Time (All operations use this time)">
+                    <i class="fas fa-clock text-success me-2"></i>
+                    <div>
+                        <small class="text-muted d-block" style="font-size: 0.65rem; line-height: 1;">SERVER TIME</small>
+                        <span id="serverTime" class="fw-semibold" style="font-size: 0.85rem;">Nov 24, 2026 05:06:04 PM</span>
+                    </div>
+                </div>
+
+                <!-- Theme Toggle -->
+                <div class="theme-toggle" title="Toggle Dark Mode">
+                    <i class="fas fa-sun theme-icon" aria-hidden="true"></i>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="themeToggle" aria-label="Toggle dark mode">
+                    </div>
+                    <i class="fas fa-moon theme-icon" aria-hidden="true"></i>
+                </div>
+                
+                <!-- Mobile Toggle -->
+                <button class="btn btn-outline-secondary d-lg-none" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <!-- User Dropdown -->
+                <div class="dropdown">
+                                        <button class="user-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="user-avatar">
+                            A                        </div>
+                        <div class="user-info d-none d-md-block">
+                            <div class="user-name">Admin</div>
+                            <div class="user-role">Admin</div>
+                        </div>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#" onclick="return false"><i class="fas fa-user"></i> My Profile</a></li>
+                                                <li><a class="dropdown-item" href="#" onclick="return false"><i class="fas fa-cog"></i> Settings</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#" onclick="return false"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var toggle = document.getElementById('themeToggle');
+                if (!toggle) return;
+
+                var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+                toggle.checked = isDark;
+
+                toggle.addEventListener('change', function () {
+                    var nextTheme = toggle.checked ? 'dark' : 'light';
+                    if (nextTheme === 'dark') {
+                        document.documentElement.setAttribute('data-theme', 'dark');
+                    } else {
+                        document.documentElement.removeAttribute('data-theme');
+                    }
+
+                    try {
+                        localStorage.setItem('theme', nextTheme);
+                    } catch (e) {
+                        // Ignore storage failures
+                    }
+                });
+            });
+        </script>
+        
+        <!-- Content -->
+        <div class="content-wrapper">
+
+<style>
+.stat-card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+.stat-card-link .stat-card {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    cursor: pointer;
+}
+
+.stat-card-link:hover .stat-card {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(16, 24, 40, 0.08);
+}
+
+.stat-card-link:focus-visible .stat-card {
+    outline: 2px solid rgba(16, 185, 129, 0.6);
+    outline-offset: 2px;
+}
+</style>
+
+<!-- Stats Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-xl-3 col-md-6">
+        <a class="stat-card-link" href="#" onclick="return false">
+        <div class="card stat-card">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <p class="stat-label">Total Items</p>
+                    <h3 class="stat-value">1200</h3>
+                </div>
+                <div class="stat-icon primary">
+                    <i class="fas fa-tools"></i>
+                </div>
+            </div>
+        </div>
+        </a>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <a class="stat-card-link" href="#" onclick="return false">
+        <div class="card stat-card">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <p class="stat-label">Available Items</p>
+                    <h3 class="stat-value">1187</h3>
+                </div>
+                <div class="stat-icon success">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+            </div>
+        </div>
+        </a>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <a class="stat-card-link" href="#" onclick="return false">
+        <div class="card stat-card">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <p class="stat-label">Borrowed Items</p>
+                    <h3 class="stat-value">9</h3>
+                </div>
+                <div class="stat-icon warning">
+                    <i class="fas fa-hand-holding"></i>
+                </div>
+            </div>
+        </div>
+        </a>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <a class="stat-card-link" href="#" onclick="return false">
+        <div class="card stat-card">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <p class="stat-label">Overdue</p>
+                    <h3 class="stat-value">9</h3>
+                </div>
+                <div class="stat-icon danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+            </div>
+        </div>
+        </a>
+    </div>
+</div>
+
+<!-- Secondary Stats -->
+<div class="row g-3 mb-4">
+    <div class="col-xl-3 col-md-6">
+        <a class="stat-card-link" href="#" onclick="return false">
+        <div class="card stat-card">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <p class="stat-label">Today's Borrows</p>
+                    <h3 class="stat-value">2</h3>
+                </div>
+                <div class="stat-icon info">
+                    <i class="fas fa-calendar-day"></i>
+                </div>
+            </div>
+        </div>
+        </a>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <a class="stat-card-link" href="#" onclick="return false">
+        <div class="card stat-card">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <p class="stat-label">Today's Returns</p>
+                    <h3 class="stat-value">2</h3>
+                </div>
+                <div class="stat-icon success">
+                    <i class="fas fa-undo"></i>
+                </div>
+            </div>
+        </div>
+        </a>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <a class="stat-card-link" href="#" onclick="return false">
+        <div class="card stat-card">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <p class="stat-label">Maintenance</p>
+                    <h3 class="stat-value">2</h3>
+                </div>
+                <div class="stat-icon warning">
+                    <i class="fas fa-wrench"></i>
+                </div>
+            </div>
+        </div>
+        </a>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <a class="stat-card-link" href="#" onclick="return false">
+        <div class="card stat-card">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <p class="stat-label">Total Users</p>
+                    <h3 class="stat-value">240</h3>
+                </div>
+                <div class="stat-icon primary">
+                    <i class="fas fa-users"></i>
+                </div>
+            </div>
+        </div>
+        </a>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="mb-0"><i class="fas fa-chart-line text-primary me-2"></i>Borrowing Trends</h6>
+                    <small class="text-muted" id="trendRangeLabel">Last 6 months</small>
+                </div>
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <select id="trendMode" class="form-select form-select-sm" style="width: 110px;">
+                        <option value="months" selected>Months</option>
+                        <option value="days">Days</option>
+                    </select>
+                    <div class="d-flex align-items-center gap-2" style="min-width: 200px;">
+                        <input type="range" class="form-range" id="trendRange" min="1" max="12" value="6" style="width: 140px;">
+                        <span id="trendRangeValue" class="small text-muted" style="min-width: 58px;">6 mo</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body" style="height: 300px;">
+                <canvas id="borrowingChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="fas fa-chart-pie text-primary me-2"></i>Equipment by Category</h6>
+                <small class="text-muted">Distribution</small>
+            </div>
+            <div class="card-body" style="height: 300px;">
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Transactions & Quick Actions -->
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="mb-0"><i class="fas fa-history text-primary me-2"></i>Recent Transactions</h6>
+                    <small class="text-muted">Latest borrowing activities</small>
+                </div>
+                <a href="#" onclick="return false" class="btn btn-sm btn-primary">View All</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table mb-0">
+                    <thead>
+                        <tr>
+                            <th>Borrower</th>
+                            <th>Equipment</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+<tr><td><div class="d-flex align-items-center gap-2"><div class="user-avatar" style="width:32px;height:32px;font-size:0.75rem;">M</div><div><div class="fw-medium">Maria Santos</div><small class="text-muted">BS Computer Engineering</small></div></div></td><td>Crimping tool - Unit No. 1</td><td><span class="badge bg-success">Borrowed</span></td><td>Jun 22, 2026</td></tr>
+<tr><td><div class="d-flex align-items-center gap-2"><div class="user-avatar" style="width:32px;height:32px;font-size:0.75rem;">J</div><div><div class="fw-medium">Jose Ramos</div><small class="text-muted">BS Electronics Engineering</small></div></div></td><td>Router TP-Link (AC1200) - Unit No. 1</td><td><span class="badge bg-secondary">Returned</span></td><td>Jun 21, 2026</td></tr>
+<tr><td><div class="d-flex align-items-center gap-2"><div class="user-avatar" style="width:32px;height:32px;font-size:0.75rem;">A</div><div><div class="fw-medium">Ana Dela Cruz</div><small class="text-muted">BS Computer Engineering</small></div></div></td><td>External DVD Player - Unit No. 2</td><td><span class="badge bg-success">Borrowed</span></td><td>Jun 20, 2026</td></tr>
+</tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="fas fa-bolt text-primary me-2"></i>Quick Actions</h6>
+                <small class="text-muted">Common tasks</small>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="#" onclick="return false" class="btn btn-primary">
+                        <i class="fas fa-tablet-alt me-2"></i>Terminal Monitor
+                    </a>
+                    <a href="#" onclick="return false" class="btn btn-outline-primary">
+                        <i class="fas fa-boxes-stacked me-2"></i>Inventory
+                    </a>
+                                        <a href="#" onclick="return false" class="btn btn-outline-primary">
+                        <i class="fas fa-users me-2"></i>Users
+                    </a>
+                                        <a href="#" onclick="return false" class="btn btn-outline-primary">
+                        <i class="fas fa-chart-bar me-2"></i>Reports
+                    </a>
+                </div>
+                
+                <!-- System Status -->
+                <div class="mt-4 p-3 bg-light rounded-3">
+                    <h6 class="text-sm fw-semibold mb-3">System Status</h6>
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span id="dashboardTerminalDot" class="status-dot offline"></span>
+                        <span class="small">Scanning Terminal: <strong id="dashboardTerminalText" class="text-muted">Checking...</strong></span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span id="dashboardDatabaseDot" class="status-dot online"></span>
+                        <span class="small">Database: <strong id="dashboardDatabaseText" class="text-success">Connected</strong></span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <span id="dashboardScannerDot" class="status-dot offline"></span>
+                        <span class="small">Scanner: <strong id="dashboardScannerText" class="text-muted">Checking...</strong></span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 mt-2">
+                        <span class="small">Access: <strong id="dashboardTerminalAccessText" class="text-muted">Checking...</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function setDashboardTerminalStatus(payload) {
+        var isOnline = !!(payload && payload.is_online);
+        var isUnlocked = !!(payload && payload.is_unlocked);
+        var unlockedBy = payload && payload.unlocked_by ? String(payload.unlocked_by).trim() : '';
+        var lockedBy = payload && payload.last_lock_by ? String(payload.last_lock_by).trim() : '';
+        var terminalDot = document.getElementById('dashboardTerminalDot');
+        var terminalText = document.getElementById('dashboardTerminalText');
+        var scannerDot = document.getElementById('dashboardScannerDot');
+        var scannerText = document.getElementById('dashboardScannerText');
+        var accessText = document.getElementById('dashboardTerminalAccessText');
+
+        if (!terminalDot || !terminalText || !scannerDot || !scannerText || !accessText) return;
+
+        terminalDot.classList.remove('online', 'offline');
+        scannerDot.classList.remove('online', 'offline');
+
+        if (isOnline) {
+            terminalDot.classList.add('online');
+            terminalText.className = 'text-success';
+            terminalText.textContent = 'Online';
+
+            scannerDot.classList.add('online');
+            scannerText.className = 'text-success';
+            scannerText.textContent = 'Ready';
+        } else {
+            terminalDot.classList.add('offline');
+            terminalText.className = 'text-danger';
+            terminalText.textContent = 'Offline';
+
+            scannerDot.classList.add('offline');
+            scannerText.className = 'text-danger';
+            scannerText.textContent = 'Unavailable';
+        }
+
+        if (isUnlocked) {
+            accessText.className = 'text-success';
+            accessText.textContent = unlockedBy ? ('Unlocked by ' + unlockedBy) : 'Unlocked';
+        } else {
+            accessText.className = 'text-danger';
+            accessText.textContent = lockedBy ? ('Locked by ' + lockedBy) : 'Locked (staff required)';
+        }
+    }
+
+    function fetchDashboardTerminalStatus() {
+        $.ajax({
+            url: 'api/terminal_status.php',
+            data: { action: 'get_status' },
+            dataType: 'json',
+            timeout: 4000
+        }).done(function(response) {
+            if (response && response.success && response.data) {
+                setDashboardTerminalStatus(response.data);
+            } else {
+                setDashboardTerminalStatus({ is_online: false, is_unlocked: false, unlocked_by: '' });
+            }
+        }).fail(function() {
+            setDashboardTerminalStatus({ is_online: false, is_unlocked: false, unlocked_by: '' });
+        });
+    }
+
+    fetchDashboardTerminalStatus();
+    setInterval(fetchDashboardTerminalStatus, 10000);
+
+    // Get chart data from PHP
+    var trendRows = [{"day":"2026-05-04","count":"6"},{"day":"2026-05-11","count":"12"},{"day":"2026-05-18","count":"9"},{"day":"2026-05-25","count":"18"},{"day":"2026-06-01","count":"15"},{"day":"2026-06-08","count":"21"},{"day":"2026-06-15","count":"17"},{"day":"2026-06-22","count":"24"}];
+    var categoryLabels = ["Tools","Networking","Computers","Instruments","Power Supplies","Consumables"];
+    var categoryData = [96,42,18,12,7,5];
+
+    function pad2(n) {
+        return String(n).padStart(2, '0');
+    }
+
+    function toDateKey(dateObj) {
+        return dateObj.getFullYear() + '-' + pad2(dateObj.getMonth() + 1) + '-' + pad2(dateObj.getDate());
+    }
+
+    function monthKey(dateObj) {
+        return dateObj.getFullYear() + '-' + pad2(dateObj.getMonth() + 1);
+    }
+
+    function monthLabel(dateObj) {
+        return dateObj.toLocaleString('en-US', { month: 'short', year: 'numeric' });
+    }
+
+    function dayLabel(dateObj) {
+        return dateObj.toLocaleString('en-US', { month: 'short', day: 'numeric' });
+    }
+
+    var dayCountMap = {};
+    (trendRows || []).forEach(function(row) {
+        if (!row || !row.day) return;
+        dayCountMap[String(row.day)] = parseInt(row.count || 0, 10);
+    });
+
+    function buildTrendSeries(mode, rangeValue) {
+        var labels = [];
+        var data = [];
+        var now = new Date();
+
+        if (mode === 'days') {
+            for (var i = rangeValue - 1; i >= 0; i--) {
+                var d = new Date(now);
+                d.setDate(now.getDate() - i);
+                labels.push(dayLabel(d));
+                data.push(dayCountMap[toDateKey(d)] || 0);
+            }
+            return { labels: labels, data: data };
+        }
+
+        for (var m = rangeValue - 1; m >= 0; m--) {
+            var monthDate = new Date(now.getFullYear(), now.getMonth() - m, 1);
+            var mk = monthKey(monthDate);
+            var monthTotal = 0;
+
+            Object.keys(dayCountMap).forEach(function(dayKey) {
+                if (dayKey.indexOf(mk + '-') === 0) {
+                    monthTotal += dayCountMap[dayKey] || 0;
+                }
+            });
+
+            labels.push(monthLabel(monthDate));
+            data.push(monthTotal);
+        }
+
+        return { labels: labels, data: data };
+    }
+
+    function calcSuggestedMax(values) {
+        var maxVal = 0;
+        (values || []).forEach(function(v) {
+            if (v > maxVal) maxVal = v;
+        });
+        return Math.max(maxVal + 1, 5);
+    }
+
+    var defaultMode = 'months';
+    var defaultRange = 6;
+    var initialTrend = buildTrendSeries(defaultMode, defaultRange);
+
+    // Borrowing Trends Chart
+    const borrowingCtx = document.getElementById('borrowingChart').getContext('2d');
+    var borrowingChart = new Chart(borrowingCtx, {
+        type: 'line',
+        data: {
+            labels: initialTrend.labels,
+            datasets: [{
+                label: 'Borrowings',
+                data: initialTrend.data,
+                fill: true,
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                borderColor: '#10b981',
+                borderWidth: 2,
+                pointBackgroundColor: '#10b981',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointRadius: 4,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: 'rgba(0,0,0,0.05)' },
+                    ticks: {
+                        stepSize: 1,
+                        precision: 0
+                    },
+                    suggestedMax: calcSuggestedMax(initialTrend.data)
+                },
+                x: {
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+
+    var trendModeEl = document.getElementById('trendMode');
+    var trendRangeEl = document.getElementById('trendRange');
+    var trendRangeValueEl = document.getElementById('trendRangeValue');
+    var trendRangeLabelEl = document.getElementById('trendRangeLabel');
+
+    function applyRangeLimits(mode) {
+        if (mode === 'days') {
+            trendRangeEl.min = '7';
+            trendRangeEl.max = '90';
+            if (parseInt(trendRangeEl.value, 10) < 7) trendRangeEl.value = '30';
+        } else {
+            trendRangeEl.min = '1';
+            trendRangeEl.max = '12';
+            if (parseInt(trendRangeEl.value, 10) > 12) trendRangeEl.value = '6';
+        }
+    }
+
+    function updateTrendChart() {
+        var mode = trendModeEl.value;
+        var rangeValue = parseInt(trendRangeEl.value, 10) || (mode === 'days' ? 30 : 6);
+        var trend = buildTrendSeries(mode, rangeValue);
+
+        borrowingChart.data.labels = trend.labels;
+        borrowingChart.data.datasets[0].data = trend.data;
+        borrowingChart.options.scales.y.suggestedMax = calcSuggestedMax(trend.data);
+        borrowingChart.update();
+
+        var unitShort = mode === 'days' ? 'd' : 'mo';
+        var unitWord = mode === 'days' ? (rangeValue === 1 ? 'day' : 'days') : (rangeValue === 1 ? 'month' : 'months');
+        trendRangeValueEl.textContent = rangeValue + ' ' + unitShort;
+        trendRangeLabelEl.textContent = 'Last ' + rangeValue + ' ' + unitWord;
+    }
+
+    applyRangeLimits(defaultMode);
+    updateTrendChart();
+
+    trendModeEl.addEventListener('change', function() {
+        applyRangeLimits(trendModeEl.value);
+        updateTrendChart();
+    });
+
+    trendRangeEl.addEventListener('input', updateTrendChart);
+    
+    // Category Chart
+    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+    new Chart(categoryCtx, {
+        type: 'doughnut',
+        data: {
+            labels: categoryLabels,
+            datasets: [{
+                data: categoryData,
+                backgroundColor: [
+                    '#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#f97316', '#6366f1'
+                ],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { padding: 15, usePointStyle: true, font: { size: 11 } }
+                }
+            },
+            cutout: '65%'
+        }
+    });
+});
+</script>
+
+        </div>
+        <!-- End Content Wrapper -->
+        
+        <!-- Footer -->
+        <footer class="py-4 px-4 mt-auto">
+            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                <div class="text-muted small">
+                    © 2026 Laboratory Equipment and Materials Borrowing System - <strong>College of Engineering</strong>
+                </div>
+                <div class="d-flex gap-3">
+                    <a href="#" onclick="return false" class="text-muted small text-decoration-none">Dashboard</a>
+                    <a href="#" onclick="return false" class="text-muted small text-decoration-none">Reports</a>
+                    <a href="#" onclick="return false" class="text-muted small text-decoration-none">Settings</a>
+                </div>
+            </div>
+        </footer>
+    </main>
+    
+    <!-- Scripts - jQuery & DataTables loaded in header, other scripts here -->
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/chart.min.js"></script>
+    <script src="assets/js/sweetalert2.min.js"></script>
+    
+    <script>
+        // Mobile Sidebar Toggle
+        document.getElementById('sidebarToggle')?.addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('show');
+        });
+        
+        // Close sidebar on click outside (mobile)
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.getElementById('sidebarToggle');
+            if (window.innerWidth < 992 && !sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                sidebar.classList.remove('show');
+            }
+        });
+        
+        // Initialize DataTables
+        $(document).ready(function() {
+            if ($.fn.DataTable) {
+                $('.datatable').DataTable({
+                    responsive: true,
+                    pageLength: 10,
+                    language: {
+                        paginate: {
+                            previous: '<i class="fas fa-chevron-left"></i>',
+                            next: '<i class="fas fa-chevron-right"></i>'
+                        }
+                    }
+                });
+            }
+        });
+        
+        // Server Time Update (syncs with PHP server time)
+        (function() {
+            // Get server time offset from PHP
+            var serverTimeOffset = 1795511165000 - Date.now();
+            
+            function updateServerTime() {
+                var serverNow = new Date(Date.now() + serverTimeOffset);
+                var options = { month: 'short', day: '2-digit', year: 'numeric' };
+                var dateStr = serverNow.toLocaleDateString('en-US', options);
+                var timeStr = serverNow.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                var el = document.getElementById('serverTime');
+                if (el) {
+                    el.textContent = dateStr + ' ' + timeStr;
+                }
+            }
+            
+            // Update every second
+            setInterval(updateServerTime, 1000);
+            updateServerTime();
+        })();
+        
+        // Toast Notification
+        function showToast(icon, title) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: icon,
+                title: title,
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+        }
+
+        // Sidebar Terminal Status
+        (function() {
+            var CACHE_KEY = 'terminalStatusCache';
+            var CACHE_TTL_MS = 70000;
+
+            function setTerminalStatus(isOnline) {
+                var dot = document.getElementById('terminalStatusDot');
+                var text = document.getElementById('terminalStatusText');
+                if (!dot || !text) return;
+
+                dot.classList.remove('online', 'offline');
+                if (isOnline) {
+                    dot.classList.add('online');
+                    text.textContent = 'Online & Ready';
+                } else {
+                    dot.classList.add('offline');
+                    text.textContent = 'Offline';
+                }
+            }
+
+            function saveCachedStatus(isOnline) {
+                try {
+                    sessionStorage.setItem(CACHE_KEY, JSON.stringify({
+                        isOnline: !!isOnline,
+                        ts: Date.now()
+                    }));
+                } catch (e) {}
+            }
+
+            function loadCachedStatus() {
+                try {
+                    var raw = sessionStorage.getItem(CACHE_KEY);
+                    if (!raw) return null;
+                    var parsed = JSON.parse(raw);
+                    if (!parsed || typeof parsed.ts !== 'number') return null;
+                    if (Date.now() - parsed.ts > CACHE_TTL_MS) return null;
+                    return !!parsed.isOnline;
+                } catch (e) {
+                    return null;
+                }
+            }
+
+            function fetchTerminalStatus() {
+                $.ajax({
+                    url: 'api/terminal_status.php',
+                    data: { action: 'get_status' },
+                    dataType: 'json',
+                    timeout: 4000
+                }).done(function(response) {
+                    if (response && response.success && response.data) {
+                        var online = !!response.data.is_online;
+                        setTerminalStatus(online);
+                        saveCachedStatus(online);
+                    }
+                }).fail(function() {
+                    var cached = loadCachedStatus();
+                    if (cached !== null) {
+                        setTerminalStatus(cached);
+                    } else {
+                        setTerminalStatus(false);
+                    }
+                });
+            }
+
+            var cached = loadCachedStatus();
+            if (cached !== null) {
+                setTerminalStatus(cached);
+            }
+
+            fetchTerminalStatus();
+            setInterval(fetchTerminalStatus, 10000);
+        })();
+        
+        // Confirm Action
+        function confirmAction(title, text, callback) {
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#10b981',
+                cancelButtonColor: '#ef4444',
+                confirmButtonText: 'Yes, proceed',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed && callback) {
+                    callback();
+                }
+            });
+        }
+
+        // Page transitions (progressive enhancement)
+        (function () {
+            var root = document.documentElement;
+            var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (reduceMotion) return;
+
+            var content = document.querySelector('.content-wrapper');
+            if (!content) return;
+
+            root.classList.add('page-transition-enabled');
+
+            requestAnimationFrame(function () {
+                content.classList.add('page-enter');
+            });
+
+            window.addEventListener('pageshow', function () {
+                content.classList.add('page-enter');
+            });
+
+            function shouldHandleLink(link, event) {
+                if (!link || !link.href) return false;
+                if (link.hasAttribute('download')) return false;
+                if (link.target && link.target !== '_self') return false;
+                if (event.defaultPrevented) return false;
+                if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return false;
+                if (link.getAttribute('data-no-transition') !== null) return false;
+                var href = link.getAttribute('href') || '';
+                if (href.startsWith('#')) return false;
+                if (href.startsWith('mailto:') || href.startsWith('tel:')) return false;
+                try {
+                    var url = new URL(link.href, window.location.href);
+                    if (url.origin !== window.location.origin) return false;
+                } catch (e) {
+                    return false;
+                }
+                return true;
+            }
+
+            document.addEventListener('click', function (event) {
+                var link = event.target.closest('a');
+                if (!shouldHandleLink(link, event)) return;
+
+                event.preventDefault();
+                content.classList.remove('page-enter');
+                content.classList.add('page-exit');
+
+                window.setTimeout(function () {
+                    window.location.href = link.href;
+                }, 160);
+            });
+        })();
+    </script>
+</body>
+</html>

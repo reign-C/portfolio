@@ -28,7 +28,7 @@ Cool neutral base. One accent, taken from the subject: an amber status LED. It m
 | `--line` | `#DDE1E8` | Borders, separators |
 | `--text` | `#12161C` | Headings, body, primary buttons |
 | `--muted` | `#4A5361` | Secondary text |
-| `--subtle` | `#6B7482` | Captions, placeholders (large or non-essential only) |
+| `--subtle` | `#6A7280` | Captions, placeholders (large or non-essential only) |
 | `--led` | `#F2A900` | Status dots, focus accent, active indicators |
 
 ### Dark (follows system; also used for the demo stage in both modes)
@@ -221,7 +221,7 @@ The single signature element.
   --line: #DDE1E8;
   --text: #12161C;
   --muted: #4A5361;
-  --subtle: #6B7482;
+  --subtle: #6A7280;
   --led: #F2A900;
 
   --radius-sm: 6px;

@@ -1,29 +1,41 @@
 @import "tailwindcss";
 
 :root {
+  color-scheme: light;
   --bg: #f7f8fa;
   --surface: #ffffff;
   --sunken: #eef0f4;
   --line: #dde1e8;
   --text: #12161c;
   --muted: #4a5361;
-  --subtle: #6b7482;
+  --subtle: #6a7280;
   --led: #f2a900;
+
+  /* The contact band stays dark in both themes, so it carries its own pair. */
+  --stage: #12161c;
+  --stage-ink: #f7f8fa;
+  /* Demo wells: always dark for the same reason. */
+  --well: #1b222b;
+  --well-line: #2c3642;
+  --well-ink: #eceff3;
+  --well-muted: #a9b4c2;
+
+  --ring: var(--text);
 
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0e1116;
-    --surface: #151a21;
-    --sunken: #1b222b;
-    --line: #262e39;
-    --text: #eceff3;
-    --muted: #9aa5b4;
-    --subtle: #7f8a99;
-    --led: #f2b01e;
-  }
+/* Light is the default; dark is opt-in and remembered. */
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0e1116;
+  --surface: #151a21;
+  --sunken: #1b222b;
+  --line: #262e39;
+  --text: #eceff3;
+  --muted: #9aa5b4;
+  --subtle: #7f8a99;
+  --led: #f2b01e;
 }
 
 @theme inline {
@@ -35,6 +47,12 @@
   --color-muted: var(--muted);
   --color-subtle: var(--subtle);
   --color-led: var(--led);
+  --color-stage: var(--stage);
+  --color-stage-ink: var(--stage-ink);
+  --color-well: var(--well);
+  --color-well-line: var(--well-line);
+  --color-well-ink: var(--well-ink);
+  --color-well-muted: var(--well-muted);
 
   --font-sans: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-plex), ui-monospace, monospace;
@@ -51,12 +69,10 @@
     0 32px 64px -24px rgb(18 22 28 / 0.35), 0 8px 16px rgb(18 22 28 / 0.08);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --shadow-soft: none;
-    --shadow-card: none;
-    --shadow-stage: 0 0 0 1px var(--line);
-  }
+html[data-theme="dark"] {
+  --shadow-soft: none;
+  --shadow-card: none;
+  --shadow-stage: 0 0 0 1px var(--line);
 }
 
 @layer base {
@@ -92,7 +108,7 @@
   }
 
   :focus-visible {
-    outline: 2px solid var(--text);
+    outline: 2px solid var(--ring);
     outline-offset: 2px;
     box-shadow: 0 0 0 4px color-mix(in srgb, var(--led) 45%, transparent);
   }
@@ -106,13 +122,48 @@
     html {
       scroll-behavior: auto;
     }
+  }
+}
 
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.01ms !important;
-      transition-duration: 0.01ms !important;
-    }
+/* The always-dark band needs a ring that reads on it in the light theme too. */
+.on-dark {
+  --ring: #f7f8fa;
+}
+
+/* Sticky header covers the anchor target without this. */
+main section {
+  scroll-margin-top: 5rem;
+}
+
+/* Hero entrance: one staggered sequence per load, never replayed on scroll. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.rise {
+  animation: rise 520ms var(--ease) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise {
+    animation-name: fade;
+    animation-duration: 240ms;
   }
 }
 

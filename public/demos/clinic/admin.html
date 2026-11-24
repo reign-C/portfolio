@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Walk-in clinic - Admin</title>
+  <link rel="stylesheet" href="static/css/styles.css?v=demo" />
+  <link rel="stylesheet" href="static/css/replit-ui.css?v=demo" />
+<style>.admin-main__tabs,.rq-secondary-actions,.rq-manual-row,#resetAll,.rq-summary-side,#loginModal,#statsPanel{display:none!important}</style><style>html,body{overflow-x:hidden}</style></head>
+<body class="admin-screen rq-admin-page">
+  <div class="rq-admin-root">
+    <header class="rq-admin-header">
+      <div class="rq-admin-header-left">
+        <div class="rq-admin-header-brand">
+          <div class="rq-brand-logo"><svg viewBox="0 0 24 24" fill="currentColor" width="100%" height="100%"><path d="M19 10h-5V5c0-1.1-.9-2-2-2h-0c-1.1 0-2 .9-2 2v5H5c-1.1 0-2 .9-2 2h0c0 1.1.9 2 2 2h5v5c0 1.1.9 2 2 2h0c1.1 0 2-.9 2-2v-5h5c1.1 0 2-.9 2-2h0c0-1.1-.9-2-2-2z"></path></svg></div>
+          <div>
+            <div class="rq-admin-brand-name">Walk-in clinic</div>
+            <div class="rq-admin-brand-sub">Queue Command Center</div>
+          </div>
+        </div>
+        <div class="rq-admin-header-sep" aria-hidden="true"></div>
+        <nav class="admin-main__tabs" aria-label="Admin panels">
+          <button class="active" data-tab="services" type="button" aria-current="page">Dashboard</button>
+          <button data-tab="stats" type="button">Statistics</button>
+        </nav>
+      </div>
+
+      <div class="rq-admin-header-right">
+        <div class="med-conn-status" id="adminConnStatus" role="status" aria-live="polite">
+          <span class="med-conn-dot" aria-hidden="true"></span>
+          <span id="adminConnLabel">System Live</span>
+        </div>
+
+        <div class="rq-admin-clock">
+          <div id="adminTime">--:--:-- --</div>
+          <div id="adminDate">------</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="rq-admin-content">
+      <section id="servicesPanel" class="rq-services-panel">
+        <div class="rq-services-layout">
+          <div class="rq-services-left">
+            <div class="rq-service-grid">
+              
+              
+              
+              <article class="admin-service-card" data-service="GEN_CHECK">
+                <div class="rq-service-topline"></div>
+
+                <div class="rq-service-header">
+                  <div class="rq-service-head-left">
+                    <div class="rq-service-icon">
+                      
+  <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M22 12h-4l-3 9L9 3l-3 9H2'></path></svg>
+
+                    </div>
+                    <div>
+                      <h3>General Check-up</h3>
+                      <div class="rq-service-meta">
+                        <span class="rq-live-dot">Active</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="rq-service-mini">
+                    <div class="rq-service-mini-box" id="waiting-cell-GEN_CHECK">
+                      <span>Wait</span>
+                      <strong id="waiting-GEN_CHECK">0</strong>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="rq-now-serving" id="now-serving-wrap-GEN_CHECK">
+                  <div class="rq-now-serving-label">Now Serving</div>
+                  <div class="rq-now-serving-ticket" id="current-GEN_CHECK">---</div>
+                  <div class="rq-next-line">
+                    <span>Next:</span>
+                    <div class="rq-next-ticket" id="next-GEN_CHECK">---</div>
+                  </div>
+                </div>
+
+                <div class="rq-service-actions">
+                  <button class="admin-action admin-action--next" data-action="next" type="button">
+                    <span class="admin-action__text">Call Next</span>
+                  </button>
+
+                  <div class="rq-secondary-actions">
+                    <div class="admin-recall-split">
+                      <button class="admin-action admin-action--ghost admin-recall-split__main" type="button" aria-expanded="false" aria-controls="skipped-menu-GEN_CHECK">Recall</button>
+                      <div class="admin-recall-split__menu" id="skipped-menu-GEN_CHECK" hidden>
+                      </div>
+                    </div>
+                    <button class="admin-action admin-action--ghost" data-action="pause" type="button">Pause</button>
+                    <button class="admin-action admin-action--ghost" data-action="skip" type="button">Skip</button>
+                    <button class="admin-action admin-action--ghost admin-action--reset-service" data-action="reset-service" type="button" title="Reset this service to 001">Reset Queue</button>
+                  </div>
+
+                  <div class="rq-manual-row">
+                    <input id="ticket-input-GEN_CHECK" type="number" min="1" class="admin-call-input" placeholder="Ticket #" />
+                    <button class="admin-action admin-action--manual admin-call-btn" type="button">Call #</button>
+                  </div>
+
+                  <p class="admin-inline-feedback" id="adminFeedback-GEN_CHECK" hidden role="status" aria-live="polite"></p>
+                </div>
+
+                <div hidden>
+                  <span id="called-GEN_CHECK">0</span>
+                  <span id="served-GEN_CHECK">0</span>
+                  <span id="skipped-GEN_CHECK">0</span>
+                  <span id="queue-GEN_CHECK"></span>
+                  <span id="svc-state-GEN_CHECK"></span>
+                  <span id="svc-state-text-GEN_CHECK">ACTIVE</span>
+                </div>
+              </article>
+              
+              
+              
+              
+              <article class="admin-service-card" data-service="LABORATORY">
+                <div class="rq-service-topline"></div>
+
+                <div class="rq-service-header">
+                  <div class="rq-service-head-left">
+                    <div class="rq-service-icon">
+                      
+  <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M9 3h6M10 9h4M3 21h18M7 21l3-12V3M17 21l-3-12V3'></path></svg>
+
+                    </div>
+                    <div>
+                      <h3>Laboratory</h3>
+                      <div class="rq-service-meta">
+                        <span class="rq-live-dot">Active</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="rq-service-mini">
+                    <div class="rq-service-mini-box" id="waiting-cell-LABORATORY">
+                      <span>Wait</span>
+                      <strong id="waiting-LABORATORY">0</strong>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="rq-now-serving" id="now-serving-wrap-LABORATORY">
+                  <div class="rq-now-serving-label">Now Serving</div>
+                  <div class="rq-now-serving-ticket" id="current-LABORATORY">---</div>
+                  <div class="rq-next-line">
+                    <span>Next:</span>
+                    <div class="rq-next-ticket" id="next-LABORATORY">---</div>
+                  </div>
+                </div>
+
+                <div class="rq-service-actions">
+                  <button class="admin-action admin-action--next" data-action="next" type="button">
+                    <span class="admin-action__text">Call Next</span>
+                  </button>
+
+                  <div class="rq-secondary-actions">
+                    <div class="admin-recall-split">
+                      <button class="admin-action admin-action--ghost admin-recall-split__main" type="button" aria-expanded="false" aria-controls="skipped-menu-LABORATORY">Recall</button>
+                      <div class="admin-recall-split__menu" id="skipped-menu-LABORATORY" hidden>
+                      </div>
+                    </div>
+                    <button class="admin-action admin-action--ghost" data-action="pause" type="button">Pause</button>
+                    <button class="admin-action admin-action--ghost" data-action="skip" type="button">Skip</button>
+                    <button class="admin-action admin-action--ghost admin-action--reset-service" data-action="reset-service" type="button" title="Reset this service to 001">Reset Queue</button>
+                  </div>
+
+                  <div class="rq-manual-row">
+                    <input id="ticket-input-LABORATORY" type="number" min="1" class="admin-call-input" placeholder="Ticket #" />
+                    <button class="admin-action admin-action--manual admin-call-btn" type="button">Call #</button>
+                  </div>
+
+                  <p class="admin-inline-feedback" id="adminFeedback-LABORATORY" hidden role="status" aria-live="polite"></p>
+                </div>
+
+                <div hidden>
+                  <span id="called-LABORATORY">0</span>
+                  <span id="served-LABORATORY">0</span>
+                  <span id="skipped-LABORATORY">0</span>
+                  <span id="queue-LABORATORY"></span>
+                  <span id="svc-state-LABORATORY"></span>
+                  <span id="svc-state-text-LABORATORY">ACTIVE</span>
+                </div>
+              </article>
+              
+              
+              
+              
+              <article class="admin-service-card" data-service="FAMILY_PLAN">
+                <div class="rq-service-topline"></div>
+
+                <div class="rq-service-header">
+                  <div class="rq-service-head-left">
+                    <div class="rq-service-icon">
+                      
+  <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2'></path><circle cx='9' cy='7' r='4'></circle><path d='M23 21v-2a4 4 0 0 0-3-3.87'></path><path d='M16 3.13a4 4 0 0 1 0 7.75'></path></svg>
+
+                    </div>
+                    <div>
+                      <h3>Family Planning</h3>
+                      <div class="rq-service-meta">
+                        <span class="rq-live-dot">Active</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="rq-service-mini">
+                    <div class="rq-service-mini-box" id="waiting-cell-FAMILY_PLAN">
+                      <span>Wait</span>
+                      <strong id="waiting-FAMILY_PLAN">0</strong>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="rq-now-serving" id="now-serving-wrap-FAMILY_PLAN">
+                  <div class="rq-now-serving-label">Now Serving</div>
+                  <div class="rq-now-serving-ticket" id="current-FAMILY_PLAN">---</div>
+                  <div class="rq-next-line">
+                    <span>Next:</span>
+                    <div class="rq-next-ticket" id="next-FAMILY_PLAN">---</div>
+                  </div>
+                </div>
+
+                <div class="rq-service-actions">
+                  <button class="admin-action admin-action--next" data-action="next" type="button">
+                    <span class="admin-action__text">Call Next</span>
+                  </button>
+
+                  <div class="rq-secondary-actions">
+                    <div class="admin-recall-split">
+                      <button class="admin-action admin-action--ghost admin-recall-split__main" type="button" aria-expanded="false" aria-controls="skipped-menu-FAMILY_PLAN">Recall</button>
+                      <div class="admin-recall-split__menu" id="skipped-menu-FAMILY_PLAN" hidden>
+                      </div>
+                    </div>
+                    <button class="admin-action admin-action--ghost" data-action="pause" type="button">Pause</button>
+                    <button class="admin-action admin-action--ghost" data-action="skip" type="button">Skip</button>
+                    <button class="admin-action admin-action--ghost admin-action--reset-service" data-action="reset-service" type="button" title="Reset this service to 001">Reset Queue</button>
+                  </div>
+
+                  <div class="rq-manual-row">
+                    <input id="ticket-input-FAMILY_PLAN" type="number" min="1" class="admin-call-input" placeholder="Ticket #" />
+                    <button class="admin-action admin-action--manual admin-call-btn" type="button">Call #</button>
+                  </div>
+
+                  <p class="admin-inline-feedback" id="adminFeedback-FAMILY_PLAN" hidden role="status" aria-live="polite"></p>
+                </div>
+
+                <div hidden>
+                  <span id="called-FAMILY_PLAN">0</span>
+                  <span id="served-FAMILY_PLAN">0</span>
+                  <span id="skipped-FAMILY_PLAN">0</span>
+                  <span id="queue-FAMILY_PLAN"></span>
+                  <span id="svc-state-FAMILY_PLAN"></span>
+                  <span id="svc-state-text-FAMILY_PLAN">ACTIVE</span>
+                </div>
+              </article>
+              
+              
+              
+              
+              <article class="admin-service-card" data-service="BLOOD_SERVICE">
+                <div class="rq-service-topline"></div>
+
+                <div class="rq-service-header">
+                  <div class="rq-service-head-left">
+                    <div class="rq-service-icon">
+                      
+  <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z'></path></svg>
+
+                    </div>
+                    <div>
+                      <h3>Blood Service</h3>
+                      <div class="rq-service-meta">
+                        <span class="rq-live-dot">Active</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="rq-service-mini">
+                    <div class="rq-service-mini-box" id="waiting-cell-BLOOD_SERVICE">
+                      <span>Wait</span>
+                      <strong id="waiting-BLOOD_SERVICE">0</strong>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="rq-now-serving" id="now-serving-wrap-BLOOD_SERVICE">
+                  <div class="rq-now-serving-label">Now Serving</div>
+                  <div class="rq-now-serving-ticket" id="current-BLOOD_SERVICE">---</div>
+                  <div class="rq-next-line">
+                    <span>Next:</span>
+                    <div class="rq-next-ticket" id="next-BLOOD_SERVICE">---</div>
+                  </div>
+                </div>
+
+                <div class="rq-service-actions">
+                  <button class="admin-action admin-action--next" data-action="next" type="button">
+                    <span class="admin-action__text">Call Next</span>
+                  </button>
+
+                  <div class="rq-secondary-actions">
+                    <div class="admin-recall-split">
+                      <button class="admin-action admin-action--ghost admin-recall-split__main" type="button" aria-expanded="false" aria-controls="skipped-menu-BLOOD_SERVICE">Recall</button>
+                      <div class="admin-recall-split__menu" id="skipped-menu-BLOOD_SERVICE" hidden>
+                      </div>
+                    </div>
+                    <button class="admin-action admin-action--ghost" data-action="pause" type="button">Pause</button>
+                    <button class="admin-action admin-action--ghost" data-action="skip" type="button">Skip</button>
+                    <button class="admin-action admin-action--ghost admin-action--reset-service" data-action="reset-service" type="button" title="Reset this service to 001">Reset Queue</button>
+                  </div>
+
+                  <div class="rq-manual-row">
+                    <input id="ticket-input-BLOOD_SERVICE" type="number" min="1" class="admin-call-input" placeholder="Ticket #" />
+                    <button class="admin-action admin-action--manual admin-call-btn" type="button">Call #</button>
+                  </div>
+
+                  <p class="admin-inline-feedback" id="adminFeedback-BLOOD_SERVICE" hidden role="status" aria-live="polite"></p>
+                </div>
+
+                <div hidden>
+                  <span id="called-BLOOD_SERVICE">0</span>
+                  <span id="served-BLOOD_SERVICE">0</span>
+                  <span id="skipped-BLOOD_SERVICE">0</span>
+                  <span id="queue-BLOOD_SERVICE"></span>
+                  <span id="svc-state-BLOOD_SERVICE"></span>
+                  <span id="svc-state-text-BLOOD_SERVICE">ACTIVE</span>
+                </div>
+              </article>
+              
+              
+              
+              
+              <article class="admin-service-card" data-service="ULTRASOUND">
+                <div class="rq-service-topline"></div>
+
+                <div class="rq-service-header">
+                  <div class="rq-service-head-left">
+                    <div class="rq-service-icon">
+                      
+  <img src='assets/ultrasound.png' alt='Ultrasound icon' class='rq-service-icon-image' />
+
+                    </div>
+                    <div>
+                      <h3>Ultrasound</h3>
+                      <div class="rq-service-meta">
+                        <span class="rq-live-dot">Active</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="rq-service-mini">
+                    <div class="rq-service-mini-box" id="waiting-cell-ULTRASOUND">
+                      <span>Wait</span>
+                      <strong id="waiting-ULTRASOUND">0</strong>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="rq-now-serving" id="now-serving-wrap-ULTRASOUND">
+                  <div class="rq-now-serving-label">Now Serving</div>
+                  <div class="rq-now-serving-ticket" id="current-ULTRASOUND">---</div>
+                  <div class="rq-next-line">
+                    <span>Next:</span>
+                    <div class="rq-next-ticket" id="next-ULTRASOUND">---</div>
+                  </div>
+                </div>
+
+                <div class="rq-service-actions">
+                  <button class="admin-action admin-action--next" data-action="next" type="button">
+                    <span class="admin-action__text">Call Next</span>
+                  </button>
+
+                  <div class="rq-secondary-actions">
+                    <div class="admin-recall-split">
+                      <button class="admin-action admin-action--ghost admin-recall-split__main" type="button" aria-expanded="false" aria-controls="skipped-menu-ULTRASOUND">Recall</button>
+                      <div class="admin-recall-split__menu" id="skipped-menu-ULTRASOUND" hidden>
+                      </div>
+                    </div>
+                    <button class="admin-action admin-action--ghost" data-action="pause" type="button">Pause</button>
+                    <button class="admin-action admin-action--ghost" data-action="skip" type="button">Skip</button>
+                    <button class="admin-action admin-action--ghost admin-action--reset-service" data-action="reset-service" type="button" title="Reset this service to 001">Reset Queue</button>
+                  </div>
+
+                  <div class="rq-manual-row">
+                    <input id="ticket-input-ULTRASOUND" type="number" min="1" class="admin-call-input" placeholder="Ticket #" />
+                    <button class="admin-action admin-action--manual admin-call-btn" type="button">Call #</button>
+                  </div>
+
+                  <p class="admin-inline-feedback" id="adminFeedback-ULTRASOUND" hidden role="status" aria-live="polite"></p>
+                </div>
+
+                <div hidden>
+                  <span id="called-ULTRASOUND">0</span>
+                  <span id="served-ULTRASOUND">0</span>
+                  <span id="skipped-ULTRASOUND">0</span>
+                  <span id="queue-ULTRASOUND"></span>
+                  <span id="svc-state-ULTRASOUND"></span>
+                  <span id="svc-state-text-ULTRASOUND">ACTIVE</span>
+                </div>
+              </article>
+              
+              
+            </div>
+
+            <details class="rq-activity" open><summary class="rq-activity-head" style="list-style: none; cursor: pointer; user-select: none;">
+                <h3>Service Activity Log</h3>
+                <div class="admin-pagination">
+                  <button id="logPrev" type="button" aria-label="Previous page">&larr;</button>
+                  <span id="logPageInfo">Page 1 of 1</span>
+                  <button id="logNext" type="button" aria-label="Next page">&rarr;</button>
+                </summary>
+              
+
+              <div class="rq-activity-table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Time</th>
+                      <th>Ticket</th>
+                      <th>Service</th>
+                      <th>Action</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="activityLogBody"></tbody>
+                </table>
+              </div>
+            </details>
+          </div>
+
+          <aside class="rq-summary-side">
+            <div class="rq-summary-head">Today's Summary</div>
+            <div class="rq-summary-body">
+              <div class="rq-summary-card rq-total">
+                <div>
+                  <h4>Total Served</h4>
+                  <strong id="sidebarServed">0</strong>
+                </div>
+              </div>
+
+              <div class="rq-summary-card rq-wait">
+                <div>
+                  <h4>Total Waiting</h4>
+                  <strong id="sidebarTotalWaiting">0</strong>
+                </div>
+              </div>
+
+              <div class="rq-summary-card rq-peak">
+                <div>
+                  <h4>Peak Hour</h4>
+                  <strong id="sidebarPeakHour">--</strong>
+                </div>
+              </div>
+
+              <div class="rq-summary-meta">
+                <h4>System Uptime</h4>
+                <p id="sidebarUptime">--</p>
+              </div>
+
+              <div class="rq-summary-meta rq-breakdown">
+                <h4>Service Breakdown</h4>
+                <div id="sidebarBreakdown" class="rq-breakdown-list"></div>
+              </div>
+            </div>
+
+            <div class="rq-summary-foot">
+              <div class="rq-audio-row">
+                <span>TV Audio: <em id="adminAudioState">ON</em></span>
+                <input id="adminAudioToggle" type="checkbox" checked />
+              </div>
+              <button id="adminLogoutBtn" class="med-btn med-btn-ghost" type="button">Sign Out</button>
+              <button id="resetAll" class="admin-reset-btn" type="button">End of Day Reset</button>
+              <div id="todaySummary" hidden></div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="statsPanel" hidden>
+        <div class="rq-stats-grid">
+          <div class="rq-stat-card"><p>Total Waiting</p><strong id="stat-waiting">0</strong></div>
+          <div class="rq-stat-card"><p>Total Called</p><strong id="stat-called">0</strong></div>
+          <div class="rq-stat-card"><p>Total Served</p><strong id="stat-served">0</strong></div>
+          <div class="rq-stat-card"><p>Total Skipped</p><strong id="stat-skipped">0</strong></div>
+        </div>
+
+        <table class="rq-stats-table">
+          <thead>
+            <tr>
+              <th>Service</th>
+              <th>Waiting</th>
+              <th>Called</th>
+              <th>Served</th>
+              <th>Skipped</th>
+            </tr>
+          </thead>
+          <tbody id="statsTableBody"></tbody>
+        </table>
+      </section>
+    </div>
+  </div>
+
+  <section class="admin-modal admin-login-modal" id="loginModal" hidden>
+    <div class="admin-modal__card admin-modal__card--login">
+      <h3 id="adminLoginTitle">Admin Login</h3>
+      <p id="adminLoginSubtitle">Sign in to access queue controls and settings.</p>
+      <form id="adminLoginForm" class="admin-login-form">
+        <label for="adminLoginUsername">Username</label>
+        <input id="adminLoginUsername" name="username" type="text" autocomplete="username" required class="med-input" />
+        <label for="adminLoginPassword">Password</label>
+        <input id="adminLoginPassword" name="password" type="password" autocomplete="current-password" required class="med-input" />
+        <div id="adminCreateFields" hidden>
+          <label for="adminLoginPasswordConfirm">Confirm Password</label>
+          <input id="adminLoginPasswordConfirm" name="password_confirm" type="password" autocomplete="new-password" class="med-input" />
+          <label for="adminCreatePassword">Account Creation Password</label>
+          <input id="adminCreatePassword" name="create_password" type="password" autocomplete="off" class="med-input" />
+        </div>
+        <p id="adminLoginError" class="admin-login-error" hidden></p>
+        <div class="admin-login-actions">
+          <button id="adminLoginSubmit" type="submit" class="med-btn med-btn-primary">Sign In</button>
+          <button id="adminLoginToggleMode" type="button" class="med-btn med-btn-ghost">Create Account</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="admin-modal" id="resetModal" hidden>
+    <div class="admin-modal__card">
+      <h3>End of Day Reset</h3>
+      <p>This will permanently archive today's queue data.</p>
+      <form class="admin-reset-form" id="resetForm">
+        <p>Please type <strong>RESET TODAY</strong> below:</p>
+        <input id="resetConfirmInput" type="text" autocomplete="off" class="med-input" />
+        <div class="admin-modal__actions">
+          <button id="resetCancelBtn" class="med-btn med-btn-ghost" type="button">Cancel</button>
+          <button id="resetConfirmBtn" class="med-btn med-btn-danger" type="button" disabled>Reset System</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="admin-modal" id="forbiddenModal" hidden>
+    <div class="admin-modal__card">
+      <h3>Admin Access Blocked</h3>
+      <p id="forbiddenModalMessage">This PC is not allowed for admin access. Check ADMIN_PC_IP and ADMIN2_PC_IP settings.</p>
+      <div class="admin-modal__actions">
+        <button id="forbiddenRetryBtn" class="med-btn med-btn-primary" type="button">Retry Connection</button>
+      </div>
+    </div>
+  </section>
+
+  <script>window.CLINIC_PAGE="admin"</script>
+<script src="queue.js"></script>
+</body>
+</html>
+
+
+
+
+

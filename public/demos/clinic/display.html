@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Walk-in clinic - Queue Display</title>
+  <link rel="stylesheet" href="static/css/styles.css?v=demo" />
+  <link rel="stylesheet" href="static/css/replit-ui.css?v=demo" />
+<style>html,body{overflow-x:hidden}</style></head>
+<body class="display-screen rq-display-page">
+  <div class="tv-wrap">
+    <header class="tv-topbar">
+      <div class="tv-brand">
+        <div class="tv-brand__icon"><svg viewBox="0 0 24 24" fill="currentColor" width="100%" height="100%"><path d="M19 10h-5V5c0-1.1-.9-2-2-2h-0c-1.1 0-2 .9-2 2v5H5c-1.1 0-2 .9-2 2h0c0 1.1.9 2 2 2h5v5c0 1.1.9 2 2 2h0c1.1 0 2-.9 2-2v-5h5c1.1 0 2-.9 2-2h0c0-1.1-.9-2-2-2z"></path></svg></div>
+        <div>
+          <h1 class="tv-brand__title">WALK-IN CLINIC</h1>
+        </div>
+      </div>
+
+      <div class="tv-callout" id="tvCallout" role="status" aria-live="polite">
+        <span class="rq-callout-dot" aria-hidden="true"></span>
+        <span id="tvCalloutText">NOW CALLING - ---</span>
+      </div>
+
+      <div class="tv-topbar__right">
+        <div class="tv-now-indicator" role="status" aria-live="polite">
+          <span id="displayStatus">Connected</span>
+        </div>
+        <div class="tv-divider"></div>
+        <div class="tv-now-indicator" id="tvAudioState" role="status" aria-live="polite">
+          <span id="tvAudioStateText">Audio: ON</span>
+        </div>
+        <div class="tv-divider"></div>
+        <div class="tv-clock">
+          <div class="tv-clock__value" id="currentTime">--:--:-- --</div>
+          <div class="tv-clock__date" id="currentDate">------</div>
+        </div>
+      </div>
+    </header>
+
+    <main class="tv-grid">
+      
+      
+      <article class="tv-card tv-card--gen_check" id="tv-card-GEN_CHECK">
+        <div class="tv-card__accent"></div>
+
+        <header class="tv-card__header">
+          <div class="tv-card__icon">
+  <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M22 12h-4l-3 9L9 3l-3 9H2'></path></svg>
+</div>
+          <h2>General Check-up</h2>
+        </header>
+
+        <section class="tv-current">
+          <div class="tv-current__label">Now Serving</div>
+          <div class="tv-current__value" id="disp-current-GEN_CHECK">---</div>
+        </section>
+
+        <section class="tv-service-info">
+          <div class="tv-stat-box tv-stat-box--metric">
+            <small>Waiting</small>
+            <strong id="disp-count-GEN_CHECK">0</strong>
+          </div>
+        </section>
+
+        <div class="tv-proceed">Proceed to Information Desk</div>
+
+        <section class="tv-upcoming">
+          <div class="tv-upcoming__title">Upcoming Queue</div>
+
+          <div class="tv-upcoming__row">
+            <span class="tv-upcoming__number" id="disp-next-GEN_CHECK">---</span>
+            <span class="tv-upcoming__badge tv-upcoming__badge--next" id="disp-next-badge-GEN_CHECK">NEXT</span>
+          </div>
+
+          <div class="tv-upcoming__row">
+            <span class="tv-upcoming__number" id="disp-waiting-a-GEN_CHECK">---</span>
+            <span class="tv-upcoming__badge tv-upcoming__badge--wait">WAITING</span>
+          </div>
+
+          <div class="tv-upcoming__row">
+            <span class="tv-upcoming__number" id="disp-waiting-b-GEN_CHECK">---</span>
+            <span class="tv-upcoming__badge tv-upcoming__badge--wait">WAITING</span>
+          </div>
+
+          <span id="disp-called-GEN_CHECK" hidden>0</span>
+        </section>
+      </article>
+      
+      
+      
+      <article class="tv-card tv-card--laboratory" id="tv-card-LABORATORY">
+        <div class="tv-card__accent"></div>
+
+        <header class="tv-card__header">
+          <div class="tv-card__icon">
+  <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M9 3h6M10 9h4M3 21h18M7 21l3-12V3M17 21l-3-12V3'></path></svg>
+</div>
+          <h2>Laboratory</h2>
+        </header>
+
+        <section class="tv-current">
+          <div class="tv-current__label">Now Serving</div>
+          <div class="tv-current__value" id="disp-current-LABORATORY">---</div>
+        </section>
+
+        <section class="tv-service-info">
+          <div class="tv-stat-box tv-stat-box--metric">
+            <small>Waiting</small>
+            <strong id="disp-count-LABORATORY">0</strong>
+          </div>
+        </section>
+
+        <div class="tv-proceed">Proceed to Information Desk</div>
+
+        <section class="tv-upcoming">
+          <div class="tv-upcoming__title">Upcoming Queue</div>
+
+          <div class="tv-upcoming__row">
+            <span class="tv-upcoming__number" id="disp-next-LABORATORY">---</span>
+            <span class="tv-upcoming__badge tv-upcoming__badge--next" id="disp-next-badge-LABORATORY">NEXT</span>
+          </div>
+
+          <div class="tv-upcoming__row">
+            <span class="tv-upcoming__number" id="disp-waiting-a-LABORATORY">---</span>
+            <span class="tv-upcoming__badge tv-upcoming__badge--wait">WAITING</span>
+          </div>
+
+          <div class="tv-upcoming__row">
+            <span class="tv-upcoming__number" id="disp-waiting-b-LABORATORY">---</span>
+            <span class="tv-upcoming__badge tv-upcoming__badge--wait">WAITING</span>
+          </div>
+
+          <span id="disp-called-LABORATORY" hidden>0</span>
+        </section>
+      </article>
+      
+      
+      
+      <article class="tv-card tv-card--family_plan" id="tv-card-FAMILY_PLAN">
+        <div class="tv-card__accent"></div>
+
+        <header class="tv-card__header">
+          <div class="tv-card__icon">
+  <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2'></path><circle cx='9' cy='7' r='4'></circle><path d='M23 21v-2a4 4 0 0 0-3-3.87'></path><path d='M16 3.13a4 4 0 0 1 0 7.75'></path></svg>
+</div>
+          <h2>Family Planning</h2>
+        </header>
+
+        <section class="tv-current">
+          <div class="tv-current__label">Now Serving</div>
+          <div class="tv-current__value" id="disp-current-FAMILY_PLAN">---</div>
+        </section>
+
+        <section class="tv-service-info">
+          <div class="tv-stat-box tv-stat-box--metric">
+            <small>Waiting</small>
+            <strong id="disp-count-FAMILY_PLAN">0</strong>
+          </div>
+        </section>
+
+        <div class="tv-proceed">Proceed to Information Desk</div>
+
+        <section class="tv-upcoming">
+          <div class="tv-upcoming__title">Upcoming Queue</div>
+
+          <div class="tv-upcoming__row">
+            <span class="tv-upcoming__number" id="disp-next-FAMILY_PLAN">---</span>
+            <span class="tv-upcoming__badge tv-upcoming__badge--next" id="disp-next-badge-FAMILY_PLAN">NEXT</span>
+          </div>
+
+          <div class="tv-upcoming__row">
+            <span class="tv-upcoming__number" id="disp-waiting-a-FAMILY_PLAN">---</span>
+            <span class="tv-upcoming__badge tv-upcoming__badge--wait">WAITING</span>
+          </div>
+
+          <div class="tv-upcoming__row">
+            <span class="tv-upcoming__number" id="disp-waiting-b-FAMILY_PLAN">---</span>
+            <span class="tv-upcoming__badge tv-upcoming__badge--wait">WAITING</span>
+          </div>
+
+          <span id="disp-called-FAMILY_PLAN" hidden>0</span>
+        </section>
+      </article>
+      
+      
+      
+      <article class="tv-card tv-card--blood_service" id="tv-card-BLOOD_SERVICE">
+        <div class="tv-card__accent"></div>
+
+        <header class="tv-card__header">
+          <div class="tv-card__icon">
+  <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z'></path></svg>
+</div>
+          <h2>Blood Service</h2>
+        </header>
+
+        <section class="tv-current">
+          <div class="tv-current__label">Now Serving</div>
+          <div class="tv-current__value" id="disp-current-BLOOD_SERVICE">---</div>
+        </section>
+
+        <section class="tv-service-info">
+          <div class="tv-stat-box tv-stat-box--metric">
+            <small>Waiting</small>
+            <strong id="disp-count-BLOOD_SERVICE">0</strong>
+          </div>
+        </section>
+
+        <div class="tv-proceed">Proceed to Information Desk</div>
+
+        <section class="tv-upcoming">
+          <div class="tv-upcoming__title">Upcoming Queue</div>
+
+          <div class="tv-upcoming__row">
+            <span class="tv-upcoming__number" id="disp-next-BLOOD_SERVICE">---</span>
+            <span class="tv-upcoming__badge tv-upcoming__badge--next" id="disp-next-badge-BLOOD_SERVICE">NEXT</span>
+          </div>
+
+          <div class="tv-upcoming__row">
+            <span class="tv-upcoming__number" id="disp-waiting-a-BLOOD_SERVICE">---</span>
+            <span class="tv-upcoming__badge tv-upcoming__badge--wait">WAITING</span>
+          </div>
+
+          <div class="tv-upcoming__row">
+            <span class="tv-upcoming__number" id="disp-waiting-b-BLOOD_SERVICE">---</span>
+            <span class="tv-upcoming__badge tv-upcoming__badge--wait">WAITING</span>
+          </div>
+
+          <span id="disp-called-BLOOD_SERVICE" hidden>0</span>
+        </section>
+      </article>
+      
+      
+      
+      <article class="tv-card tv-card--ultrasound" id="tv-card-ULTRASOUND">
+        <div class="tv-card__accent"></div>
+
+        <header class="tv-card__header">
+          <div class="tv-card__icon">
+  <img src='assets/ultrasound.png' alt='Ultrasound icon' class='tv-card__icon-image' />
+</div>
+          <h2>Ultrasound</h2>
+        </header>
+
+        <section class="tv-current">
+          <div class="tv-current__label">Now Serving</div>
+          <div class="tv-current__value" id="disp-current-ULTRASOUND">---</div>
+        </section>
+
+        <section class="tv-service-info">
+          <div class="tv-stat-box tv-stat-box--metric">
+            <small>Waiting</small>
+            <strong id="disp-count-ULTRASOUND">0</strong>
+          </div>
+        </section>
+
+        <div class="tv-proceed">Proceed to Information Desk</div>
+
+        <section class="tv-upcoming">
+          <div class="tv-upcoming__title">Upcoming Queue</div>
+
+          <div class="tv-upcoming__row">
+            <span class="tv-upcoming__number" id="disp-next-ULTRASOUND">---</span>
+            <span class="tv-upcoming__badge tv-upcoming__badge--next" id="disp-next-badge-ULTRASOUND">NEXT</span>
+          </div>
+
+          <div class="tv-upcoming__row">
+            <span class="tv-upcoming__number" id="disp-waiting-a-ULTRASOUND">---</span>
+            <span class="tv-upcoming__badge tv-upcoming__badge--wait">WAITING</span>
+          </div>
+
+          <div class="tv-upcoming__row">
+            <span class="tv-upcoming__number" id="disp-waiting-b-ULTRASOUND">---</span>
+            <span class="tv-upcoming__badge tv-upcoming__badge--wait">WAITING</span>
+          </div>
+
+          <span id="disp-called-ULTRASOUND" hidden>0</span>
+        </section>
+      </article>
+      
+      
+    </main>
+  </div>
+
+  <script>window.CLINIC_PAGE="display"</script>
+<script src="queue.js"></script>
+</body>
+</html>
+
+

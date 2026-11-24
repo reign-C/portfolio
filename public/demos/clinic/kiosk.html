@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Walk-in clinic - Kiosk</title>
+  <link rel="stylesheet" href="static/css/styles.css?v=demo" />
+  <link rel="stylesheet" href="static/css/replit-ui.css?v=demo" />
+<style>html,body{overflow-x:hidden}</style></head>
+<body class="kiosk-screen rq-kiosk-page">
+  <canvas id="kioskGradient" class="kiosk-gradient" aria-hidden="true"></canvas>
+
+  <div class="kiosk-v2">
+    <header class="kiosk-v2__topbar">
+      <div class="kiosk-v2__brand">
+        <div class="rq-brand-logo"><svg viewBox="0 0 24 24" fill="currentColor" width="100%" height="100%"><path d="M19 10h-5V5c0-1.1-.9-2-2-2h-0c-1.1 0-2 .9-2 2v5H5c-1.1 0-2 .9-2 2h0c0 1.1.9 2 2 2h5v5c0 1.1.9 2 2 2h0c1.1 0 2-.9 2-2v-5h5c1.1 0 2-.9 2-2h0c0-1.1-.9-2-2-2z"></path></svg></div>
+        <div>
+          <div class="kiosk-v2__brand-title">WALK-IN CLINIC</div>
+          <div class="kiosk-v2__brand-sub">QUEUE COMMAND CENTER</div>
+        </div>
+      </div>
+    </header>
+
+    <main class="kiosk-v2__main">
+      <section class="kiosk-v2__hero-shell kiosk-v2__hero">
+        <div class="kiosk-v2__hero-copy">
+          <div class="kiosk-v2__facility">Self-Service Ticketing</div>
+          <p>Welcome. Choose a service and wait for your call on the display.</p>
+        </div>
+
+        <figure class="kiosk-v2__hero-art">
+          <img src="assets/doctor.webp" alt="Clinic doctor illustration" />
+        </figure>
+      </section>
+
+      <div id="kioskPrinterPill" class="rq-kiosk-printer kiosk-printer-pill" hidden>Printer is not ready. Please wait.</div>
+      <div id="kioskNotice" class="kiosk-notice" role="status" aria-live="polite" hidden></div>
+
+      <section class="kiosk-live-bar" aria-label="Now calling" role="status" aria-live="polite">
+        <div class="kiosk-live-bar__label-fixed">NOW CALLING</div>
+        <div class="kiosk-live-bar__viewport">
+          <div class="kiosk-live-bar__track">
+            <div id="kioskLiveBarContent" class="kiosk-live-bar__content"></div>
+            <div id="kioskLiveBarContentClone" class="kiosk-live-bar__content" aria-hidden="true"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="kiosk-v2__grid">
+        
+        
+        <article class="kiosk-card kiosk-card--gen_check" data-service="GEN_CHECK" role="button" tabindex="0" aria-label="Get queue number for General Check-up">
+          <div class="kiosk-card__ticket-curtain" aria-live="polite" aria-atomic="true">
+            <div>
+              <div class="kiosk-card__ticket-curtain-label">Your Queue Number Is</div>
+              <div class="kiosk-card__ticket-curtain-number" data-ticket-number="GEN_CHECK">---</div>
+              <div class="kiosk-card__ticket-curtain-note">Please wait for your call on the display screen.</div>
+            </div>
+          </div>
+
+          <div class="kiosk-card__body">
+            <div class="kiosk-card__hero">
+              <div class="kiosk-card__icon-wrap">
+                
+                <svg class="kiosk-svg kiosk-svg--lg kiosk-card__icon" viewBox="0 0 24 24" aria-hidden="true">
+                  
+                  <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                  
+                </svg>
+                
+              </div>
+              <h2>General Check-up</h2>
+            </div>
+
+            <div class="kiosk-card__stats">
+              <div class="kiosk-card__pill">
+                <div class="kiosk-card__pill-label">Waiting</div>
+                <div class="kiosk-card__pill-value" data-waiting="GEN_CHECK">0</div>
+              </div>
+              <div class="kiosk-card__pill">
+                <div class="kiosk-card__pill-label">Now Serving</div>
+                <div class="kiosk-card__pill-value"><span data-current="GEN_CHECK">---</span></div>
+              </div>
+            </div>
+
+            <button class="kiosk-card__action" type="button" tabindex="-1" aria-hidden="true">GET QUEUE NUMBER</button>
+          </div>
+        </article>
+        
+        
+        
+        <article class="kiosk-card kiosk-card--laboratory" data-service="LABORATORY" role="button" tabindex="0" aria-label="Get queue number for Laboratory">
+          <div class="kiosk-card__ticket-curtain" aria-live="polite" aria-atomic="true">
+            <div>
+              <div class="kiosk-card__ticket-curtain-label">Your Queue Number Is</div>
+              <div class="kiosk-card__ticket-curtain-number" data-ticket-number="LABORATORY">---</div>
+              <div class="kiosk-card__ticket-curtain-note">Please wait for your call on the display screen.</div>
+            </div>
+          </div>
+
+          <div class="kiosk-card__body">
+            <div class="kiosk-card__hero">
+              <div class="kiosk-card__icon-wrap">
+                
+                <svg class="kiosk-svg kiosk-svg--lg kiosk-card__icon" viewBox="0 0 24 24" aria-hidden="true">
+                  
+                  <path d="M9 3h6M10 9h4M3 21h18M7 21l3-12V3M17 21l-3-12V3"></path>
+                  
+                </svg>
+                
+              </div>
+              <h2>Laboratory</h2>
+            </div>
+
+            <div class="kiosk-card__stats">
+              <div class="kiosk-card__pill">
+                <div class="kiosk-card__pill-label">Waiting</div>
+                <div class="kiosk-card__pill-value" data-waiting="LABORATORY">0</div>
+              </div>
+              <div class="kiosk-card__pill">
+                <div class="kiosk-card__pill-label">Now Serving</div>
+                <div class="kiosk-card__pill-value"><span data-current="LABORATORY">---</span></div>
+              </div>
+            </div>
+
+            <button class="kiosk-card__action" type="button" tabindex="-1" aria-hidden="true">GET QUEUE NUMBER</button>
+          </div>
+        </article>
+        
+        
+        
+        <article class="kiosk-card kiosk-card--family_plan" data-service="FAMILY_PLAN" role="button" tabindex="0" aria-label="Get queue number for Family Planning">
+          <div class="kiosk-card__ticket-curtain" aria-live="polite" aria-atomic="true">
+            <div>
+              <div class="kiosk-card__ticket-curtain-label">Your Queue Number Is</div>
+              <div class="kiosk-card__ticket-curtain-number" data-ticket-number="FAMILY_PLAN">---</div>
+              <div class="kiosk-card__ticket-curtain-note">Please wait for your call on the display screen.</div>
+            </div>
+          </div>
+
+          <div class="kiosk-card__body">
+            <div class="kiosk-card__hero">
+              <div class="kiosk-card__icon-wrap">
+                
+                <svg class="kiosk-svg kiosk-svg--lg kiosk-card__icon" viewBox="0 0 24 24" aria-hidden="true">
+                  
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  
+                </svg>
+                
+              </div>
+              <h2>Family Planning</h2>
+            </div>
+
+            <div class="kiosk-card__stats">
+              <div class="kiosk-card__pill">
+                <div class="kiosk-card__pill-label">Waiting</div>
+                <div class="kiosk-card__pill-value" data-waiting="FAMILY_PLAN">0</div>
+              </div>
+              <div class="kiosk-card__pill">
+                <div class="kiosk-card__pill-label">Now Serving</div>
+                <div class="kiosk-card__pill-value"><span data-current="FAMILY_PLAN">---</span></div>
+              </div>
+            </div>
+
+            <button class="kiosk-card__action" type="button" tabindex="-1" aria-hidden="true">GET QUEUE NUMBER</button>
+          </div>
+        </article>
+        
+        
+        
+        <article class="kiosk-card kiosk-card--blood_service" data-service="BLOOD_SERVICE" role="button" tabindex="0" aria-label="Get queue number for Blood Service">
+          <div class="kiosk-card__ticket-curtain" aria-live="polite" aria-atomic="true">
+            <div>
+              <div class="kiosk-card__ticket-curtain-label">Your Queue Number Is</div>
+              <div class="kiosk-card__ticket-curtain-number" data-ticket-number="BLOOD_SERVICE">---</div>
+              <div class="kiosk-card__ticket-curtain-note">Please wait for your call on the display screen.</div>
+            </div>
+          </div>
+
+          <div class="kiosk-card__body">
+            <div class="kiosk-card__hero">
+              <div class="kiosk-card__icon-wrap">
+                
+                <svg class="kiosk-svg kiosk-svg--lg kiosk-card__icon" viewBox="0 0 24 24" aria-hidden="true">
+                  
+                  <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+                  
+                </svg>
+                
+              </div>
+              <h2>Blood Service</h2>
+            </div>
+
+            <div class="kiosk-card__stats">
+              <div class="kiosk-card__pill">
+                <div class="kiosk-card__pill-label">Waiting</div>
+                <div class="kiosk-card__pill-value" data-waiting="BLOOD_SERVICE">0</div>
+              </div>
+              <div class="kiosk-card__pill">
+                <div class="kiosk-card__pill-label">Now Serving</div>
+                <div class="kiosk-card__pill-value"><span data-current="BLOOD_SERVICE">---</span></div>
+              </div>
+            </div>
+
+            <button class="kiosk-card__action" type="button" tabindex="-1" aria-hidden="true">GET QUEUE NUMBER</button>
+          </div>
+        </article>
+        
+        
+        
+        <article class="kiosk-card kiosk-card--ultrasound" data-service="ULTRASOUND" role="button" tabindex="0" aria-label="Get queue number for Ultrasound">
+          <div class="kiosk-card__ticket-curtain" aria-live="polite" aria-atomic="true">
+            <div>
+              <div class="kiosk-card__ticket-curtain-label">Your Queue Number Is</div>
+              <div class="kiosk-card__ticket-curtain-number" data-ticket-number="ULTRASOUND">---</div>
+              <div class="kiosk-card__ticket-curtain-note">Please wait for your call on the display screen.</div>
+            </div>
+          </div>
+
+          <div class="kiosk-card__body">
+            <div class="kiosk-card__hero">
+              <div class="kiosk-card__icon-wrap">
+                
+                <img src="assets/ultrasound.png" alt="Ultrasound icon" class="kiosk-card__icon-image" />
+                
+              </div>
+              <h2>Ultrasound</h2>
+            </div>
+
+            <div class="kiosk-card__stats">
+              <div class="kiosk-card__pill">
+                <div class="kiosk-card__pill-label">Waiting</div>
+                <div class="kiosk-card__pill-value" data-waiting="ULTRASOUND">0</div>
+              </div>
+              <div class="kiosk-card__pill">
+                <div class="kiosk-card__pill-label">Now Serving</div>
+                <div class="kiosk-card__pill-value"><span data-current="ULTRASOUND">---</span></div>
+              </div>
+            </div>
+
+            <button class="kiosk-card__action" type="button" tabindex="-1" aria-hidden="true">GET QUEUE NUMBER</button>
+          </div>
+        </article>
+        
+        
+      </section>
+
+    </main>
+
+    <footer class="kiosk-v2__footer">
+      <div class="kiosk-v2__footer-identity">
+        <strong>Sultan Kudarat State University-Isulan</strong>
+        <span>Walk-in clinic</span>
+      </div>
+      <p>Tap a service to take a number.</p>
+    </footer>
+  </div>
+
+  <script src="static/js/vendor/granim.min.js?v=demo"></script>
+  <script>window.CLINIC_PAGE="kiosk"</script>
+<script src="queue.js"></script>
+</body>
+</html>
