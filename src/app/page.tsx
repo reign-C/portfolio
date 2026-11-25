@@ -1,8 +1,7 @@
 import { Hero } from "@/components/hero";
-import { Work } from "@/components/work";
-import { Fit } from "@/components/fit";
+import { MoreWork } from "@/components/more-work";
+import { SkillsTable } from "@/components/skills-table";
 import { Experience } from "@/components/experience";
-import { Capabilities } from "@/components/capabilities";
 import { About } from "@/components/about";
 import { Contact } from "@/components/contact";
 
@@ -10,10 +9,9 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <Work />
-      <Fit />
+      <MoreWork />
+      <SkillsTable />
       <Experience />
-      <Capabilities />
       <About />
       <Contact />
     </>

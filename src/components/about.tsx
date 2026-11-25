@@ -4,30 +4,30 @@ export function About() {
   return (
     <section
       id="about"
-      aria-labelledby="about-title"
-      className="mx-auto max-w-[1200px] px-6 py-16 md:px-12 md:py-24"
+      aria-labelledby="about-heading"
+      className="border-t border-line py-12"
     >
-      <div className="max-w-[75ch]">
-        <h2 id="about-title" className="text-[30px] leading-[1.1] md:text-[40px]">
-          About
-        </h2>
+      <h2
+        id="about-heading"
+        className="text-[26px] leading-[1.15] font-semibold tracking-[-0.02em] text-ink"
+      >
+        About
+      </h2>
 
-        {about.paragraphs.map((paragraph) => (
-          <p
-            key={paragraph}
-            className="mt-4 max-w-[65ch] text-[16px] leading-[1.65] text-muted md:text-[17px]"
-          >
-            {paragraph}
-          </p>
-        ))}
+      <div className="paper-card mt-6 rounded-[16px] p-6 sm:p-7">
+        <div className="flex flex-col gap-4 text-[15.5px] leading-[1.65] text-ink">
+          {about.paragraphs.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+        </div>
 
-        <dl className="mt-8 grid gap-x-8 gap-y-4 sm:grid-cols-2">
+        <dl className="mt-7 grid gap-x-8 gap-y-4 border-t border-line pt-6 sm:grid-cols-2">
           {about.facts.map((fact) => (
             <div key={fact.label}>
-              <dt className="text-sm font-medium">{fact.label}</dt>
-              <dd className="mt-1 text-sm leading-relaxed text-muted">
-                {fact.value}
-              </dd>
+              <dt className="text-[12.5px] font-medium text-muted">
+                {fact.label}
+              </dt>
+              <dd className="mt-1 text-[14.5px] text-ink">{fact.value}</dd>
             </div>
           ))}
         </dl>

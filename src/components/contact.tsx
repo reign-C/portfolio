@@ -1,55 +1,100 @@
+"use client";
+
+import { useState } from "react";
+import { ArrowUpRight, Check, Copy, GitBranch } from "lucide-react";
 import { site } from "@/lib/content";
 
 export function Contact() {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(site.email);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
+  };
+
   return (
     <section
       id="contact"
-      aria-labelledby="contact-title"
-      className="on-dark bg-stage text-stage-ink"
+      aria-labelledby="contact-heading"
+      className="border-t border-line py-12 pb-10"
     >
-      <div className="mx-auto max-w-[1200px] px-6 py-16 md:px-12 md:py-24">
-        <div className="grid gap-10 md:grid-cols-12 md:gap-8">
-          <div className="md:col-span-7">
-            <h2
-              id="contact-title"
-              className="text-[30px] leading-[1.1] md:text-[40px]"
-            >
-              Contact
-            </h2>
+      <h2
+        id="contact-heading"
+        className="text-[26px] leading-[1.15] font-semibold tracking-[-0.02em] text-ink"
+      >
+        Contact
+      </h2>
 
-            <a
-              href={`mailto:${site.email}`}
-              className="mt-6 inline-block break-all text-[22px] font-medium underline decoration-current/30 underline-offset-4 transition-colors duration-200 hover:decoration-led md:text-[32px]"
-            >
-              {site.email}
-            </a>
+      <div className="paper-card mt-6 rounded-[16px] p-6 sm:p-7">
+        <p className="text-[15.5px] leading-[1.6] text-muted">
+          {site.availability}. Based in {site.location} ({site.timezone}), open
+          to roles in {site.region} or remote.
+        </p>
 
-            <p className="mt-5 max-w-[60ch] text-[16px] leading-[1.65] opacity-80">
-              {site.availability}. Open to work in Koronadal and across
-              SOCCSKSARGEN.
-            </p>
+        <div className="mt-5 flex flex-wrap items-center gap-3">
+          <a
+            href={`mailto:${site.email}`}
+            className="inline-flex min-h-11 items-center text-[19px] font-semibold text-ink underline decoration-line transition-colors duration-150 hover:decoration-ink sm:text-[22px]"
+          >
+            {site.email}
+          </a>
 
-            <a
-              href={site.resume}
-              download
-              className="mt-8 inline-flex min-h-11 items-center rounded-sm bg-stage-ink px-4 text-sm font-medium text-stage transition-opacity duration-200 hover:opacity-90"
-            >
-              Résumé
-            </a>
-          </div>
+          <button
+            type="button"
+            onClick={handleCopy}
+            className="keycap-btn inline-flex min-h-10 items-center gap-2 rounded-[10px] px-3.5 text-[13.5px] font-medium text-ink transition-all duration-150 active:translate-y-[0.5px]"
+          >
+            {copied ? (
+              <Check className="h-4 w-4 text-ink" aria-hidden="true" />
+            ) : (
+              <Copy className="h-4 w-4 text-muted" aria-hidden="true" />
+            )}
+            <span>{copied ? "Copied" : "Copy email"}</span>
+          </button>
+        </div>
 
-          <dl className="flex flex-col gap-5 text-sm md:col-span-5 md:justify-self-end">
-            <div>
-              <dt className="opacity-60">Based in</dt>
-              <dd className="mt-1">{site.location}</dd>
-            </div>
-            <div>
-              <dt className="opacity-60">Area open for work</dt>
-              <dd className="mt-1">{site.region}</dd>
-            </div>
-          </dl>
+        <p className="sr-only" aria-live="polite">
+          {copied ? `${site.email} copied to clipboard.` : ""}
+        </p>
+
+        <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-line pt-5">
+          <a
+            href={site.resume}
+            download
+            className="inline-flex min-h-11 items-center justify-center rounded-[12px] bg-accent px-5 text-[14.5px] font-medium text-accent-ink no-underline transition-opacity duration-150 hover:opacity-85"
+          >
+            Download resume
+          </a>
+          <a
+            href={`mailto:${site.email}`}
+            className="keycap-btn inline-flex min-h-11 items-center justify-center rounded-[12px] px-5 text-[14.5px] font-medium text-ink no-underline transition-all duration-150 active:translate-y-[0.5px]"
+          >
+            Send email
+          </a>
+          <a
+            href={site.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="keycap-btn inline-flex min-h-11 items-center justify-center gap-2 rounded-[12px] px-4 text-[14.5px] font-medium text-ink no-underline transition-all duration-150 active:translate-y-[0.5px]"
+          >
+            <GitBranch className="h-4 w-4 text-muted" aria-hidden="true" />
+            <span>github.com/{site.githubHandle}</span>
+            <ArrowUpRight className="h-4 w-4 text-muted" aria-hidden="true" />
+          </a>
         </div>
       </div>
+
+      <footer className="mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-6 text-[13px] text-muted">
+        <span>{site.name} · Computer Engineering</span>
+        <span>
+          {site.location} · {site.timezone}
+        </span>
+      </footer>
     </section>
   );
 }

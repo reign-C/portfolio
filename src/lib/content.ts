@@ -1,518 +1,934 @@
-export type ChainStep = {
-  kicker: string;
-  title: string;
-  meta: string;
-  /** How this step connects to the next one. Omitted on the last step. */
-  via?: string;
+export type DiagramNode = {
+  id: string;
+  label: string;
+  sub: string;
+  x: number;
+  y: number;
+  w?: number;
+  h?: number;
+  accent?: boolean;
 };
 
-/**
- * A photograph of the finished build. Printed as a plate above the spec list,
- * so the reader sees the object before reading the claim about it.
- * Drop the file in `public/work/` and reference it from there.
- */
+export type DiagramEdge = {
+  from: string;
+  to: string;
+  label: string;
+  kind: "primary" | "wired" | "wireless";
+};
+
 export type ProjectPhoto = {
-  /** Path under `public/`, e.g. "/work/clinic-kiosk.jpg". */
   src: string;
-  /** What the photo actually shows, for screen readers and search. */
   alt: string;
-  /** One line under the frame. Facts, not adjectives. */
   caption: string;
-  /** Native pixel size. Frames the plate at this ratio, so nothing is cropped. */
   width: number;
   height: number;
 };
 
 export type Project = {
   id: string;
-  /** Relevance order for the carousel; the projects are not a sequence. */
   rank: number;
+  year: string;
   kind: string;
   title: string;
+  shortTitle: string;
   summary: string;
-  stack: string;
-  /** A real photograph. Wins over `photoPending` when both are set. */
-  photo?: ProjectPhoto;
-  /**
-   * What belongs in this project's plate until a photograph exists. Renders a
-   * frame of the same size, so adding the photo later moves nothing.
-   */
-  photoPending?: string;
-  facts: {
-    problem: string;
-    built: string;
+  measuredResult: string;
+  stackList: string[];
+  photo: ProjectPhoto;
+  caseStudy: {
+    summary: string;
     role: string;
-    result: string;
+    timeframe: string;
+    teamSize: string;
+    constraints: string[];
+    diagram: {
+      caption: string;
+      nodes: DiagramNode[];
+      edges: DiagramEdge[];
+    };
+    hardwareFirmware: {
+      heading: string;
+      detail: string;
+    }[];
+    networkDesign: {
+      label: string;
+      value: string;
+    }[];
+    results: {
+      metric: string;
+      detail: string;
+    }[];
+    nextChanges: string[];
+    demoNote: string;
+    demoHint: string;
+    demoScreens: {
+      label: string;
+      src: string;
+      width: number;
+      height: number;
+      title: string;
+    }[];
   };
-  chain: ChainStep[];
-  figure: string;
-  note?: string;
 };
 
 export const site = {
   name: "Reign Marc Cipriano",
   shortName: "R. M. Cipriano",
-  role: "IoT & Automation Engineer",
+  title: "Reign Marc Cipriano: Computer engineer, IoT and networking",
+  description:
+    "Computer engineering graduate in Tacurong City building sensor-driven IoT devices, Raspberry Pi edge deployments, and site CCTV, PA, and telephony systems.",
+  roleSentence:
+    "Computer engineer. I build IoT devices and the local systems they run on.",
+  proofSentence:
+    "Deployed an offline Raspberry Pi queue serving 5 clinic services and built an ESP32-S3 barcode ledger tracking 2,913 lab items.",
+  availability: "Open to full-time roles and commissioned builds, available now",
+  availableDate: "June 2026",
+  timezone: "GMT+8",
   location: "Tacurong City, Sultan Kudarat",
-  region: "SOCCSKSARGEN, Region XII",
+  region: "Koronadal City and across SOCCSKSARGEN",
   email: "ciprianoreignmarc@gmail.com",
+  github: "https://github.com/reign-C",
+  githubHandle: "reign-C",
   resume: "/Resume-Cipriano-Reign-Marc.pdf",
-  availability: "Available now for full-time roles and commissioned builds",
+  featuredProjectId: "clinic-queue",
 } as const;
 
-export const hero = {
-  deck: "I build sensor-driven systems end to end: the board, the firmware, and the install.",
-  body: "Hands-on work across ESP32 and ESP32-S3 prototypes, Raspberry Pi deployments, PCB soldering, and on-site CCTV, PA, and telephony. Computer engineering graduate, June 2026.",
-  bom: "QTR-8RC \u00d78 \u00b7 TCRT5000 \u00d72 \u00b7 TB6612FNG \u00b7 3S LiPo",
-} as const;
-
-export const heroChain: ChainStep[] = [
+export const heroMetrics = [
   {
-    kicker: "Sense",
-    title: "QTR\u20118RC",
-    meta: "Eight sensors, line",
-    via: "GPIO",
+    value: "5 services",
+    label: "Offline clinic queue",
+    href: "/work/clinic-queue",
   },
   {
-    kicker: "Control",
-    title: "ESP32\u2011S3",
-    meta: "PID and match states",
-    via: "PWM",
+    value: "2,913 items",
+    label: "Lab barcode ledger",
+    href: "/work/lab-tracking",
   },
   {
-    kicker: "Drive",
-    title: "TB6612FNG",
-    meta: "H-bridge to motors",
-    via: "12V",
-  },
-  {
-    kicker: "Act",
-    title: "Geared motors",
-    meta: "Two driven wheels",
-  },
-];
-
-export const about = {
-  paragraphs: [
-    "I'm a computer engineering graduate from Sultan Kudarat State University who learned hardware by taking builds apart and putting them back together. Most of what I know came from commissioned prototypes: wiring sensors, soldering boards, and debugging until the behaviour was right.",
-    "Before graduating I spent a month on site with Unicenter Communications installing CCTV, PA, and telephone systems on client premises, which is where I learned that a setup only counts once it runs in the room it was built for.",
-  ],
-  facts: [
-    {
-      label: "Based in",
-      value: "Tacurong City, Sultan Kudarat — working across SOCCSKSARGEN",
-    },
-    {
-      label: "Education",
-      value:
-        "BS Computer Engineering, Sultan Kudarat State University (June 2026)",
-    },
-    {
-      label: "Certification",
-      value: "TESDA NC II, Computer Systems Servicing",
-    },
-    {
-      label: "Area open for work",
-      value: "Koronadal and across SOCCSKSARGEN",
-    },
-  ],
-} as const;
-
-export const credentialFacts = [
-  {
-    value: "BS Computer Engineering",
-    detail: "Sultan Kudarat State University, June 2026",
-  },
-  {
-    value: "Civil Service Professional",
-    detail: "Passer, March 2026",
-  },
-  {
-    value: "TESDA NC II",
-    detail: "Computer Systems Servicing",
-  },
-  {
-    value: "Dean's list",
-    detail: "A.Y. 2024-2025",
-  },
-] as const;
-
-export const team = [
-  {
-    lead: "Install and diagnose on site",
-    body: "CCTV and IP cameras, PA and horn speakers, telephones: mounting, IP configuration, and fault-finding on live client sites.",
-  },
-  {
-    lead: "Build the prototype",
-    body: "ESP32 and ESP32-S3, sensors and actuators, soldering, KiCad boards, and printed enclosures.",
-  },
-  {
-    lead: "Connect it to software",
-    body: "A MySQL schema, barcode input, and the interface staff actually use.",
-  },
-  {
-    lead: "Deploy it where it has to run",
-    body: "A Raspberry Pi serving FastAPI, a USB thermal printer, and a TV display over a clinic's local network.",
-  },
-] as const;
-
-export const skillGroups = [
-  {
-    title: "Embedded and IoT",
-    items:
-      "ESP32, ESP32-S3, ESP32-WROOM-32, Arduino. QTR-8RC, TCRT5000, HC-SR04, Sharp GP2Y0A21YK0F, E18-D80NK, DHT22. TB6612FNG and XY-160D drivers, PID control, 3S LiPo power.",
-  },
-  {
-    title: "Networking and site systems",
-    items:
-      "CCTV and IP cameras, PA and horn speakers, telephone units, LAN and IP configuration, Wi-Fi access points, HC-05 and HC-06 Bluetooth.",
-  },
-  {
-    title: "Software",
-    items:
-      "Python, C++ fundamentals, MySQL, FastAPI, SQLite, React, React Native with Expo, systemd deployment, offline text to speech.",
-  },
-  {
-    title: "Design and fabrication",
-    items:
-      "KiCad, soldering, circuit troubleshooting, 3D enclosure modelling, AutoCAD, SketchUp, Figma.",
+    value: "0 cloud deps",
+    label: "Raspberry Pi edge",
+    href: "/work/clinic-queue",
   },
 ] as const;
 
 export const projects: Project[] = [
   {
-    id: "lab-tracking",
-    rank: 2,
-    kind: "Capstone project",
-    title: "Lab equipment borrowing, tracked by barcode",
-    summary:
-      "A scanning station that turns every borrow and return into a database transaction, so the lab ledger stops being a handwritten log.",
-    stack: "ESP32-S3 · 1D/2D scanner · MySQL · Figma · SketchUp",
-    photo: {
-      src: "/work/lab-borrowing-dashboard.jpg",
-      width: 1600,
-      height: 820,
-      alt: "Borrowing system dashboard: 2,913 total items, 2,902 available, 11 borrowed, 11 overdue, 982 accounts, plus a category distribution chart.",
-      caption:
-        "Screen capture of the admin dashboard, running against the live catalogue: 2,913 items, 982 accounts, nine categories.",
-    },
-    facts: {
-      problem:
-        "Lab equipment was logged by hand, which made borrow and return records slow to write and hard to audit.",
-      built:
-        "An ESP32-S3 station with a commercial 1D/2D barcode scanner, a MySQL schema for borrow and return transactions, the interface that reads it, and a 3D-modelled\u00a0enclosure.",
-      role:
-        "Firmware and wiring, the database schema, the UI/UX, and the enclosure. Shared integration, testing, and documentation with the team.",
-      result:
-        "Each item is scanned in and out; the ledger is a transaction record instead of a paper trail.",
-    },
-    chain: [
-      {
-        kicker: "Input",
-        title: "1D/2D scanner",
-        meta: "Reads the item barcode",
-        via: "UART",
-      },
-      {
-        kicker: "Control",
-        title: "ESP32\u2011S3",
-        meta: "Firmware and Wi-Fi",
-        via: "SQL",
-      },
-      {
-        kicker: "Record",
-        title: "MySQL ledger",
-        meta: "Borrow and return rows",
-        via: "Query",
-      },
-      {
-        kicker: "Interface",
-        title: "Borrow / return UI",
-        meta: "The staff\u2011facing screen",
-      },
-    ],
-    figure:
-      "Fig. 1 — Capstone signal path. One scan becomes one transaction; the interface reads the same\u00a0ledger.",
-    note: "The tracking unit's enclosure was designed in 3D.",
-  },
-  {
     id: "clinic-queue",
     rank: 1,
-    kind: "Commissioned thesis build",
+    year: "2026",
+    kind: "Commissioned build",
     title: "A clinic queue that runs on one Raspberry Pi",
+    shortTitle: "Clinic queue system",
     summary:
-      "A walk-in clinic in Bagumbayan needed more than a paper list: a kiosk that issues tickets, a screen that calls the next patient, and a queue that keeps working when the internet does not.",
-    stack: "FastAPI · SQLite · Raspberry Pi · USB thermal printer · offline TTS",
+      "A local-network queue for a walk-in clinic in Bagumbayan: touch kiosk ticketing, USB thermal receipts, admin call console, TV display, and offline voice announcements.",
+    measuredResult:
+      "5 clinic services, 3 live screens, 0 cloud dependencies on 1 Raspberry Pi.",
+    stackList: [
+      "Raspberry Pi",
+      "FastAPI",
+      "SQLite",
+      "USB thermal printer",
+      "Piper TTS",
+      "systemd",
+    ],
     photo: {
       src: "/work/clinic-kiosk.jpg",
       width: 1600,
       height: 900,
-      alt: "Queue kiosk screen: five clinic services, each with a waiting count and the ticket now called, General Check-up 001 and Laboratory 001.",
+      alt: "Clinic queue touch kiosk screen showing five services with waiting counts and active ticket numbers.",
       caption:
-        "Screen capture from the running app. Five services, live waiting counts, and the ticket now called on the display.",
+        "Running touch kiosk screen: five clinic services, live waiting counts, and current callout banner.",
     },
-    facts: {
-      problem:
-        "Walk-in patients were queued by hand across three services: TB DOTS, medical certificates, and general check-ups.",
-      built:
-        "A single-server FastAPI app with a touch kiosk, an admin console, and a TV display, plus USB thermal ticket printing and offline audio announcements. Runs on a Raspberry Pi over the clinic's local network.",
-      role:
-        "Commissioned build: the API, SQLite schema, all three interfaces, printer integration, offline text-to-speech, and the Pi deployment scripts.",
-      result:
-        "The kiosk prints a numbered ticket, the admin calls the next patient, and the TV and audio announce it — with no cloud service in the path.",
+    caseStudy: {
+      summary:
+        "A walk-in clinic in Bagumbayan was tracking patients on paper across general check-ups, TB DOTS, medical certificates, and lab queues. I built and deployed a self-hosted queue server on a single Raspberry Pi that prints numbered slips, updates a lobby TV display, and announces tickets with offline text-to-speech when the internet drops.",
+      role: "Sole developer and systems integrator (API, SQLite schema, three web UIs, ESC/POS printer bridge, offline TTS, systemd deployment)",
+      timeframe: "Commissioned thesis build, 2026",
+      teamSize: "1 engineer (hardware & software delivery)",
+      constraints: [
+        "Zero cloud dependency: clinic internet drops could not stall patient intake or TV updates.",
+        "Single low-power host: kiosk, admin desk, TV browser, USB printer, and audio output all share one Raspberry Pi.",
+        "Patient privacy: ticket numbers and service counters only; no patient names shown on the public lobby display.",
+        "Automatic recovery: systemd service restart and daily ticket counter reset without staff SSH access.",
+      ],
+      diagram: {
+        caption:
+          "System architecture. Solid lines mark wired USB/HDMI/audio paths; dashed lines mark LAN HTTP polling; thick accent lines carry the primary ticket state path.",
+        nodes: [
+          {
+            id: "kiosk",
+            label: "Touch kiosk",
+            sub: "Browser client",
+            x: 24,
+            y: 44,
+            w: 150,
+            h: 64,
+          },
+          {
+            id: "admin",
+            label: "Staff console",
+            sub: "Browser client",
+            x: 24,
+            y: 156,
+            w: 150,
+            h: 64,
+          },
+          {
+            id: "pi",
+            label: "FastAPI + SQLite",
+            sub: "Raspberry Pi (systemd)",
+            x: 265,
+            y: 100,
+            w: 185,
+            h: 68,
+            accent: true,
+          },
+          {
+            id: "printer",
+            label: "Thermal printer",
+            sub: "ESC/POS slip",
+            x: 565,
+            y: 26,
+            w: 155,
+            h: 60,
+          },
+          {
+            id: "tv",
+            label: "Lobby TV display",
+            sub: "Live callout UI",
+            x: 565,
+            y: 104,
+            w: 155,
+            h: 60,
+          },
+          {
+            id: "audio",
+            label: "Piper / espeak",
+            sub: "PA audio out",
+            x: 565,
+            y: 182,
+            w: 155,
+            h: 60,
+          },
+        ],
+        edges: [
+          { from: "kiosk", to: "pi", label: "HTTP POST", kind: "primary" },
+          { from: "admin", to: "pi", label: "LAN HTTP", kind: "wireless" },
+          { from: "pi", to: "printer", label: "USB", kind: "wired" },
+          { from: "pi", to: "tv", label: "HDMI / HTTP", kind: "primary" },
+          { from: "pi", to: "audio", label: "3.5mm / ALSA", kind: "wired" },
+        ],
+      },
+      hardwareFirmware: [
+        {
+          heading: "Single-node Raspberry Pi host + systemd",
+          detail:
+            "Pinned FastAPI and SQLite on a single Raspberry Pi managed by systemd so power cycling the clinic breaker brings the queue API back online automatically.",
+        },
+        {
+          heading: "USB ESC/POS printer with log fallback",
+          detail:
+            "Raw USB thermal receipt output formats a numbered ticket per service tap; if USB vendor/product IDs are absent during bench testing, the driver degrades cleanly to a structured log without crashing intake.",
+        },
+        {
+          heading: "Offline Piper TTS + espeak fallback",
+          detail:
+            "Voice callouts render locally on the Pi using Piper neural voices with an automatic espeak fallback, eliminating any external TTS API calls.",
+        },
+      ],
+      networkDesign: [
+        {
+          label: "Topology",
+          value:
+            "Local star LAN: Raspberry Pi acts as the sole HTTP/SQLite server; kiosk tablet, nurse admin station, and TV client connect on the clinic subnet.",
+        },
+        {
+          label: "Protocols & storage",
+          value:
+            "REST JSON over HTTP on the local LAN, SQLite transactional rows with daily counter rollover, USB bulk transfer for thermal tickets.",
+        },
+        {
+          label: "Failure handling",
+          value:
+            "Zero external DNS or cloud dependencies; if a client browser disconnects, SQLite retains queue state and clients resync on next poll.",
+        },
+      ],
+      results: [
+        {
+          metric: "5 clinic services",
+          detail:
+            "General Check-up, Laboratory, Family Planning, Blood Service, and Ultrasound queued concurrently.",
+        },
+        {
+          metric: "3 synchronized screens",
+          detail:
+            "Self-service kiosk, staff call console, and waiting-room TV stay consistent against one SQLite source.",
+        },
+        {
+          metric: "0 cloud dependencies",
+          detail:
+            "Ticketing, printing, and voice announcements execute 100% inside the clinic's local network.",
+        },
+      ],
+      nextChanges: [
+        "Add a hardware bell chime relay wired to GPIO ahead of TTS announcements so the callout catches attention in a noisy waiting room.",
+        "Serve kiosk and TV updates over Server-Sent Events (SSE) instead of periodic polling to cut idle LAN traffic.",
+      ],
+      demoNote:
+        "Live kiosk, admin, and TV screens ported from source (sample browser queue).",
+      demoHint:
+        "Tap a service on Kiosk, call it from Admin, then inspect TV display.",
+      demoScreens: [
+        {
+          label: "Kiosk",
+          src: "/demos/clinic/kiosk.html",
+          width: 1600,
+          height: 900,
+          title: "Clinic queue kiosk",
+        },
+        {
+          label: "Admin console",
+          src: "/demos/clinic/admin.html",
+          width: 1600,
+          height: 900,
+          title: "Clinic queue admin console",
+        },
+        {
+          label: "TV display",
+          src: "/demos/clinic/display.html",
+          width: 1600,
+          height: 900,
+          title: "Clinic queue TV display",
+        },
+      ],
     },
-    chain: [
-      {
-        kicker: "Input",
-        title: "Touch kiosk",
-        meta: "Patient picks a service",
-        via: "HTTP",
-      },
-      {
-        kicker: "Control",
-        title: "FastAPI on Pi",
-        meta: "Queue state and auth",
-        via: "SQL",
-      },
-      {
-        kicker: "Record",
-        title: "SQLite queue",
-        meta: "Tickets and daily reset",
-        via: "Next",
-      },
-      {
-        kicker: "Output",
-        title: "Ticket, TV, audio",
-        meta: "Printed and announced",
-      },
+  },
+  {
+    id: "lab-tracking",
+    rank: 2,
+    year: "2026",
+    kind: "Capstone project",
+    title: "Lab equipment borrowing, tracked by barcode",
+    shortTitle: "Lab barcode ledger",
+    summary:
+      "An ESP32-S3 scanning station wired to a 1D/2D barcode reader and MySQL transaction ledger, replacing handwritten equipment logs.",
+    measuredResult:
+      "2,913 catalogued items and 982 user accounts tracked as atomic SQL transactions.",
+    stackList: [
+      "ESP32-S3",
+      "1D/2D barcode scanner",
+      "UART",
+      "MySQL",
+      "Figma",
+      "SketchUp",
     ],
-    figure:
-      "Fig. 2 — Clinic queue path. The Pi is the only server; kiosk, admin, display, and printer share the clinic's local network.",
-    note: "The printer falls back to a log if USB IDs are unset; announcements use Piper with an espeak fallback.",
+    photo: {
+      src: "/work/lab-borrowing-dashboard.jpg",
+      width: 1600,
+      height: 820,
+      alt: "Lab equipment borrowing dashboard showing 2,913 total items, 2,902 available, 11 borrowed, 11 overdue, and 982 accounts.",
+      caption:
+        "Admin dashboard running against the live MySQL catalogue: 2,913 items, 982 accounts, nine equipment categories.",
+    },
+    caseStudy: {
+      summary:
+        "Laboratory equipment checkouts were previously written in paper logbooks, making overdue gear and missing apparatus slow to audit. I built the ESP32-S3 scanner station, MySQL transaction schema, operator UI, and 3D-printed enclosure so one barcode scan records a complete borrow or return.",
+      role: "Firmware, sensor/scanner wiring, MySQL schema, UI/UX design, 3D enclosure modelling; shared integration and testing with capstone team",
+      timeframe: "BS Computer Engineering capstone, 2025–2026",
+      teamSize: "Capstone team (hardware, schema, and UI lead)",
+      constraints: [
+        "Auditability: every borrow and return must be a timestamped SQL transaction tied to a verified staff and borrower ID.",
+        "Fast counter workflow: students queue between lab periods, so scanning staff, borrower, and equipment barcodes must complete in one session.",
+        "Bench durability: exposed microcontroller jumper wires fail in shared labs, requiring a compact 3D-modelled enclosure.",
+      ],
+      diagram: {
+        caption:
+          "Capstone signal path. Solid lines mark wired serial/display connections; dashed lines mark Wi-Fi queries; thick accent lines show the transaction path.",
+        nodes: [
+          {
+            id: "scanner",
+            label: "1D/2D scanner",
+            sub: "Item & ID barcodes",
+            x: 24,
+            y: 100,
+            w: 150,
+            h: 66,
+          },
+          {
+            id: "esp",
+            label: "ESP32-S3",
+            sub: "Session & TFT UI",
+            x: 245,
+            y: 100,
+            w: 165,
+            h: 66,
+            accent: true,
+          },
+          {
+            id: "mysql",
+            label: "MySQL ledger",
+            sub: "Transactions & stock",
+            x: 490,
+            y: 44,
+            w: 175,
+            h: 64,
+          },
+          {
+            id: "web",
+            label: "Admin dashboard",
+            sub: "2,913 items / 982 users",
+            x: 490,
+            y: 156,
+            w: 175,
+            h: 64,
+          },
+        ],
+        edges: [
+          { from: "scanner", to: "esp", label: "UART", kind: "primary" },
+          { from: "esp", to: "mysql", label: "Wi-Fi / SQL", kind: "primary" },
+          { from: "mysql", to: "web", label: "TCP Query", kind: "wired" },
+          { from: "esp", to: "web", label: "Session sync", kind: "wireless" },
+        ],
+      },
+      hardwareFirmware: [
+        {
+          heading: "ESP32-S3 + UART 1D/2D scanner",
+          detail:
+            "Reads commercial 1D and 2D barcode payloads over UART into a four-step terminal state machine: locked -> staff scan -> borrower scan -> item scan.",
+        },
+        {
+          heading: "3D-modelled enclosure (SketchUp)",
+          detail:
+            "Designed a physical bench housing to protect the ESP32-S3, wiring harness, and TFT terminal screen from daily lab traffic.",
+        },
+        {
+          heading: "Normalized MySQL transaction ledger",
+          detail:
+            "Separated inventory items, 9 categories, borrower accounts, and atomic borrow/return events so availability counts update immediately.",
+        },
+      ],
+      networkDesign: [
+        {
+          label: "Topology",
+          value:
+            "ESP32-S3 scanner station connects over campus/lab Wi-Fi to the MySQL host and PHP/web administration dashboard.",
+        },
+        {
+          label: "Session flow",
+          value:
+            "Hardware terminal requires sequential staff authorization before unlocking borrower and apparatus barcode commits.",
+        },
+        {
+          label: "Data integrity",
+          value:
+            "Transactional SQL updates prevent double-borrowing an item already checked out.",
+        },
+      ],
+      results: [
+        {
+          metric: "2,913 items indexed",
+          detail:
+            "Full lab inventory across 9 apparatus categories loaded into the live MySQL ledger.",
+        },
+        {
+          metric: "982 user accounts",
+          detail:
+            "Student and faculty borrower records tied directly to barcode IDs.",
+        },
+        {
+          metric: "4-step hardware scan",
+          detail:
+            "Staff auth, borrower scan, item scan, and commit without manual keyboard entry.",
+        },
+      ],
+      nextChanges: [
+        "Queue failed barcode transactions to onboard LittleFS flash when Wi-Fi drops and flush on reconnect.",
+        "Move from direct SQL over LAN to an authenticated HTTPS/TLS REST endpoint between the ESP32-S3 and database host.",
+      ],
+      demoNote: "Live terminal and admin dashboard ported from source (sample data).",
+      demoHint:
+        "Tap the terminal screen to advance a borrow session, or switch to Dashboard.",
+      demoScreens: [
+        {
+          label: "TFT terminal",
+          src: "/demos/lab/terminal.html",
+          width: 1000,
+          height: 560,
+          title: "Lab borrowing terminal",
+        },
+        {
+          label: "Admin dashboard",
+          src: "/demos/lab/dashboard.html",
+          width: 1440,
+          height: 900,
+          title: "Lab borrowing dashboard",
+        },
+      ],
+    },
   },
   {
     id: "robotics",
     rank: 3,
-    kind: "Course build + competition",
+    year: "2025",
+    kind: "Course & competition build",
     title: "A PID line follower and an autonomous sumobot",
+    shortTitle: "PID line follower & sumobot",
     summary:
-      "Two robots that sense their own course: one holds a line with eight reflectance sensors, the other hunts an opponent and avoids the ring edge. Both expose a Wi-Fi control page.",
-    stack:
-      "ESP32-S3 · ESP32-WROOM-32 · QTR-8RC · TCRT5000 · TB6612FNG · XY-160D",
+      "Two autonomous ESP32 robots: an 8-sensor PID line follower with flash-saved tuning and a 3S LiPo sumobot with 6 opponent sensors and edge avoidance, each hosting a Wi-Fi control page.",
+    measuredResult:
+      "8 reflectance channels, 6 opponent inputs, live PID tuning at 192.168.4.1 saved to NVS/LittleFS.",
+    stackList: [
+      "ESP32-S3",
+      "ESP32-WROOM-32",
+      "QTR-8RC",
+      "TCRT5000",
+      "TB6612FNG",
+      "XY-160D",
+      "3S LiPo",
+    ],
     photo: {
       src: "/work/line-follower-tuner.jpg",
       width: 1000,
       height: 1020,
-      alt: "Line follower control page: PID gain fields, motor speed limits, an eight-sensor calibration table, and live telemetry from the running robot.",
+      alt: "Wi-Fi PID tuner served by the line follower at 192.168.4.1 showing error graph, Kp/Ki/Kd fields, motor limits, and 8-sensor calibration values.",
       caption:
-        "Screen capture of the line follower's Wi-Fi page: PID gains, motor limits, the eight QTR-8RC sensors, and live telemetry from the running robot.",
+        "Live Wi-Fi tuning page served from the ESP32-S3 access point: PID gains, curve speed limits, and 8-channel calibration.",
     },
-    facts: {
-      problem:
-        "A course requirement and a sumobot competition needed robots that could sense, decide, and drive without a controller.",
-      built:
-        "A PID line follower on an ESP32-S3 with a QTR-8RC array and TB6612FNG driver; an autonomous sumobot on an ESP32-WROOM-32 with six opponent-sensor inputs, two TCRT5000 edge sensors, an XY-160D driver, and 3S LiPo power. Both expose a Wi-Fi access point with a tuning or control page.",
-      role:
-        "Firmware, sensor calibration, PID tuning, motor-driver wiring, power distribution, and the web control pages.",
-      result:
-        "The line follower holds the line with live Kp/Ki/Kd tuning saved to flash; the sumobot runs opening, search, engage, and edge-avoid states.",
+    caseStudy: {
+      summary:
+        "Re-flashing firmware over USB every time track lighting or wheel grip changes wastes practice runs. I built an ESP32-S3 PID line follower and an ESP32-WROOM-32 autonomous sumobot that both expose a local Wi-Fi access point for live calibration, gain tuning, and match-state selection stored in flash.",
+      role: "Sole builder (firmware, sensor calibration, PID loop, motor-driver wiring, 3S LiPo power distribution, embedded web UI)",
+      timeframe: "Course requirement & sumobot competition, 2025",
+      teamSize: "1 engineer (line follower & sumobot)",
+      constraints: [
+        "Field tuning without a laptop USB tether: PID gains and calibration thresholds had to persist across power cycles in NVS/LittleFS.",
+        "Varying surface contrast: adaptive thresholding needed to handle both black-on-white and white-on-black tracks.",
+        "High-current motor spikes on 3S LiPo (12V): separate logic regulation and H-bridge protection for TB6612FNG and XY-160D drivers.",
+      ],
+      diagram: {
+        caption:
+          "Robot control path. Solid lines show GPIO, PWM, and 12V motor power; dashed line shows the Wi-Fi AP tuning interface.",
+        nodes: [
+          {
+            id: "sensors",
+            label: "QTR-8RC / TCRT5000",
+            sub: "8 line / 2 edge / 6 opp",
+            x: 24,
+            y: 100,
+            w: 165,
+            h: 66,
+          },
+          {
+            id: "mcu",
+            label: "ESP32 MCU",
+            sub: "PID + match FSM + NVS",
+            x: 255,
+            y: 100,
+            w: 170,
+            h: 66,
+            accent: true,
+          },
+          {
+            id: "hbridge",
+            label: "TB6612FNG / XY-160D",
+            sub: "Dual H-bridge (3S LiPo)",
+            x: 495,
+            y: 100,
+            w: 180,
+            h: 66,
+          },
+          {
+            id: "ui",
+            label: "Wi-Fi AP page",
+            sub: "192.168.4.1 tuner",
+            x: 255,
+            y: 12,
+            w: 170,
+            h: 56,
+          },
+        ],
+        edges: [
+          { from: "sensors", to: "mcu", label: "GPIO / ADC", kind: "primary" },
+          { from: "mcu", to: "hbridge", label: "PWM + Dir", kind: "primary" },
+          { from: "mcu", to: "ui", label: "Wi-Fi AP", kind: "wireless" },
+        ],
+      },
+      hardwareFirmware: [
+        {
+          heading: "ESP32-S3 + QTR-8RC + TB6612FNG (Line Follower)",
+          detail:
+            "Reads 8 reflectance channels with adaptive min/max calibration, computes clamped PID error with curve slowdown, and drives dual motors via TB6612FNG.",
+        },
+        {
+          heading: "ESP32-WROOM-32 + XY-160D + 3S LiPo (Sumobot)",
+          detail:
+            "Pairs 6 opponent-detection inputs and 2 TCRT5000 ring-edge sensors in a deterministic state machine (opening move, search, engage, edge-avoid).",
+        },
+        {
+          heading: "Persistent embedded web server",
+          detail:
+            "Serves HTML/JS straight from flash so Kp, Ki, Kd, speed clamps, and calibration tables save to LittleFS/NVS without recompiling C++.",
+        },
+      ],
+      networkDesign: [
+        {
+          label: "Access point",
+          value:
+            "Robot hosts its own SoftAP (SSID LineFollower at 192.168.4.1) so any phone or laptop tunes it trackside with zero router.",
+        },
+        {
+          label: "Control safety",
+          value:
+            "Web interface includes an emergency motor stop and stops Wi-Fi AP overhead cleanly during competition heat modes.",
+        },
+      ],
+      results: [
+        {
+          metric: "8 reflectance channels",
+          detail:
+            "Calibrated per-sensor min/max thresholds persisted in flash.",
+        },
+        {
+          metric: "6 opponent + 2 edge inputs",
+          detail:
+            "Full perimeter awareness on the sumobot ring under 3S LiPo drive.",
+        },
+        {
+          metric: "0 USB reflashes trackside",
+          detail:
+            "Live Kp/Ki/Kd, curve slowdown, and match opening strategies update over Wi-Fi.",
+        },
+      ],
+      nextChanges: [
+        "Design a single custom KiCad carrier PCB replacing jumper headers with locked JST-XH sensor connectors.",
+        "Log high-frequency PID error telemetry to a ring buffer downloadable as CSV after a run.",
+      ],
+      demoNote:
+        "Live Wi-Fi AP pages served by the ESP32 robots, running in preview mode.",
+      demoHint:
+        "Adjust PID gains, apply a preset, or switch the sumobot match state.",
+      demoScreens: [
+        {
+          label: "Line follower tuner",
+          src: "/demos/robotics/tuner.html",
+          width: 1600,
+          height: 900,
+          title: "Line follower PID tuner",
+        },
+        {
+          label: "Sumobot control",
+          src: "/demos/robotics/sumobot.html",
+          width: 1600,
+          height: 900,
+          title: "Sumobot control page",
+        },
+      ],
     },
-    chain: [
-      {
-        kicker: "Sense",
-        title: "QTR\u20118RC / TCRT5000",
-        meta: "Line, edge, opponent",
-        via: "GPIO",
-      },
-      {
-        kicker: "Control",
-        title: "ESP32",
-        meta: "PID and match states",
-        via: "PWM",
-      },
-      {
-        kicker: "Drive",
-        title: "H-bridge",
-        meta: "TB6612FNG / XY\u2011160D",
-        via: "12 V",
-      },
-      {
-        kicker: "Act",
-        title: "Geared motors",
-        meta: "Two driven wheels",
-      },
-    ],
-    figure:
-      "Fig. 3 — Robot control path. Sensor arrays feed the ESP32; the H-bridge turns PWM into motor drive.",
-    note: "The line follower's tuner persists PID values in NVS; the sumobot's page selects opening moves and match behavior.",
   },
   {
     id: "school-bell",
     rank: 4,
+    year: "2025",
     kind: "School build",
     title: "A school bell that keeps its own schedule",
+    shortTitle: "Scheduled school bell",
     summary:
-      "An ESP32, a DFPlayer module, and an amplifier replace a manual bell with scheduled audio across the campus.",
-    stack: "ESP32 · DFPlayer · audio amplifier · horn speakers",
+      "An ESP32 controller, DFPlayer audio module, and amplifier driving campus horn speakers on MWF, TTh, and special event schedules.",
+    measuredResult:
+      "7 bell channels, MWF/TTh + date-range schedules, RTC + NTP time sync over local Wi-Fi.",
+    stackList: [
+      "ESP32",
+      "DFPlayer",
+      "RTC",
+      "UART",
+      "Audio amplifier",
+      "Horn speakers",
+    ],
     photo: {
       src: "/work/school-bell-dashboard.jpg",
       width: 1600,
       height: 905,
-      alt: "School bell dashboard: seven manual bell test buttons, MWF and TTh schedule entry, and an event schedule with a date range.",
+      alt: "SKSU Public Address System dashboard showing 7 manual bell test buttons, output volume 25/30, MWF and TTh schedules, and event date-range scheduling.",
       caption:
-        "Screen capture of the browser dashboard the ESP32 serves: bell tests, the weekly schedule, and event ranges.",
+        "Embedded browser dashboard served by the ESP32: 7 bell tracks, weekly MWF/TTh timetables, and event overrides.",
     },
-    facts: {
-      problem:
-        "The school bell depended on someone operating it on time, every period.",
-      built:
-        "An ESP32-driven bell with a DFPlayer audio module and amplifier, playing scheduled audio through the school's horn speakers.",
-      role:
-        "Built the unit: wiring, firmware, audio module integration, and testing.",
-      result:
-        "The bell runs from a stored schedule rather than a person at the switch.",
+    caseStudy: {
+      summary:
+        "Campus bells previously required manual switching at every period change, leading to late or missed rings. I wired and programmed an ESP32 controller paired with a DFPlayer audio module and power amplifier connected to the school's horn speakers, backed by a browser schedule dashboard.",
+      role: "Hardware wiring, ESP32 firmware, DFPlayer UART integration, audio level testing, embedded web dashboard",
+      timeframe: "School PA automation build, 2025",
+      teamSize: "1 engineer",
+      constraints: [
+        "Schedule drift: bell accuracy must survive campus Wi-Fi outages via onboard RTC with manual time-set fallback.",
+        "Distinct schedules: separate MWF, TTh, and date-bounded special event bell timetables.",
+        "Campus PA compatibility: line-level audio from DFPlayer had to drive existing horn speaker amplification cleanly without clipping.",
+      ],
+      diagram: {
+        caption:
+          "Bell signal path. Solid lines indicate UART/audio wiring; dashed line indicates local Wi-Fi dashboard management.",
+        nodes: [
+          {
+            id: "dash",
+            label: "Web dashboard",
+            sub: "MWF / TTh / Events",
+            x: 24,
+            y: 100,
+            w: 155,
+            h: 64,
+          },
+          {
+            id: "esp",
+            label: "ESP32 + RTC",
+            sub: "Schedule & NTP sync",
+            x: 245,
+            y: 100,
+            w: 165,
+            h: 64,
+            accent: true,
+          },
+          {
+            id: "dfp",
+            label: "DFPlayer + Amp",
+            sub: "7 audio tracks (25/30)",
+            x: 475,
+            y: 100,
+            w: 165,
+            h: 64,
+          },
+          {
+            id: "horns",
+            label: "Horn speakers",
+            sub: "Campus PA lines",
+            x: 700,
+            y: 100,
+            w: 150,
+            h: 64,
+          },
+        ],
+        edges: [
+          { from: "dash", to: "esp", label: "Wi-Fi HTTP", kind: "wireless" },
+          { from: "esp", to: "dfp", label: "UART", kind: "primary" },
+          { from: "dfp", to: "horns", label: "Speaker line", kind: "primary" },
+        ],
+      },
+      hardwareFirmware: [
+        {
+          heading: "ESP32 + RTC + NTP synchronization",
+          detail:
+            "Tracks period schedules onboard using an I2C RTC with NTP resync when Wi-Fi is available and a manual timestamp override in the UI.",
+        },
+        {
+          heading: "DFPlayer Mini over UART",
+          detail:
+            "Triggers 7 stored chime/bell tracks and exposes software volume control (0–30) directly from the dashboard.",
+        },
+      ],
+      networkDesign: [
+        {
+          label: "Local control",
+          value:
+            "Admin staff update MWF, TTh, or special event date ranges on the device IP over the campus LAN.",
+        },
+        {
+          label: "Offline resilience",
+          value:
+            "All timetables reside in flash; once saved, bells fire strictly from hardware RTC ticks without network dependency.",
+        },
+      ],
+      results: [
+        {
+          metric: "7 manual & scheduled channels",
+          detail:
+            "Supports instant manual bell tests alongside automated period triggers.",
+        },
+        {
+          metric: "3 timetable modes",
+          detail:
+            "MWF, TTh, and date-range Event Schedule overrides managed in one interface.",
+        },
+      ],
+      nextChanges: [
+        "Add a relay-switched amplifier mute output so the PA power amp sits idle between scheduled bells.",
+        "Expose read-only JSON health telemetry (RTC drift, I2C error counter, last ring) for remote monitoring.",
+      ],
+      demoNote:
+        "Live ESP32 school bell browser dashboard running with sample schedules.",
+      demoHint:
+        "Ring a manual bell channel or add a period time to the timetable.",
+      demoScreens: [
+        {
+          label: "Bell dashboard",
+          src: "/demos/bell/dashboard.html",
+          width: 1600,
+          height: 900,
+          title: "School bell dashboard",
+        },
+      ],
     },
-    chain: [
-      {
-        kicker: "Schedule",
-        title: "Bell times",
-        meta: "Stored on the device",
-        via: "Reads",
-      },
-      {
-        kicker: "Control",
-        title: "ESP32",
-        meta: "Triggers playback",
-        via: "UART",
-      },
-      {
-        kicker: "Audio",
-        title: "DFPlayer + amplifier",
-        meta: "Track to line level",
-        via: "Cable",
-      },
-      {
-        kicker: "Output",
-        title: "Horn speakers",
-        meta: "Campus-wide audio",
-      },
-    ],
-    figure:
-      "Fig. 4 — Bell signal path. The schedule lives on the device; the ESP32 triggers playback and the amplifier drives the horns.",
   },
 ];
 
 export const alsoBuilt = [
   {
     title: "Classroom management UI",
+    stack: "React, Vite, React Native (Expo)",
     detail:
-      "A React + Vite desktop and React Native (Expo) mobile front end for Tacurong National High School's senior high school: dashboard, QR attendance scanner, analytics, reports, and schedule on shared design tokens. Front-end delivery; backend and device sync were out of scope.",
+      "Desktop and mobile front end for Tacurong National High School's senior high school: dashboard, QR attendance scanner, analytics, reports, and schedule on shared design tokens (UI delivery only).",
+    year: "2025",
   },
   {
     title: "Commissioned sensor prototypes",
+    stack: "ESP32, Arduino, HC-SR04, Sharp GP2Y0A21YK0F, TCRT5000, DHT22",
     detail:
-      "Microcontroller builds for student theses using HC-SR04, Sharp GP2Y0A21YK0F, TCRT5000, E18-D80NK, and DHT22, with the wiring, soldering, firmware, and debugging each unit required.",
+      "Multiple student thesis hardware builds covering sensor wiring, PCB soldering, firmware, and bench debugging.",
+    year: "2024–2026",
   },
 ] as const;
 
-export const experience = {
-  org: "Unicenter Communications",
-  role: "On-the-job trainee",
-  period: "June 2025",
-  items: [
-    "Installed CCTV/IP cameras, ceiling and horn speakers, and telephone units on client sites.",
-    "Configured IP settings on new units and traced network, hardware, and firmware faults across installed devices.",
-    "Soldered PCBs when a board needed repair; drew circuits in KiCad and site drawings in AutoCAD and SketchUp.",
-  ],
-} as const;
+export type SkillEntry = {
+  name: string;
+  mono?: boolean;
+  href?: string;
+};
 
-export const credentials = [
+export type SkillLayer = {
+  layer: string;
+  items: SkillEntry[];
+  appliedIn: {
+    label: string;
+    href: string;
+  };
+};
+
+export const skillLayers: SkillLayer[] = [
+  {
+    layer: "Hardware",
+    items: [
+      { name: "ESP32", mono: true, href: "/work/school-bell" },
+      { name: "ESP32-S3", mono: true, href: "/work/lab-tracking" },
+      { name: "ESP32-WROOM-32", mono: true, href: "/work/robotics" },
+      { name: "Arduino" },
+      { name: "QTR-8RC", mono: true, href: "/work/robotics" },
+      { name: "TCRT5000", mono: true, href: "/work/robotics" },
+      { name: "HC-SR04", mono: true },
+      { name: "DHT22", mono: true },
+      { name: "TB6612FNG", mono: true, href: "/work/robotics" },
+      { name: "XY-160D", mono: true, href: "/work/robotics" },
+      { name: "3S LiPo power" },
+    ],
+    appliedIn: { label: "Robotics & Lab station", href: "/work/robotics" },
+  },
+  {
+    layer: "Firmware",
+    items: [
+      { name: "C++" },
+      { name: "Arduino IDE" },
+      { name: "PID control", href: "/work/robotics" },
+      { name: "NVS / LittleFS", mono: true, href: "/work/robotics" },
+      { name: "DFPlayer drivers", href: "/work/school-bell" },
+      { name: "ESC/POS thermal printing", href: "/work/clinic-queue" },
+    ],
+    appliedIn: { label: "PID line follower", href: "/work/robotics" },
+  },
+  {
+    layer: "Protocols",
+    items: [
+      { name: "UART", mono: true, href: "/work/lab-tracking" },
+      { name: "I2C", mono: true, href: "/work/school-bell" },
+      { name: "PWM", mono: true, href: "/work/robotics" },
+      { name: "GPIO", mono: true, href: "/work/robotics" },
+      { name: "HTTP", mono: true, href: "/work/clinic-queue" },
+      { name: "Bluetooth HC-05 / HC-06", mono: true },
+    ],
+    appliedIn: { label: "Lab barcode ledger", href: "/work/lab-tracking" },
+  },
+  {
+    layer: "Networking",
+    items: [
+      { name: "TCP/IP", mono: true, href: "/#experience" },
+      { name: "LAN & static IP setup", href: "/#experience" },
+      { name: "Wi-Fi SoftAP", href: "/work/robotics" },
+      { name: "CCTV & IP cameras", href: "/#experience" },
+      { name: "PA & horn speakers", href: "/#experience" },
+      { name: "Telephony fault diagnosis", href: "/#experience" },
+    ],
+    appliedIn: { label: "Unicenter OJT", href: "/#experience" },
+  },
+  {
+    layer: "Edge & software",
+    items: [
+      { name: "Raspberry Pi", href: "/work/clinic-queue" },
+      { name: "FastAPI", mono: true, href: "/work/clinic-queue" },
+      { name: "SQLite", mono: true, href: "/work/clinic-queue" },
+      { name: "MySQL", mono: true, href: "/work/lab-tracking" },
+      { name: "systemd", mono: true, href: "/work/clinic-queue" },
+      { name: "Python" },
+      { name: "Offline TTS (Piper)" },
+      { name: "React & React Native" },
+    ],
+    appliedIn: { label: "Clinic queue system", href: "/work/clinic-queue" },
+  },
+  {
+    layer: "Tools",
+    items: [
+      { name: "KiCad", href: "/#experience" },
+      { name: "PCB soldering", href: "/#experience" },
+      { name: "Circuit troubleshooting", href: "/#experience" },
+      { name: "AutoCAD" },
+      { name: "SketchUp", href: "/work/lab-tracking" },
+      { name: "Figma" },
+      { name: "Linux", mono: true },
+      { name: "Git", mono: true },
+    ],
+    appliedIn: { label: "Lab enclosure & OJT", href: "/#experience" },
+  },
+];
+
+export const experienceEntries = [
+  {
+    role: "On-the-job trainee",
+    org: "Unicenter Communications",
+    period: "June 2025",
+    location: "Client sites across SOCCSKSARGEN",
+    bullets: [
+      "Installed and commissioned CCTV/IP cameras, ceiling and horn PA speakers, and telephone units on active client premises.",
+      "Configured static IP settings on networked devices and isolated hardware, cabling, and firmware faults on live sites.",
+      "Repaired boards via PCB soldering and produced circuit schematics in KiCad alongside site layout drawings in AutoCAD and SketchUp.",
+    ],
+  },
+] as const;
+
+export const certificationsAndEducation = [
   {
     title: "BS Computer Engineering",
-    detail: "Sultan Kudarat State University, Isulan Campus",
-    meta: "June 2026 · Dean's List, A.Y. 2024–2025",
+    issuer: "Sultan Kudarat State University, Isulan Campus",
+    date: "June 2026",
+    note: "Dean's List, A.Y. 2024–2025",
   },
   {
-    title: "TESDA NC II",
-    detail: "Computer Systems Servicing",
-    meta: "Certified",
+    title: "TESDA NC II — Computer Systems Servicing",
+    issuer: "Technical Education and Skills Development Authority",
+    date: "Certified",
+    note: "Hardware assembly, OS deployment, and LAN diagnostics",
   },
   {
-    title: "Civil Service Examination",
-    detail: "Professional level",
-    meta: "Passer, March 2026",
+    title: "Civil Service Examination — Professional",
+    issuer: "Civil Service Commission",
+    date: "March 2026",
+    note: "Passer",
   },
 ] as const;
 
-export const capabilities = [
-  {
-    area: "Microcontrollers",
-    items:
-      "ESP32, ESP32-S3, ESP32-WROOM-32, Arduino; firmware in the Arduino IDE",
-  },
-  {
-    area: "Sensing",
-    items:
-      "QTR-8RC, TCRT5000, HC-SR04, Sharp GP2Y0A21YK0F, E18-D80NK, DHT22",
-  },
-  {
-    area: "Motion",
-    items:
-      "TB6612FNG and XY-160D drivers, PID line following, sumo match logic, 3S LiPo power",
-  },
-  {
-    area: "Links",
-    items:
-      "HC-05 and HC-06 Bluetooth, Wi-Fi access points, LAN and IP configuration",
-  },
-  {
-    area: "Fabrication",
-    items:
-      "KiCad PCB design, soldering, circuit troubleshooting, 3D enclosure modelling",
-  },
-  {
-    area: "Site systems",
-    items: "CCTV/IP cameras, PA and horn speakers, telephone units",
-  },
-  {
-    area: "Edge deployment",
-    items:
-      "Raspberry Pi, FastAPI, SQLite, systemd, USB thermal printing, offline TTS",
-  },
-  {
-    area: "Software",
-    items:
-      "Python, C++ fundamentals, MySQL, React, React Native (Expo), UI/UX in Figma",
-  },
-  {
-    area: "AI-assisted work",
-    items: "OpenCode, GitHub Copilot, LLM APIs, datasheet-driven ramp-up",
-  },
-  {
-    area: "Drawing",
-    items: "AutoCAD, SketchUp, Tinkercad, Photoshop",
-  },
-] as const;
-
-export const fit = [
-  {
-    lead: "Install and diagnose on site.",
-    body: "CCTV and IP cameras, PA and horn speakers, telephones: mounting, IP configuration, and fault-finding on live client sites.",
-  },
-  {
-    lead: "Build the prototype.",
-    body: "ESP32 and ESP32-S3, sensors and actuators, soldering, KiCad boards, and printed enclosures.",
-  },
-  {
-    lead: "Connect it to the software.",
-    body: "A MySQL schema, barcode input, and the interface staff actually use.",
-  },
-  {
-    lead: "Deploy it where it has to run.",
-    body: "A Raspberry Pi serving FastAPI, a USB thermal printer, and a TV display over a clinic's local network — no cloud dependency.",
-  },
-  {
-    lead: "Learn the part, then test it until it works.",
-    body: "Datasheets and AI tools to get up to speed on unfamiliar hardware; debugging until the behaviour is right.",
-  },
-] as const;
+export const about = {
+  paragraphs: [
+    "I'm a computer engineering graduate from Sultan Kudarat State University who learned hardware by taking builds apart, wiring sensors on the bench, and debugging until the behaviour held up outside the lab.",
+    "During my on-the-job training with Unicenter Communications, I installed CCTV, PA, and telephone systems on client premises—where I learned that a prototype only counts once it keeps running cleanly in the room it was built for.",
+    "I'm looking for full-time IoT, embedded systems, or network infrastructure roles in Koronadal City, across SOCCSKSARGEN, or remote (GMT+8), where I can own hardware, firmware, and deployment end to end.",
+  ],
+  facts: [
+    { label: "Location", value: "Tacurong City, Sultan Kudarat (GMT+8)" },
+    { label: "Work preference", value: "On-site across SOCCSKSARGEN or remote" },
+    { label: "Education", value: "BS Computer Engineering, SKSU (June 2026)" },
+    { label: "Certification", value: "TESDA NC II, Computer Systems Servicing" },
+  ],
+} as const;

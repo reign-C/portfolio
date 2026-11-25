@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { projects } from "@/lib/content";
 
@@ -6,60 +5,51 @@ export default function ProjectNav({ current }: { current: string }) {
   const ordered = [...projects].sort((a, b) => a.rank - b.rank);
 
   return (
-    <section aria-labelledby="more-work" className="mt-16 border-t border-line pt-6">
-      <div className="flex items-baseline justify-between gap-4">
-        <h2 id="more-work" className="text-[20px] leading-snug tracking-[-0.01em]">
-          More work
+    <nav
+      aria-label="More case studies"
+      className="mt-14 border-t border-line pt-10"
+    >
+      <div className="flex flex-wrap items-baseline justify-between gap-4">
+        <h2 className="text-[20px] font-semibold text-ink">
+          All case studies
         </h2>
         <Link
-          href="/#work"
-          className="text-sm text-muted transition-colors duration-200 hover:text-text"
+          href="/#projects"
+          className="inline-flex min-h-11 items-center text-[14px] font-medium text-ink underline decoration-muted transition-colors duration-150 hover:decoration-ink"
         >
-          All projects
+          Back to projects
         </Link>
       </div>
 
-      <ul className="snap-row -mx-6 mt-5 px-6 md:mx-0 md:px-0">
+      <div className="mt-4 border-b border-line">
         {ordered.map((project) => {
           const isCurrent = project.id === current;
           return (
-            <li key={project.id} className="snap-card w-[240px] md:w-[280px]">
-              <Link
-                href={`/work/${project.id}`}
-                aria-current={isCurrent ? "page" : undefined}
-                className="group block"
+            <Link
+              key={project.id}
+              href={`/work/${project.id}`}
+              aria-current={isCurrent ? "page" : undefined}
+              className="group grid gap-2 border-t border-line py-4 no-underline sm:grid-cols-[1.5fr_2fr_auto] sm:items-baseline sm:gap-6"
+            >
+              <span
+                className={`text-[16px] font-semibold ${
+                  isCurrent
+                    ? "text-ink underline decoration-ink"
+                    : "text-ink group-hover:underline group-focus-visible:underline"
+                }`}
               >
-                <div
-                  className={`relative aspect-[16/10] overflow-hidden rounded-md border bg-sunken transition-colors duration-200 ${
-                    isCurrent
-                      ? "border-led"
-                      : "border-line group-hover:border-text"
-                  }`}
-                >
-                  {project.photo ? (
-                    <Image
-                      src={project.photo.src}
-                      alt=""
-                      fill
-                      sizes="280px"
-                      quality={80}
-                      className={`object-contain transition-opacity duration-200 ${
-                        isCurrent ? "opacity-100" : "opacity-80 group-hover:opacity-100"
-                      }`}
-                    />
-                  ) : null}
-                </div>
-                <p className="mt-3 text-[15px] font-semibold leading-snug">
-                  {project.title}
-                </p>
-                <p className="mt-0.5 text-[13px] text-subtle">
-                  {isCurrent ? "You are here" : project.kind}
-                </p>
-              </Link>
-            </li>
+                {project.shortTitle}
+              </span>
+              <span className="text-[14px] text-muted">
+                {project.measuredResult}
+              </span>
+              <span className="text-[13px] text-muted tabular sm:text-right">
+                {isCurrent ? "Current" : project.year}
+              </span>
+            </Link>
           );
         })}
-      </ul>
-    </section>
+      </div>
+    </nav>
   );
 }

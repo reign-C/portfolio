@@ -1,72 +1,108 @@
 import type { Metadata, Viewport } from "next";
-import { Schibsted_Grotesk, IBM_Plex_Mono } from "next/font/google";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
+import { Schibsted_Grotesk, JetBrains_Mono } from "next/font/google";
+import { AppShell } from "@/components/app-shell";
+import { ServiceWorkerRegister } from "@/components/sw-register";
+import { site } from "@/lib/content";
+import { getSiteUrl } from "@/lib/site-url";
 import "./globals.css";
 
 const schibsted = Schibsted_Grotesk({
   variable: "--font-schibsted",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
-const plexMono = IBM_Plex_Mono({
-  variable: "--font-plex",
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains",
   subsets: ["latin"],
   weight: ["400", "500"],
   display: "swap",
 });
 
-const title = "Reign Marc Cipriano — IoT and automation engineer";
-const description =
-  "Computer engineering graduate in Tacurong City building sensor-driven systems: ESP32 firmware, Raspberry Pi deployments, and on-site CCTV, PA, and telephony installs across SOCCSKSARGEN.";
-
 export const metadata: Metadata = {
-  title,
-  description,
-  authors: [{ name: "Reign Marc L. Cipriano" }],
-  creator: "Reign Marc L. Cipriano",
+  metadataBase: new URL(getSiteUrl()),
+  title: site.title,
+  description: site.description,
+  authors: [{ name: site.name }],
+  creator: site.name,
   openGraph: {
-    title,
-    description,
+    title: site.title,
+    description: site.description,
     type: "profile",
     locale: "en_PH",
+    images: [
+      {
+        url: "/work/clinic-kiosk.jpg",
+        width: 1600,
+        height: 900,
+        alt: "Clinic queue kiosk running on a single Raspberry Pi",
+      },
+    ],
   },
   icons: { icon: "/icon.svg" },
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f7f8fa" },
-    { media: "(prefers-color-scheme: dark)", color: "#0e1116" },
-  ],
+  themeColor: "#F6F6F3",
   colorScheme: "light dark",
 };
 
 const themeScript = `try{var t=localStorage.getItem("theme");document.documentElement.dataset.theme=t==="dark"?"dark":"light"}catch(e){document.documentElement.dataset.theme="light"}`;
 
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: site.name,
+  jobTitle: "Computer Engineer — IoT and Networking",
+  email: `mailto:${site.email}`,
+  sameAs: [site.github],
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Tacurong City",
+    addressRegion: "Sultan Kudarat",
+    addressCountry: "PH",
+  },
+  alumniOf: {
+    "@type": "CollegeOrUniversity",
+    name: "Sultan Kudarat State University",
+  },
+  knowsAbout: [
+    "ESP32",
+    "Raspberry Pi",
+    "Embedded Systems",
+    "IoT",
+    "Networking",
+    "FastAPI",
+    "MySQL",
+    "SQLite",
+    "PID Control",
+  ],
+};
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${schibsted.variable} ${plexMono.variable} h-full antialiased`}
+      className={`${schibsted.variable} ${jetbrainsMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
       </head>
-      <body className="flex min-h-full flex-col">
+      <body className="min-h-full">
         <a
           href="#main"
-          className="sr-only rounded-sm bg-text px-4 py-3 text-sm font-medium text-bg focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50"
+          className="sr-only rounded-[6px] bg-accent px-4 py-3 text-sm font-medium text-accent-ink focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50"
         >
           Skip to content
         </a>
-        <SiteHeader />
-        <main id="main" className="flex-1">
-          {children}
-        </main>
-        <SiteFooter />
+        <AppShell>{children}</AppShell>
+        <ServiceWorkerRegister />
       </body>
     </html>
   );

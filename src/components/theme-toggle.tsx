@@ -1,5 +1,6 @@
 "use client";
 
+import { Moon, Sun } from "lucide-react";
 import { useSyncExternalStore } from "react";
 
 const subscribe = (onChange: () => void) => {
@@ -7,51 +8,40 @@ const subscribe = (onChange: () => void) => {
   return () => window.removeEventListener("themechange", onChange);
 };
 
-export function ThemeToggle() {
-  const dark = useSyncExternalStore(
-    subscribe,
-    () => document.documentElement.dataset.theme === "dark",
-    () => false,
-  );
+function getIsDark(): boolean {
+  if (typeof document === "undefined") return false;
+  return document.documentElement.dataset.theme === "dark";
+}
 
-  const toggle = () => {
-    const next = !dark;
-    document.documentElement.dataset.theme = next ? "dark" : "light";
-    try {
-      localStorage.setItem("theme", next ? "dark" : "light");
-    } catch {
-      // Storage can be blocked; the theme still applies for this page.
-    }
-    window.dispatchEvent(new Event("themechange"));
-  };
+export function toggleTheme(): void {
+  const nextDark = !getIsDark();
+  document.documentElement.dataset.theme = nextDark ? "dark" : "light";
+  try {
+    localStorage.setItem("theme", nextDark ? "dark" : "light");
+  } catch {
+    // Storage may be blocked; dataset attribute still applies for this session.
+  }
+  window.dispatchEvent(new Event("themechange"));
+}
+
+export function ThemeToggle({ compact = false }: { compact?: boolean }) {
+  const dark = useSyncExternalStore(subscribe, getIsDark, () => false);
+  const sizeClass = compact ? "h-10 w-10" : "h-11 w-11";
 
   return (
     <button
       type="button"
-      onClick={toggle}
+      onClick={toggleTheme}
       aria-pressed={dark}
       aria-label={dark ? "Switch to light theme" : "Switch to dark theme"}
-      className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-sm border border-line transition-colors duration-200 hover:border-text"
+      title={dark ? "Switch to light theme" : "Switch to dark theme"}
+      className={`keycap-btn inline-flex ${sizeClass} items-center justify-center rounded-[10px] text-muted transition-all duration-150 hover:text-ink active:translate-y-[0.5px]`}
     >
-      <svg
-        viewBox="0 0 24 24"
-        aria-hidden="true"
-        className="h-4 w-4"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.75"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        {dark ? (
-          <>
-            <circle cx="12" cy="12" r="4" />
-            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
-          </>
-        ) : (
-          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
-        )}
-      </svg>
+      {dark ? (
+        <Sun className="h-[17px] w-[17px]" aria-hidden="true" />
+      ) : (
+        <Moon className="h-[17px] w-[17px]" aria-hidden="true" />
+      )}
     </button>
   );
 }

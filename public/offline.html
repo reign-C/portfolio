@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>You're offline — Reign Marc Cipriano</title>
+    <style>
+      :root {
+        --bg: #f6f6f3;
+        --surface: #ffffff;
+        --ink: #171717;
+        --muted: #6e6e6a;
+        --line: rgba(23, 23, 23, 0.09);
+        --accent: #171717;
+        --accent-ink: #ffffff;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0b0b0c;
+          --surface: #141416;
+          --ink: #f2f2f0;
+          --muted: #9a9a95;
+          --line: rgba(255, 255, 255, 0.09);
+          --accent: #f2f2f0;
+          --accent-ink: #0b0b0c;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: system-ui, -apple-system, sans-serif;
+        font-size: 17px;
+        line-height: 1.55;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+      main {
+        width: 100%;
+        max-width: 640px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 32px;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+      }
+      p {
+        margin: 12px 0 0;
+        color: var(--muted);
+      }
+      .actions {
+        margin-top: 20px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        padding: 0 16px;
+        border-radius: 6px;
+        border: 1px solid var(--line);
+        background: var(--surface);
+        color: var(--ink);
+        font: inherit;
+        font-size: 15px;
+        font-weight: 500;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .btn-primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: var(--accent-ink);
+      }
+      #game {
+        margin-top: 28px;
+        width: 600px;
+        max-width: 100%;
+        aspect-ratio: 4 / 1;
+        image-rendering: pixelated;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        display: block;
+        touch-action: manipulation;
+        cursor: pointer;
+      }
+      .hud-row {
+        margin-top: 10px;
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+        font-size: 14px;
+        color: var(--muted);
+      }
+      #status {
+        color: var(--ink);
+        font-weight: 500;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>You're offline</h1>
+      <p>Reconnect to keep browsing. Press Space to play in the meantime.</p>
+
+      <div class="actions">
+        <button type="button" class="btn btn-primary" onclick="location.reload()">
+          Retry connection
+        </button>
+        <a href="/" class="btn">Home</a>
+      </div>
+
+      <canvas
+        id="game"
+        width="300"
+        height="75"
+        tabindex="0"
+        aria-label="Packet Runner game canvas"
+      ></canvas>
+
+      <div class="hud-row">
+        <span>Press Space, Up arrow, or tap to start.</span>
+        <span id="status" role="status" aria-live="polite"></span>
+      </div>
+    </main>
+
+    <script>
+      (function () {
+        var css = function (n) {
+          return getComputedStyle(document.documentElement)
+            .getPropertyValue(n)
+            .trim();
+        };
+        var canvas = document.getElementById("game");
+        var ctx = canvas.getContext("2d");
+        var W = 300,
+          H = 75,
+          G = 62;
+
+        var PING = [
+          ".....##.....",
+          ".....##.....",
+          "......#.....",
+          "..########..",
+          ".##########.",
+          ".##.####.##.",
+          ".##.####.##.",
+          ".##########.",
+          ".##########.",
+          "..########..",
+          "..##....##..",
+          "..##....##..",
+          ".###....###.",
+        ];
+        var PACKET = [
+          "########",
+          "#......#",
+          "#.#..#.#",
+          "#..##..#",
+          "#..##..#",
+          "#.#..#.#",
+          "#......#",
+          "########",
+        ];
+
+        var sprite = function (s, x, y, color) {
+          ctx.fillStyle = color;
+          for (var j = 0; j < s.length; j++) {
+            var row = s[j];
+            for (var i = 0; i < row.length; i++) {
+              if (row[i] === "#") {
+                ctx.fillRect(Math.round(x + i), Math.round(y + j), 1, 1);
+              }
+            }
+          }
+        };
+
+        var state = "idle",
+          py = G - 13,
+          vy = 0,
+          speed = 1.6,
+          obs = [{ x: W + 30 }],
+          score = 0,
+          best = 0,
+          last = 0;
+        try {
+          best = Number(localStorage.getItem("pr-best")) || 0;
+        } catch (e) {}
+
+        var statusEl = document.getElementById("status");
+
+        function start() {
+          py = G - 13;
+          vy = 0;
+          speed = 1.6;
+          obs = [{ x: W + 30 }];
+          score = 0;
+          state = "run";
+          statusEl.textContent = "";
+        }
+
+        function jump() {
+          if (state !== "run") return start();
+          if (py >= G - 13 - 0.01) vy = -4.6;
+        }
+
+        function frame(t) {
+          var dt = last ? Math.min((t - last) / 16.7, 2) : 1;
+          last = t;
+          var ink = css("--ink") || "#0A0A0A";
+          var muted = css("--muted") || "#666666";
+
+          ctx.clearRect(0, 0, W, H);
+
+          if (state === "run") {
+            vy += 0.28 * dt;
+            py = Math.min(py + vy * dt, G - 13);
+            if (py >= G - 13) vy = 0;
+
+            for (var k = 0; k < obs.length; k++) obs[k].x -= speed * dt;
+            if (obs.length && obs[0].x < -8) obs.shift();
+            if (!obs.length || obs[obs.length - 1].x < W - (72 + Math.random() * 88)) {
+              obs.push({ x: W + 8 });
+            }
+
+            speed += 0.0008 * dt;
+            score += speed * dt * 0.1;
+
+            var hit = obs.some(function (o) {
+              return o.x < 34 && o.x + 8 > 26 && py + 13 > G - 7;
+            });
+            if (hit) {
+              state = "over";
+              best = Math.max(best, Math.floor(score));
+              try {
+                localStorage.setItem("pr-best", String(best));
+              } catch (e) {}
+              statusEl.textContent =
+                "Connection lost. Press Space to reconnect.";
+            }
+          }
+
+          ctx.fillStyle = ink;
+          ctx.fillRect(0, G, W, 1);
+          sprite(PING, 24, py, ink);
+          for (var m = 0; m < obs.length; m++) {
+            sprite(PACKET, obs[m].x, G - 8, muted);
+          }
+
+          ctx.fillStyle = ink;
+          ctx.font = "8px ui-monospace, monospace";
+          ctx.textAlign = "right";
+          var sTxt = String(Math.floor(score)).padStart(5, "0");
+          var bTxt = String(Math.floor(best)).padStart(5, "0");
+          ctx.fillText("Uptime " + sTxt + "  Best " + bTxt, W - 4, 10);
+
+          requestAnimationFrame(frame);
+        }
+
+        window.addEventListener("keydown", function (e) {
+          if (e.code === "Space" || e.code === "ArrowUp") {
+            e.preventDefault();
+            jump();
+          }
+        });
+        canvas.addEventListener("pointerdown", jump);
+        requestAnimationFrame(frame);
+      })();
+    </script>
+  </body>
+</html>

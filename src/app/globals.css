@@ -2,89 +2,60 @@
 
 :root {
   color-scheme: light;
-  --bg: #f7f8fa;
+  --bg: #f6f6f3;
   --surface: #ffffff;
-  --sunken: #eef0f4;
-  --line: #dde1e8;
-  --text: #12161c;
-  --muted: #4a5361;
-  --subtle: #6a7280;
-  --led: #f2a900;
-
-  /* The contact band stays dark in both themes, so it carries its own pair. */
-  --stage: #12161c;
-  --stage-ink: #f7f8fa;
-  /* Demo wells: always dark for the same reason. */
-  --well: #1b222b;
-  --well-line: #2c3642;
-  --well-ink: #eceff3;
-  --well-muted: #a9b4c2;
-
-  --ring: var(--text);
-
-  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --surface-subtle: #eeede8;
+  --ink: #171717;
+  --muted: #6e6e6a;
+  --line: rgba(23, 23, 23, 0.09);
+  --line-strong: rgba(23, 23, 23, 0.16);
+  --accent: #171717;
+  --accent-ink: #ffffff;
+  accent-color: var(--accent);
 }
 
-/* Light is the default; dark is opt-in and remembered. */
 html[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #0e1116;
-  --surface: #151a21;
-  --sunken: #1b222b;
-  --line: #262e39;
-  --text: #eceff3;
-  --muted: #9aa5b4;
-  --subtle: #7f8a99;
-  --led: #f2b01e;
+  --bg: #0b0b0c;
+  --surface: #141416;
+  --surface-subtle: #1c1c1f;
+  --ink: #f2f2f0;
+  --muted: #9a9a95;
+  --line: rgba(255, 255, 255, 0.09);
+  --line-strong: rgba(255, 255, 255, 0.18);
+  --accent: #f2f2f0;
+  --accent-ink: #0b0b0c;
 }
 
 @theme inline {
   --color-bg: var(--bg);
   --color-surface: var(--surface);
-  --color-sunken: var(--sunken);
-  --color-line: var(--line);
-  --color-text: var(--text);
+  --color-surface-subtle: var(--surface-subtle);
+  --color-ink: var(--ink);
   --color-muted: var(--muted);
-  --color-subtle: var(--subtle);
-  --color-led: var(--led);
-  --color-stage: var(--stage);
-  --color-stage-ink: var(--stage-ink);
-  --color-well: var(--well);
-  --color-well-line: var(--well-line);
-  --color-well-ink: var(--well-ink);
-  --color-well-muted: var(--well-muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
 
   --font-sans: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-plex), ui-monospace, monospace;
-
-  --radius-sm: 6px;
-  --radius-md: 12px;
-  --radius-lg: 20px;
-
-  --shadow-soft:
-    0 1px 2px rgb(18 22 28 / 0.06), 0 1px 1px rgb(18 22 28 / 0.04);
-  --shadow-card:
-    0 8px 24px -8px rgb(18 22 28 / 0.18), 0 2px 6px rgb(18 22 28 / 0.06);
-  --shadow-stage:
-    0 32px 64px -24px rgb(18 22 28 / 0.35), 0 8px 16px rgb(18 22 28 / 0.08);
-}
-
-html[data-theme="dark"] {
-  --shadow-soft: none;
-  --shadow-card: none;
-  --shadow-stage: 0 0 0 1px var(--line);
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
 }
 
 @layer base {
   html {
     scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--line) transparent;
   }
 
   body {
     background-color: var(--bg);
-    color: var(--text);
+    color: var(--ink);
     font-family: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
-    font-synthesis-weight: none;
+    font-size: 17px;
+    line-height: 1.55;
+    caret-color: var(--ink);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
@@ -99,23 +70,40 @@ html[data-theme="dark"] {
   }
 
   p {
+    max-width: 70ch;
     text-wrap: pretty;
   }
 
+  code,
+  .mono {
+    font-family: var(--font-jetbrains), ui-monospace, monospace;
+  }
+
   ::selection {
-    background: var(--text);
-    color: var(--bg);
+    background: color-mix(in srgb, var(--ink) 14%, transparent);
+    color: var(--ink);
   }
 
   :focus-visible {
-    outline: 2px solid var(--ring);
+    outline: 2px solid var(--ink);
     outline-offset: 2px;
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--led) 45%, transparent);
   }
 
   a {
-    text-decoration-thickness: 1px;
     text-underline-offset: 3px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--line);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -125,21 +113,316 @@ html[data-theme="dark"] {
   }
 }
 
-/* The always-dark band needs a ring that reads on it in the light theme too. */
-.on-dark {
-  --ring: #f7f8fa;
-}
-
-/* Sticky header covers the anchor target without this. */
 main section {
-  scroll-margin-top: 5rem;
+  scroll-margin-top: 2rem;
 }
 
-/* Hero entrance: one staggered sequence per load, never replayed on scroll. */
-@keyframes rise {
+@media (max-width: 899px) {
+  main section {
+    scroll-margin-top: 4.5rem;
+  }
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Floating paper surfaces & tactile keycap controls */
+.paper-card {
+  background-color: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.03),
+    0 10px 28px -12px rgba(0, 0, 0, 0.08);
+}
+
+html[data-theme="dark"] .paper-card {
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.36),
+    0 14px 34px -12px rgba(0, 0, 0, 0.56);
+}
+
+.keycap-btn {
+  background-color: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.keycap-btn:hover {
+  border-color: var(--line-strong);
+}
+
+html[data-theme="dark"] .keycap-btn {
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+/* Hero portrait inside a tactile CRT viewport with scanlines, RGB aberration & subtle TV glitch */
+.crt-screen {
+  position: relative;
+  isolation: isolate;
+  width: 156px;
+  height: 195px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow:
+    0 6px 18px -8px rgba(0, 0, 0, 0.14),
+    inset 0 0 12px rgba(0, 0, 0, 0.22);
+}
+
+@media (min-width: 640px) {
+  .crt-screen {
+    width: 188px;
+    height: 235px;
+  }
+}
+
+.crt-screen[data-paused="true"] .crt-photo,
+.crt-screen[data-paused="true"] .crt-glitch-slice,
+.crt-screen[data-paused="true"]::after {
+  animation-play-state: paused;
+}
+
+.crt-photo {
+  filter: url(#crt-rgb) contrast(1.04) brightness(0.97) saturate(1.03);
+  animation: crt-signal-jitter 5.6s steps(1, end) infinite;
+}
+
+.crt-glitch-slice {
+  z-index: 2;
+  opacity: 0;
+  pointer-events: none;
+  filter: url(#crt-rgb-glitch) contrast(1.12) saturate(1.14);
+  will-change: transform, opacity, clip-path;
+}
+
+.crt-glitch-slice-a {
+  animation: crt-glitch-a 5.6s steps(1, end) infinite;
+}
+
+.crt-glitch-slice-b {
+  animation: crt-glitch-b 5.6s steps(1, end) infinite;
+}
+
+@keyframes crt-signal-jitter {
+  0%,
+  26%,
+  31%,
+  77%,
+  83%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  27% {
+    transform: translate3d(-1px, 0.4px, 0);
+  }
+  29% {
+    transform: translate3d(1px, -0.4px, 0);
+  }
+  78% {
+    transform: translate3d(1.2px, 0, 0);
+  }
+  80% {
+    transform: translate3d(-1.2px, 0.5px, 0);
+  }
+  81% {
+    transform: translate3d(0.6px, -0.3px, 0);
+  }
+}
+
+@keyframes crt-glitch-a {
+  0%,
+  25%,
+  32%,
+  76%,
+  84%,
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0);
+    clip-path: inset(18% 0 68% 0);
+  }
+  26% {
+    opacity: 0.78;
+    transform: translate3d(-5px, 0, 0);
+    clip-path: inset(16% 0 72% 0);
+  }
+  28% {
+    opacity: 0.72;
+    transform: translate3d(4px, -0.5px, 0);
+    clip-path: inset(28% 0 58% 0);
+  }
+  30% {
+    opacity: 0.65;
+    transform: translate3d(-2px, 0, 0);
+    clip-path: inset(14% 0 78% 0);
+  }
+  77% {
+    opacity: 0.78;
+    transform: translate3d(5.5px, 0, 0);
+    clip-path: inset(34% 0 54% 0);
+  }
+  79% {
+    opacity: 0.76;
+    transform: translate3d(-6px, 0.5px, 0);
+    clip-path: inset(22% 0 66% 0);
+  }
+  81% {
+    opacity: 0.66;
+    transform: translate3d(3px, 0, 0);
+    clip-path: inset(40% 0 50% 0);
+  }
+  82% {
+    opacity: 0.55;
+    transform: translate3d(-2px, 0, 0);
+    clip-path: inset(15% 0 76% 0);
+  }
+}
+
+@keyframes crt-glitch-b {
+  0%,
+  26%,
+  32%,
+  77%,
+  84%,
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0);
+    clip-path: inset(60% 0 24% 0);
+  }
+  27% {
+    opacity: 0.74;
+    transform: translate3d(5px, 0, 0);
+    clip-path: inset(62% 0 25% 0);
+  }
+  29% {
+    opacity: 0.7;
+    transform: translate3d(-4px, 0.5px, 0);
+    clip-path: inset(52% 0 36% 0);
+  }
+  31% {
+    opacity: 0.6;
+    transform: translate3d(2px, 0, 0);
+    clip-path: inset(72% 0 18% 0);
+  }
+  78% {
+    opacity: 0.78;
+    transform: translate3d(-5.5px, 0, 0);
+    clip-path: inset(58% 0 29% 0);
+  }
+  80% {
+    opacity: 0.76;
+    transform: translate3d(6px, -0.5px, 0);
+    clip-path: inset(68% 0 20% 0);
+  }
+  82% {
+    opacity: 0.62;
+    transform: translate3d(-3px, 0, 0);
+    clip-path: inset(48% 0 43% 0);
+  }
+}
+
+/* Horizontal CRT raster scanlines + subtle neutral aperture mask + curved glass vignette */
+.crt-screen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.03) 0px,
+      rgba(255, 255, 255, 0.03) 1px,
+      rgba(0, 0, 0, 0.28) 1px,
+      rgba(0, 0, 0, 0.28) 3px
+    ),
+    repeating-linear-gradient(
+      to right,
+      rgba(255, 60, 100, 0.045) 0px,
+      rgba(255, 60, 100, 0.045) 1px,
+      rgba(60, 255, 175, 0.04) 1px,
+      rgba(60, 255, 175, 0.04) 2px,
+      rgba(80, 145, 255, 0.045) 2px,
+      rgba(80, 145, 255, 0.045) 3px
+    ),
+    radial-gradient(
+      ellipse at center,
+      transparent 62%,
+      rgba(0, 0, 0, 0.24) 88%,
+      rgba(0, 0, 0, 0.48) 100%
+    ),
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.14) 0%,
+      rgba(255, 255, 255, 0.03) 26%,
+      transparent 45%
+    );
+}
+
+@keyframes crt-sweep {
+  0% {
+    transform: translate3d(0, -100%, 0);
+  }
+  100% {
+    transform: translate3d(0, 340%, 0);
+  }
+}
+
+.crt-screen::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 26%;
+  z-index: 4;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(255, 255, 255, 0.11),
+    rgba(255, 255, 255, 0.04) 52%,
+    transparent
+  );
+  animation: crt-sweep 4.8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crt-photo,
+  .crt-glitch-slice,
+  .crt-screen::after {
+    animation: none;
+  }
+
+  .crt-glitch-slice,
+  .crt-screen::after {
+    opacity: 0;
+  }
+}
+
+/* Packet Runner pixel canvas */
+#packet-runner-canvas {
+  width: 600px;
+  max-width: 100%;
+  aspect-ratio: 4 / 1;
+  image-rendering: pixelated;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  display: block;
+}
+
+/* Single hero entrance (200ms ease-out), disabled under reduced motion. */
+@keyframes hero-enter {
   from {
     opacity: 0;
-    transform: translate3d(0, 12px, 0);
+    transform: translate3d(0, 6px, 0);
   }
   to {
     opacity: 1;
@@ -147,51 +430,12 @@ main section {
   }
 }
 
-@keyframes fade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.rise {
-  animation: rise 520ms var(--ease) both;
+.hero-enter {
+  animation: hero-enter 200ms ease-out both;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .rise {
-    animation-name: fade;
-    animation-duration: 240ms;
+  .hero-enter {
+    animation: none;
   }
-}
-
-/* Carousel: horizontal snap row, arrows move one card. */
-.snap-row {
-  display: flex;
-  gap: 16px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-  scroll-behavior: smooth;
-}
-
-.snap-row::-webkit-scrollbar {
-  display: none;
-}
-
-.snap-card {
-  scroll-snap-align: center;
-  flex: 0 0 auto;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .snap-row {
-    scroll-behavior: auto;
-  }
-}
-
-.tabular {
-  font-variant-numeric: tabular-nums;
 }
