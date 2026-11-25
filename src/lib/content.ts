@@ -771,9 +771,9 @@ export const projects: Project[] = [
 export const alsoBuilt = [
   {
     title: "Classroom management UI",
-    stack: "React, Vite, React Native (Expo)",
+    stack: "Figma (design), AI-assisted web & mobile build",
     detail:
-      "Desktop and mobile front end for Tacurong National High School's senior high school: dashboard, QR attendance scanner, analytics, reports, and schedule on shared design tokens (UI delivery only).",
+      "Desktop and mobile front end for Tacurong National High School's senior high school: dashboard, QR attendance scanner, analytics, reports, and schedule on shared design tokens. UI/UX designed in Figma; code delivery was AI-assisted.",
     year: "2025",
   },
   {
@@ -862,9 +862,9 @@ export const skillLayers: SkillLayer[] = [
       { name: "SQLite", mono: true, href: "/work/clinic-queue" },
       { name: "MySQL", mono: true, href: "/work/lab-tracking" },
       { name: "systemd", mono: true, href: "/work/clinic-queue" },
-      { name: "Python" },
+      { name: "Python (fundamentals)", mono: true },
+      { name: "PHP (fundamentals)", mono: true },
       { name: "Offline TTS (Piper)" },
-      { name: "React & React Native" },
     ],
     appliedIn: { label: "Clinic queue system", href: "/work/clinic-queue" },
   },
