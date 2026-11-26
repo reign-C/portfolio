@@ -123,6 +123,38 @@ async function ProjectCaseStudy({
         </figcaption>
       </figure>
 
+      {/* Hardware photos gallery */}
+      {project.hardwarePhotos && project.hardwarePhotos.length > 0 && (
+        <section aria-labelledby="hardware-photos-heading" className="mt-8">
+          <h2
+            id="hardware-photos-heading"
+            className="text-[20px] font-semibold text-ink"
+          >
+            Hardware
+          </h2>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            {project.hardwarePhotos.map((photo) => (
+              <figure
+                key={photo.src}
+                className="paper-card overflow-hidden rounded-[14px]"
+              >
+                <Image
+                  src={photo.src}
+                  alt={photo.alt}
+                  width={photo.width}
+                  height={photo.height}
+                  sizes="(min-width: 640px) 380px, 95vw"
+                  className="block h-auto w-full"
+                />
+                <figcaption className="border-t border-line px-4 py-3 text-[13px] text-muted">
+                  {photo.caption}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* 3. Constraints */}
       <section aria-labelledby="constraints-heading" className="border-b border-line py-10">
         <h2

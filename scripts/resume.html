@@ -1,0 +1,240 @@
+<!doctype html>
+<!--
+  Source for public/Resume-Cipriano-Reign-Marc.pdf.
+  Rebuild (Chrome path is local):
+  "C:\Program Files\Google\Chrome\Application\chrome.exe" --headless=new --disable-gpu --no-pdf-header-footer --print-to-pdf="public\Resume-Cipriano-Reign-Marc.pdf" "scripts/resume.html"
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Reign Marc L. Cipriano — Resume</title>
+    <style>
+      @page {
+        size: letter;
+        margin: 0.42in 0.6in;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 8.7pt;
+        line-height: 1.24;
+        color: #000;
+        -webkit-print-color-adjust: exact;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 17pt;
+        text-align: center;
+        letter-spacing: 0.01em;
+      }
+
+      .contact {
+        margin: 2pt 0 0;
+        font-size: 8.8pt;
+        text-align: center;
+      }
+
+      h2 {
+        margin: 7pt 0 2.5pt;
+        padding-bottom: 1.5pt;
+        border-bottom: 0.8pt solid #000;
+        font-size: 9.2pt;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+      }
+
+      p {
+        margin: 0;
+      }
+
+      ul {
+        margin: 0;
+        padding-left: 12pt;
+      }
+
+      li {
+        margin: 1.2pt 0 0;
+      }
+
+      .role {
+        margin-top: 4pt;
+        font-weight: bold;
+        font-size: 9.2pt;
+      }
+
+      .role span {
+        float: right;
+        font-weight: normal;
+        font-size: 8.7pt;
+      }
+
+      .sub {
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>REIGN MARC L. CIPRIANO</h1>
+    <p class="contact">
+      Tacurong City, Sultan Kudarat, 9800 &nbsp;|&nbsp; 0951 923 6198 &nbsp;|&nbsp;
+      ciprianoreignmarc@gmail.com
+    </p>
+
+    <h2>Professional Summary</h2>
+    <p>
+      Computer Engineering graduate (June 2026) and NC II Computer Systems
+      Servicing certificate holder with hands-on experience in IoT-based
+      electronics: ESP32 and ESP32-S3 development, PCB design and soldering, and
+      installing, configuring, and troubleshooting CCTV/IP cameras, PA/horn
+      speaker systems, and telephone units, including hardware and firmware
+      diagnostics. Commissioned and deployed an offline Raspberry Pi queue
+      system for a walk-in clinic. Has worked on commissioned IoT-based
+      electronics thesis projects and built an ESP32-based scheduled school bell
+      system. Uses datasheets and AI tools to learn new components quickly.
+      Civil Service Professional Examination passer. Seeking an IoT, embedded
+      systems, or network infrastructure role where hardware, firmware, and
+      on-site deployment are owned end to end.
+    </p>
+
+    <h2>Technical Skills</h2>
+    <ul>
+      <li>
+        <b>Hardware &amp; Embedded Systems:</b> ESP32, ESP32-S3, Arduino;
+        microcontroller programming (Arduino IDE); PCB design and soldering
+        (KiCad); circuit design and troubleshooting; DFPlayer, audio amplifier,
+        and barcode scanner (1D/2D) integration
+      </li>
+      <li>
+        <b>Sensors &amp; Modules:</b> ultrasonic distance (HC-SR04), IR distance
+        (Sharp GP2Y0A21YK0F), reflective IR (TCRT5000), IR obstacle (E18-D80NK),
+        temperature/humidity (DHT22), Bluetooth (HC-05, HC-06)
+      </li>
+      <li>
+        <b>Networking &amp; Devices:</b> LAN setup, IP address configuration for
+        CCTV/IP cameras, PA/horn speakers, and telephone units; device
+        installation; network, hardware, and firmware troubleshooting
+      </li>
+      <li>
+        <b>Edge &amp; Software:</b> Raspberry Pi, Linux, systemd, FastAPI,
+        SQLite; Python, C++ (fundamentals), MySQL; Arduino IDE, VS Code
+      </li>
+      <li>
+        <b>AI-Assisted Development &amp; Documentation:</b> OpenCode, GitHub
+        Copilot, LLM/AI APIs for coding, debugging, and documentation; datasheet
+        reading
+      </li>
+      <li>
+        <b>Design &amp; Drafting Tools:</b> AutoCAD, SketchUp, Tinkercad
+        (enclosure design); Adobe Photoshop (7 years), Figma
+      </li>
+    </ul>
+
+    <h2>Projects</h2>
+    <p class="role">
+      Clinic Queue System — Commissioned Build
+      <span>2026</span>
+    </p>
+    <p class="sub">Raspberry Pi, FastAPI, SQLite, USB thermal printer, offline TTS</p>
+    <ul>
+      <li>
+        Built and deployed a self-hosted queue server on a single Raspberry Pi:
+        touch kiosk ticketing, USB thermal receipt printing, staff call console,
+        and a lobby TV display, all on the clinic's local network with zero cloud
+        dependencies
+      </li>
+      <li>
+        Integrated ESC/POS receipt output and offline text-to-speech callouts
+        served locally by the Pi, with systemd restart so the queue recovers on
+        its own after a power cycle
+      </li>
+    </ul>
+
+    <p class="role">Laboratory Materials and Equipment Borrowing System — Capstone Project</p>
+    <p class="sub">Embedded Systems, Database, and UI/UX</p>
+    <ul>
+      <li>
+        Built an inventory-tracking system around an ESP32-S3 microcontroller
+        (programmed via Arduino IDE) and a commercial 1D/2D barcode scanner for
+        automated item tracking
+      </li>
+      <li>
+        Designed the MySQL database schema for borrowing and returning
+        transactions and the system UI/UX
+      </li>
+      <li>
+        Handled hardware wiring and enclosure design, including 3D modeling of
+        the physical tracking unit; collaborated on integration, testing, and
+        documentation
+      </li>
+    </ul>
+
+    <p class="role">Scheduled School Bell System</p>
+    <ul>
+      <li>
+        Built an automated scheduled bell using an ESP32, DFPlayer module, and
+        amplifier for school-wide audio, with RTC + NTP timekeeping and an
+        embedded browser dashboard for MWF/TTh and event schedules
+      </li>
+    </ul>
+
+    <h2>Experience</h2>
+    <p class="role">
+      On-the-Job Trainee, Unicenter Communications
+      <span>June 2025</span>
+    </p>
+    <ul>
+      <li>
+        Assisted in the installation of CCTV/IP cameras, ceiling and horn
+        speakers, and telephone units for client sites
+      </li>
+      <li>
+        Configured IP settings on newly arrived units and diagnosed network,
+        hardware, and firmware issues across installed devices, including PCB
+        soldering when needed
+      </li>
+      <li>
+        Applied KiCad for circuit design and AutoCAD/SketchUp for technical
+        drawings
+      </li>
+    </ul>
+
+    <p class="role">
+      IoT-Based Electronics Thesis Projects and Prototyping (Commissioned)
+      <span>2024–2026</span>
+    </p>
+    <ul>
+      <li>
+        Built and troubleshot IoT-based electronics prototypes and thesis
+        projects with microcontrollers and sensors (wiring, soldering,
+        programming); used AI tools and datasheets to speed up development and
+        applied UI/UX design knowledge to the software
+      </li>
+    </ul>
+
+    <h2>Education</h2>
+    <p class="role">
+      Sultan Kudarat State University – Isulan Campus
+      <span>Isulan, Sultan Kudarat</span>
+    </p>
+    <p>
+      Bachelor of Science in Computer Engineering, June 2026 &nbsp;|&nbsp;
+      Dean's List, A.Y. 2024–2025
+    </p>
+    <p>
+      Relevant Coursework: Microprocessors, Data and Digital Communications,
+      Computer Networks and Security
+    </p>
+
+    <h2>Certifications</h2>
+    <ul>
+      <li>NC II – Computer Systems Servicing (CSS), TESDA</li>
+      <li>Civil Service Examination – Professional Level, Passer (March 2026)</li>
+    </ul>
+  </body>
+</html>

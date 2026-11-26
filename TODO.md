@@ -6,18 +6,32 @@ needs.
 
 **To resume:** open this file and say *"pick up the next item in TODO.md"*.
 
+## Shipped 2026-11-26 (critique follow-up)
+
+- [x] **Real hardware photos.** Six photos in `public/work/`: clinic lobby TV,
+      school bell perfboard + enclosure, sumobot on the ring + its SketchUp
+      model. Each project now renders a "Hardware" gallery and every photo
+      carries its own `width`/`height` so nothing is cropped.
+- [x] **KiCad artifact.** `kicad-schematic.png` (LM555 PCB layout) sits under the
+      OJT entry in Experience, next to the bullet that claims it.
+- [x] **Facebook link** in the contact block (`site.facebook`).
+- [x] **AI-assistance note** in About (`about.aiNote`), as a bordered note.
+- [x] **Resume rebuilt.** `public/Resume-Cipriano-Reign-Marc.pdf` is now printed
+      from `scripts/resume.html`; adds the clinic queue build, Raspberry Pi /
+      FastAPI / SQLite, and an IoT/embedded/networking objective. Rebuild command
+      is in the HTML header comment.
+- [ ] **LinkedIn link.** Still needs a profile URL — Facebook is not a substitute
+      for the PH recruiter search. Where: `site.linkedin` + contact block.
+
 ## Blocked on you (nothing else can finish these)
 
-- [ ] **Add GitHub + LinkedIn links.** The page has no code links anywhere; it's
-      the first thing a technical lead clicks. Needs 2 URLs. Where: `site` object
-      in `src/lib/content.ts`, then header + contact block.
+- [x] **Add GitHub + Facebook links.** LinkedIn still open, see above.
+
 - [ ] **Add a git remote.** 7 commits live on one disk only. Needs a repo URL.
       `git remote add origin <url> && git push -u origin main`
 - [ ] **Deploy.** Site is fully static and prerendered; Vercel/Netlify/Pages all
       work with no config. Needs a host choice.
-- [ ] **Real hardware photos.** Every plate is a screen capture: proves the
-      software, says nothing about the wiring. Shot list in `docs/photos.md`;
-      replacing one is `photo.src` + `caption` in `src/lib/content.ts`.
+
 
 ## Deferred from the 2026-11-23 critique (19/32, "Acceptable")
 

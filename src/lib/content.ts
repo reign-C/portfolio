@@ -24,6 +24,14 @@ export type ProjectPhoto = {
   height: number;
 };
 
+export type HardwarePhoto = {
+  src: string;
+  alt: string;
+  caption: string;
+  width: number;
+  height: number;
+};
+
 export type Project = {
   id: string;
   rank: number;
@@ -35,6 +43,7 @@ export type Project = {
   measuredResult: string;
   stackList: string[];
   photo: ProjectPhoto;
+  hardwarePhotos?: HardwarePhoto[];
   caseStudy: {
     summary: string;
     role: string;
@@ -89,6 +98,7 @@ export const site = {
   email: "ciprianoreignmarc@gmail.com",
   github: "https://github.com/reign-C",
   githubHandle: "reign-C",
+  facebook: "https://www.facebook.com/reign.reign.94801116",
   resume: "/Resume-Cipriano-Reign-Marc.pdf",
   featuredProjectId: "clinic-queue",
 } as const;
@@ -130,6 +140,15 @@ export const projects: Project[] = [
       "USB thermal printer",
       "Piper TTS",
       "systemd",
+    ],
+    hardwarePhotos: [
+      {
+        src: "/work/clinic-queue-tv.jpg",
+        alt: "Clinic queue TV display mounted on a wall at Super Health Center showing General Check-up, Medical Certificate, and TB DOTS queues.",
+        caption: "Deployed lobby TV display at the clinic — live queue status for three services, running on the Raspberry Pi.",
+        width: 2048,
+        height: 1536,
+      },
     ],
     photo: {
       src: "/work/clinic-kiosk.jpg",
@@ -486,6 +505,22 @@ export const projects: Project[] = [
       "XY-160D",
       "3S LiPo",
     ],
+    hardwarePhotos: [
+      {
+        src: "/work/sumobot-hardware.jpg",
+        alt: "Autonomous sumobot on a competition ring, top-down view showing the robot with sensors and wiring on the black dohyō.",
+        caption: "Sumobot on the competition ring — ESP32-WROOM-32, XY-160D H-bridge, 6 opponent sensors, and 2 TCRT5000 edge detectors.",
+        width: 2048,
+        height: 1536,
+      },
+      {
+        src: "/work/sumobot-3d-model.png",
+        alt: "3D CAD model of the sumobot chassis designed in SketchUp showing the frame, motor mounts, and sensor slots.",
+        caption: "SketchUp 3D model of the sumobot chassis — designed before fabrication to plan motor and sensor placement.",
+        width: 797,
+        height: 432,
+      },
+    ],
     photo: {
       src: "/work/line-follower-tuner.jpg",
       width: 1000,
@@ -644,6 +679,22 @@ export const projects: Project[] = [
       "Audio amplifier",
       "Horn speakers",
     ],
+    hardwarePhotos: [
+      {
+        src: "/work/school-bell-hardware.jpg",
+        alt: "ESP32 school bell controller board on perfboard with RTC module, A7670E GSM module, buck converter, and SD card slot.",
+        caption: "Hand-soldered perfboard: ESP32 + RTC + A7670E GSM + buck converter + SD card for schedule storage.",
+        width: 2048,
+        height: 1536,
+      },
+      {
+        src: "/work/school-bell-wiring.jpg",
+        alt: "School bell controller inside its finished enclosure with DFPlayer module, circuit boards, and front-panel knobs visible.",
+        caption: "Finished enclosure housing the ESP32 controller, DFPlayer audio module, and manual bell trigger knobs.",
+        width: 2048,
+        height: 1536,
+      },
+    ],
     photo: {
       src: "/work/school-bell-dashboard.jpg",
       width: 1600,
@@ -800,6 +851,12 @@ export type SkillLayer = {
   };
 };
 
+export const kicadShowcase = {
+  src: "/work/kicad-schematic.png",
+  alt: "KiCad PCB layout showing an LM555 timer circuit with copper traces, component footprints, and mounting holes.",
+  caption: "KiCad PCB layout — LM555-based circuit designed during coursework and OJT training.",
+} as const;
+
 export const skillLayers: SkillLayer[] = [
   {
     layer: "Hardware",
@@ -925,6 +982,8 @@ export const about = {
     "During my on-the-job training with Unicenter Communications, I installed CCTV, PA, and telephone systems on client premises—where I learned that a prototype only counts once it keeps running cleanly in the room it was built for.",
     "I'm looking for full-time IoT, embedded systems, or network infrastructure roles in Koronadal City, across SOCCSKSARGEN, or remote (GMT+8), where I can own hardware, firmware, and deployment end to end.",
   ],
+  aiNote:
+    "My core skills are hardware: circuits, soldering, 3D modelling, networking, and troubleshooting. The software and web interfaces in this portfolio were built with AI assistance — I designed, wired, and deployed the physical systems.",
   facts: [
     { label: "Location", value: "Tacurong City, Sultan Kudarat (GMT+8)" },
     { label: "Work preference", value: "On-site across SOCCSKSARGEN or remote" },

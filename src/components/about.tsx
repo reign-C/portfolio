@@ -21,6 +21,13 @@ export function About() {
           ))}
         </div>
 
+        {about.aiNote && (
+          <p className="mt-5 rounded-[10px] border border-line bg-surface-subtle/50 px-4 py-3 text-[13.5px] leading-[1.6] text-muted">
+            <span className="font-medium text-ink">Note on tooling:</span>{" "}
+            {about.aiNote}
+          </p>
+        )}
+
         <dl className="mt-7 grid gap-x-8 gap-y-4 border-t border-line pt-6 sm:grid-cols-2">
           {about.facts.map((fact) => (
             <div key={fact.label}>

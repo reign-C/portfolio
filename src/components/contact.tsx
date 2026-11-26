@@ -86,6 +86,15 @@ export function Contact() {
             <span>github.com/{site.githubHandle}</span>
             <ArrowUpRight className="h-4 w-4 text-muted" aria-hidden="true" />
           </a>
+          <a
+            href={site.facebook}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="keycap-btn inline-flex min-h-11 items-center justify-center gap-2 rounded-[12px] px-4 text-[14.5px] font-medium text-ink no-underline transition-all duration-150 active:translate-y-[0.5px]"
+          >
+            <span>Facebook</span>
+            <ArrowUpRight className="h-4 w-4 text-muted" aria-hidden="true" />
+          </a>
         </div>
       </div>
 

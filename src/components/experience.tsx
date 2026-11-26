@@ -1,4 +1,9 @@
-import { certificationsAndEducation, experienceEntries } from "@/lib/content";
+import Image from "next/image";
+import {
+  certificationsAndEducation,
+  experienceEntries,
+  kicadShowcase,
+} from "@/lib/content";
 
 export function Experience() {
   return (
@@ -37,6 +42,20 @@ export function Experience() {
           </div>
         ))}
       </div>
+
+      <figure className="paper-card mt-6 overflow-hidden rounded-[16px]">
+        <Image
+          src={kicadShowcase.src}
+          alt={kicadShowcase.alt}
+          width={782}
+          height={783}
+          sizes="(min-width: 900px) 760px, 95vw"
+          className="block h-auto w-full"
+        />
+        <figcaption className="border-t border-line px-4 py-3 text-[13px] text-muted">
+          {kicadShowcase.caption}
+        </figcaption>
+      </figure>
 
       <div id="certifications" className="pt-12">
         <h3 className="text-[20px] leading-snug font-semibold text-ink">

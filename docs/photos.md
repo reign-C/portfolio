@@ -1,10 +1,15 @@
 # Photographs
 
-> **Status: all four projects now ship a screen capture taken from their own
-> source** (`public/work/`), because no hardware photographs exist yet. The shot
-> list below is still the upgrade path — a real photo beats a UI capture for
-> every one of these, and replacing it means swapping `photo.src` and the
-> caption in `src/lib/content.ts`. Nothing about the plates is placeholders now.
+> **Status: every project now ships both a screen capture and real bench photos**
+> (`public/work/`). Each project keeps its UI plate as `photo` and carries real
+> hardware photographs in `hardwarePhotos` (rendered as the "Hardware" gallery on
+> `/work/[slug]`). Photos are 2048×1536 phone shots; each entry declares its own
+> `width`/`height` so nothing is cropped.
+>
+> Still missing: a bench photo of the clinic Raspberry Pi itself (only the
+> deployed lobby TV exists) and a photo of the lab station inside its enclosure.
+> Add one by dropping the file in `public/work/` and adding a `hardwarePhotos`
+> entry in `src/lib/content.ts`.
 
 The site has one job the text cannot do: prove the hardware was real. Right now
 every figure is a diagram. Photographs are the missing evidence.
