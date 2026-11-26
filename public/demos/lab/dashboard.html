@@ -991,12 +991,15 @@
             padding-top: 0.75rem;
         }
     </style>
-<style>html,body{overflow-x:hidden}</style></head>
+<style>html,body{overflow-x:hidden}</style>    <script src="assets/js/lab-vendor-bundle.js"></script>
+    <script src="assets/js/chart.min.js"></script>
+    <script src="assets/js/lab-data.js"></script>
+</head>
 <body>
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <a href="#" onclick="return false" class="sidebar-brand">
+            <a href="dashboard.html" class="sidebar-brand">
                 <div class="sidebar-brand-icon">
                     <span aria-hidden="true" style="display:grid;place-items:center;width:100%;height:100%;font-size:11px;font-weight:800;color:#10b981">SKSU</span>
                 </div>
@@ -1009,90 +1012,15 @@
         
         <nav class="sidebar-nav">
             <div class="nav-section">Main</div>
-            
-            <div class="nav-item">
-                <a href="#" onclick="return false" class="nav-link active">
-                    <i class="fas fa-home"></i>
-                    <span>Dashboard</span>
-                </a>
-            </div>
-            
-            <div class="nav-item">
-                <a href="#" onclick="return false" class="nav-link ">
-                    <i class="fas fa-tablet-alt"></i>
-                    <span>Terminal Monitor</span>
-                </a>
-            </div>
-            
+            <div class="nav-item"><a href="dashboard.html" class="nav-link active" aria-current="page"><i class="fas fa-home"></i><span>Dashboard</span></a></div>
+            <div class="nav-item"><a href="terminal.html" class="nav-link"><i class="fas fa-tablet-alt"></i><span>Terminal Monitor</span></a></div>
             <div class="nav-section">Management</div>
-            
-            <div class="nav-item">
-                <a href="#" onclick="return false" class="nav-link ">
-                    <i class="fas fa-boxes-stacked"></i>
-                    <span>Inventory</span>
-                </a>
-            </div>
-
-            <div class="nav-item">
-                <a href="#" onclick="return false" class="nav-link ">
-                    <i class="fas fa-box-open"></i>
-                    <span>Kits</span>
-                </a>
-            </div>
-
-            <div class="nav-item">
-                <a href="#" onclick="return false" class="nav-link ">
-                    <i class="fas fa-folder"></i>
-                    <span>Categories</span>
-                </a>
-            </div>
-            
-            <div class="nav-item">
-                <a href="#" onclick="return false" class="nav-link ">
-                    <i class="fas fa-users"></i>
-                    <span>Users</span>
-                </a>
-            </div>
-            
-            <div class="nav-item">
-                <a href="#" onclick="return false" class="nav-link ">
-                    <i class="fas fa-user-shield"></i>
-                    <span>Admins</span>
-                </a>
-            </div>
-            
+            <div class="nav-item"><a href="inventory.html" class="nav-link"><i class="fas fa-boxes-stacked"></i><span>Inventory</span></a></div>
+            <div class="nav-item"><a href="kits.html" class="nav-link"><i class="fas fa-box-open"></i><span>Kits</span></a></div>
+            <div class="nav-item"><a href="users.html" class="nav-link"><i class="fas fa-users"></i><span>Users</span></a></div>
             <div class="nav-section">Reports</div>
-            
-            <div class="nav-item">
-                <a href="#" onclick="return false" class="nav-link ">
-                    <i class="fas fa-exchange-alt"></i>
-                    <span>Transactions</span>
-                </a>
-            </div>
-            
-            <div class="nav-item">
-                <a href="#" onclick="return false" class="nav-link ">
-                    <i class="fas fa-chart-bar"></i>
-                    <span>Reports</span>
-                </a>
-            </div>
-            
-                        
-            <div class="nav-section">System</div>
-            
-            <div class="nav-item">
-                <a href="#" onclick="return false" class="nav-link ">
-                    <i class="fas fa-history"></i>
-                    <span>Activity Logs</span>
-                </a>
-            </div>
-            
-            <div class="nav-item">
-                                <a href="#" onclick="return false" class="nav-link ">
-                    <i class="fas fa-cog"></i>
-                    <span>Settings</span>
-                </a>
-                            </div>
+            <div class="nav-item"><a href="transactions.html" class="nav-link"><i class="fas fa-exchange-alt"></i><span>Transactions</span></a></div>
+            <div class="nav-item"><a href="reports.html" class="nav-link"><i class="fas fa-chart-bar"></i><span>Reports</span></a></div>
         </nav>
         
         <div class="sidebar-footer">
@@ -1110,7 +1038,7 @@
             <div class="page-title">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="#" onclick="return false"><i class="fas fa-home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="dashboard.html"><i class="fas fa-home"></i></a></li>
                         <li class="breadcrumb-item active">Dashboard</li>
                     </ol>
                 </nav>
@@ -1152,10 +1080,7 @@
                         </div>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#" onclick="return false"><i class="fas fa-user"></i> My Profile</a></li>
-                                                <li><a class="dropdown-item" href="#" onclick="return false"><i class="fas fa-cog"></i> Settings</a></li>
-                                                <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="#" onclick="return false"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+<li><span class="dropdown-item text-muted"><i class="fas fa-info-circle"></i> Demo account</span></li>
                     </ul>
                 </div>
             </div>
@@ -1215,12 +1140,12 @@
 <!-- Stats Cards -->
 <div class="row g-3 mb-4">
     <div class="col-xl-3 col-md-6">
-        <a class="stat-card-link" href="#" onclick="return false">
+        <a class="stat-card-link" href="inventory.html">
         <div class="card stat-card">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
                     <p class="stat-label">Total Items</p>
-                    <h3 class="stat-value">1200</h3>
+                    <h3 class="stat-value" data-stat="totalItems">0</h3>
                 </div>
                 <div class="stat-icon primary">
                     <i class="fas fa-tools"></i>
@@ -1230,12 +1155,12 @@
         </a>
     </div>
     <div class="col-xl-3 col-md-6">
-        <a class="stat-card-link" href="#" onclick="return false">
+        <a class="stat-card-link" href="inventory.html">
         <div class="card stat-card">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
                     <p class="stat-label">Available Items</p>
-                    <h3 class="stat-value">1187</h3>
+                    <h3 class="stat-value" data-stat="availableItems">0</h3>
                 </div>
                 <div class="stat-icon success">
                     <i class="fas fa-check-circle"></i>
@@ -1245,12 +1170,12 @@
         </a>
     </div>
     <div class="col-xl-3 col-md-6">
-        <a class="stat-card-link" href="#" onclick="return false">
+        <a class="stat-card-link" href="transactions.html">
         <div class="card stat-card">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
                     <p class="stat-label">Borrowed Items</p>
-                    <h3 class="stat-value">9</h3>
+                    <h3 class="stat-value" data-stat="borrowedItems">0</h3>
                 </div>
                 <div class="stat-icon warning">
                     <i class="fas fa-hand-holding"></i>
@@ -1260,12 +1185,12 @@
         </a>
     </div>
     <div class="col-xl-3 col-md-6">
-        <a class="stat-card-link" href="#" onclick="return false">
+        <a class="stat-card-link" href="transactions.html">
         <div class="card stat-card">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
                     <p class="stat-label">Overdue</p>
-                    <h3 class="stat-value">9</h3>
+                    <h3 class="stat-value" data-stat="overdueItems">0</h3>
                 </div>
                 <div class="stat-icon danger">
                     <i class="fas fa-exclamation-triangle"></i>
@@ -1279,12 +1204,12 @@
 <!-- Secondary Stats -->
 <div class="row g-3 mb-4">
     <div class="col-xl-3 col-md-6">
-        <a class="stat-card-link" href="#" onclick="return false">
+        <a class="stat-card-link" href="transactions.html">
         <div class="card stat-card">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
-                    <p class="stat-label">Today's Borrows</p>
-                    <h3 class="stat-value">2</h3>
+                    <p class="stat-label">Borrowed Today</p>
+                    <h3 class="stat-value" data-stat="todayBorrows">0</h3>
                 </div>
                 <div class="stat-icon info">
                     <i class="fas fa-calendar-day"></i>
@@ -1294,12 +1219,12 @@
         </a>
     </div>
     <div class="col-xl-3 col-md-6">
-        <a class="stat-card-link" href="#" onclick="return false">
+        <a class="stat-card-link" href="transactions.html">
         <div class="card stat-card">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
-                    <p class="stat-label">Today's Returns</p>
-                    <h3 class="stat-value">2</h3>
+                    <p class="stat-label">Returned Today</p>
+                    <h3 class="stat-value" data-stat="todayReturns">0</h3>
                 </div>
                 <div class="stat-icon success">
                     <i class="fas fa-undo"></i>
@@ -1309,12 +1234,12 @@
         </a>
     </div>
     <div class="col-xl-3 col-md-6">
-        <a class="stat-card-link" href="#" onclick="return false">
+        <a class="stat-card-link" href="kits.html">
         <div class="card stat-card">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
-                    <p class="stat-label">Maintenance</p>
-                    <h3 class="stat-value">2</h3>
+                    <p class="stat-label">Kits</p>
+                    <h3 class="stat-value" data-stat="totalKits">0</h3>
                 </div>
                 <div class="stat-icon warning">
                     <i class="fas fa-wrench"></i>
@@ -1324,12 +1249,12 @@
         </a>
     </div>
     <div class="col-xl-3 col-md-6">
-        <a class="stat-card-link" href="#" onclick="return false">
+        <a class="stat-card-link" href="users.html">
         <div class="card stat-card">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
                     <p class="stat-label">Total Users</p>
-                    <h3 class="stat-value">240</h3>
+                    <h3 class="stat-value" data-stat="totalUsers">0</h3>
                 </div>
                 <div class="stat-icon primary">
                     <i class="fas fa-users"></i>
@@ -1387,7 +1312,7 @@
                     <h6 class="mb-0"><i class="fas fa-history text-primary me-2"></i>Recent Transactions</h6>
                     <small class="text-muted">Latest borrowing activities</small>
                 </div>
-                <a href="#" onclick="return false" class="btn btn-sm btn-primary">View All</a>
+                <a href="transactions.html" class="btn btn-sm btn-primary">View All</a>
             </div>
             <div class="table-responsive">
                 <table class="table mb-0">
@@ -1399,11 +1324,7 @@
                             <th>Date</th>
                         </tr>
                     </thead>
-                    <tbody>
-<tr><td><div class="d-flex align-items-center gap-2"><div class="user-avatar" style="width:32px;height:32px;font-size:0.75rem;">M</div><div><div class="fw-medium">Maria Santos</div><small class="text-muted">BS Computer Engineering</small></div></div></td><td>Crimping tool - Unit No. 1</td><td><span class="badge bg-success">Borrowed</span></td><td>Jun 22, 2026</td></tr>
-<tr><td><div class="d-flex align-items-center gap-2"><div class="user-avatar" style="width:32px;height:32px;font-size:0.75rem;">J</div><div><div class="fw-medium">Jose Ramos</div><small class="text-muted">BS Electronics Engineering</small></div></div></td><td>Router TP-Link (AC1200) - Unit No. 1</td><td><span class="badge bg-secondary">Returned</span></td><td>Jun 21, 2026</td></tr>
-<tr><td><div class="d-flex align-items-center gap-2"><div class="user-avatar" style="width:32px;height:32px;font-size:0.75rem;">A</div><div><div class="fw-medium">Ana Dela Cruz</div><small class="text-muted">BS Computer Engineering</small></div></div></td><td>External DVD Player - Unit No. 2</td><td><span class="badge bg-success">Borrowed</span></td><td>Jun 20, 2026</td></tr>
-</tbody>
+                    <tbody id="recentTransactions"></tbody>
                 </table>
             </div>
         </div>
@@ -1416,16 +1337,16 @@
             </div>
             <div class="card-body">
                 <div class="d-grid gap-2">
-                    <a href="#" onclick="return false" class="btn btn-primary">
+                    <a href="terminal.html" class="btn btn-primary">
                         <i class="fas fa-tablet-alt me-2"></i>Terminal Monitor
                     </a>
-                    <a href="#" onclick="return false" class="btn btn-outline-primary">
+                    <a href="inventory.html" class="btn btn-outline-primary">
                         <i class="fas fa-boxes-stacked me-2"></i>Inventory
                     </a>
-                                        <a href="#" onclick="return false" class="btn btn-outline-primary">
+                                        <a href="users.html" class="btn btn-outline-primary">
                         <i class="fas fa-users me-2"></i>Users
                     </a>
-                                        <a href="#" onclick="return false" class="btn btn-outline-primary">
+                                        <a href="reports.html" class="btn btn-outline-primary">
                         <i class="fas fa-chart-bar me-2"></i>Reports
                     </a>
                 </div>
@@ -1500,29 +1421,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function fetchDashboardTerminalStatus() {
-        $.ajax({
-            url: 'api/terminal_status.php',
-            data: { action: 'get_status' },
-            dataType: 'json',
-            timeout: 4000
-        }).done(function(response) {
-            if (response && response.success && response.data) {
-                setDashboardTerminalStatus(response.data);
-            } else {
-                setDashboardTerminalStatus({ is_online: false, is_unlocked: false, unlocked_by: '' });
-            }
-        }).fail(function() {
-            setDashboardTerminalStatus({ is_online: false, is_unlocked: false, unlocked_by: '' });
-        });
+        setDashboardTerminalStatus({ is_online: false, is_unlocked: false, unlocked_by: '' });
     }
 
     fetchDashboardTerminalStatus();
-    setInterval(fetchDashboardTerminalStatus, 10000);
 
-    // Get chart data from PHP
-    var trendRows = [{"day":"2026-05-04","count":"6"},{"day":"2026-05-11","count":"12"},{"day":"2026-05-18","count":"9"},{"day":"2026-05-25","count":"18"},{"day":"2026-06-01","count":"15"},{"day":"2026-06-08","count":"21"},{"day":"2026-06-15","count":"17"},{"day":"2026-06-22","count":"24"}];
-    var categoryLabels = ["Tools","Networking","Computers","Instruments","Power Supplies","Consumables"];
-    var categoryData = [96,42,18,12,7,5];
+    // Demo: borrowing counts come from the same mock dataset as every other page
+    var trendRows = LAB_DATA.allTransactions.map(function (t) {
+        return { day: t.borrowedISO, count: 1 };
+    });
+    var categoryLabels = Object.keys(LAB_DATA.byCategory());
+    var categoryData = Object.values(LAB_DATA.byCategory());
 
     function pad2(n) {
         return String(n).padStart(2, '0');
@@ -1553,7 +1462,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function buildTrendSeries(mode, rangeValue) {
         var labels = [];
         var data = [];
-        var now = new Date();
+        var now = LAB_DATA.today;
 
         if (mode === 'days') {
             for (var i = rangeValue - 1; i >= 0; i--) {
@@ -1722,18 +1631,41 @@ document.addEventListener('DOMContentLoaded', function() {
                     © 2026 Laboratory Equipment and Materials Borrowing System - <strong>College of Engineering</strong>
                 </div>
                 <div class="d-flex gap-3">
-                    <a href="#" onclick="return false" class="text-muted small text-decoration-none">Dashboard</a>
-                    <a href="#" onclick="return false" class="text-muted small text-decoration-none">Reports</a>
-                    <a href="#" onclick="return false" class="text-muted small text-decoration-none">Settings</a>
+                    <a href="dashboard.html" class="text-muted small text-decoration-none">Dashboard</a>
+                    <a href="reports.html" class="text-muted small text-decoration-none">Reports</a>
+                    <a href="users.html" class="text-muted small text-decoration-none">Users</a>
                 </div>
             </div>
         </footer>
     </main>
     
     <!-- Scripts - jQuery & DataTables loaded in header, other scripts here -->
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/chart.min.js"></script>
-    <script src="assets/js/sweetalert2.min.js"></script>
+    <script>
+        // Stat cards and the recent list read from the one mock dataset
+        (function () {
+            var s = LAB_DATA.summary();
+            document.querySelectorAll('[data-stat]').forEach(function (el) {
+                var value = s[el.getAttribute('data-stat')];
+                el.textContent = value === undefined ? '0' : value;
+            });
+
+            var badge = { Returned: 'bg-secondary', Borrowed: 'bg-success', Overdue: 'bg-danger' };
+            var tbody = document.getElementById('recentTransactions');
+            if (!tbody) return;
+            LAB_DATA.allTransactions.forEach(function (t) {
+                var tr = document.createElement('tr');
+                tr.innerHTML =
+                    '<td><div class="d-flex align-items-center gap-2">' +
+                    '<div class="user-avatar" style="width:32px;height:32px;font-size:0.75rem;">' + LAB_DATA.initial(t.user.name) + '</div>' +
+                    '<div><div class="fw-medium">' + t.user.name + '</div>' +
+                    '<small class="text-muted">' + t.user.program + '</small></div></div></td>' +
+                    '<td>' + t.item.name + ' - ' + t.item.unit + '</td>' +
+                    '<td><span class="badge ' + badge[t.status] + '">' + t.status + '</span></td>' +
+                    '<td>' + t.borrowed + '</td>';
+                tbody.appendChild(tr);
+            });
+        })();
+    </script>
     
     <script>
         // Mobile Sidebar Toggle
@@ -1750,9 +1682,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Initialize DataTables
+        // Initialize DataTables (pages that opt in with .datatable)
         $(document).ready(function() {
-            if ($.fn.DataTable) {
+            if ($.fn.DataTable && $('.datatable').length) {
                 $('.datatable').DataTable({
                     responsive: true,
                     pageLength: 10,
@@ -1766,129 +1698,30 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Server Time Update (syncs with PHP server time)
-        (function() {
-            // Get server time offset from PHP
-            var serverTimeOffset = 1795511165000 - Date.now();
-            
-            function updateServerTime() {
-                var serverNow = new Date(Date.now() + serverTimeOffset);
-                var options = { month: 'short', day: '2-digit', year: 'numeric' };
-                var dateStr = serverNow.toLocaleDateString('en-US', options);
-                var timeStr = serverNow.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                var el = document.getElementById('serverTime');
-                if (el) {
-                    el.textContent = dateStr + ' ' + timeStr;
-                }
-            }
-            
-            // Update every second
-            setInterval(updateServerTime, 1000);
-            updateServerTime();
+        // Demo date (static): the dataset is a fixed day, not the visitor's clock
+        (function () {
+            var el = document.getElementById('serverTime');
+            if (el) el.textContent = LAB_DATA.todayLabel;
+            var label = document.querySelector('.server-time small');
+            if (label) label.textContent = 'DEMO DATE';
         })();
         
-        // Toast Notification
+        // Toast Notification (Sweetalert is not bundled in the demo)
         function showToast(icon, title) {
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: icon,
-                title: title,
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true
-            });
+            console.info(title);
         }
 
-        // Sidebar Terminal Status
-        (function() {
-            var CACHE_KEY = 'terminalStatusCache';
-            var CACHE_TTL_MS = 70000;
-
-            function setTerminalStatus(isOnline) {
-                var dot = document.getElementById('terminalStatusDot');
-                var text = document.getElementById('terminalStatusText');
-                if (!dot || !text) return;
-
-                dot.classList.remove('online', 'offline');
-                if (isOnline) {
-                    dot.classList.add('online');
-                    text.textContent = 'Online & Ready';
-                } else {
-                    dot.classList.add('offline');
-                    text.textContent = 'Offline';
-                }
-            }
-
-            function saveCachedStatus(isOnline) {
-                try {
-                    sessionStorage.setItem(CACHE_KEY, JSON.stringify({
-                        isOnline: !!isOnline,
-                        ts: Date.now()
-                    }));
-                } catch (e) {}
-            }
-
-            function loadCachedStatus() {
-                try {
-                    var raw = sessionStorage.getItem(CACHE_KEY);
-                    if (!raw) return null;
-                    var parsed = JSON.parse(raw);
-                    if (!parsed || typeof parsed.ts !== 'number') return null;
-                    if (Date.now() - parsed.ts > CACHE_TTL_MS) return null;
-                    return !!parsed.isOnline;
-                } catch (e) {
-                    return null;
-                }
-            }
-
-            function fetchTerminalStatus() {
-                $.ajax({
-                    url: 'api/terminal_status.php',
-                    data: { action: 'get_status' },
-                    dataType: 'json',
-                    timeout: 4000
-                }).done(function(response) {
-                    if (response && response.success && response.data) {
-                        var online = !!response.data.is_online;
-                        setTerminalStatus(online);
-                        saveCachedStatus(online);
-                    }
-                }).fail(function() {
-                    var cached = loadCachedStatus();
-                    if (cached !== null) {
-                        setTerminalStatus(cached);
-                    } else {
-                        setTerminalStatus(false);
-                    }
-                });
-            }
-
-            var cached = loadCachedStatus();
-            if (cached !== null) {
-                setTerminalStatus(cached);
-            }
-
-            fetchTerminalStatus();
-            setInterval(fetchTerminalStatus, 10000);
+        // Sidebar terminal status: the station is offline in this demo
+        (function () {
+            var dot = document.getElementById('terminalStatusDot');
+            var text = document.getElementById('terminalStatusText');
+            if (dot) dot.classList.add('offline');
+            if (text) text.textContent = 'Offline';
         })();
         
         // Confirm Action
         function confirmAction(title, text, callback) {
-            Swal.fire({
-                title: title,
-                text: text,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#10b981',
-                cancelButtonColor: '#ef4444',
-                confirmButtonText: 'Yes, proceed',
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (result.isConfirmed && callback) {
-                    callback();
-                }
-            });
+            if (window.confirm(title + '\n\n' + text) && callback) callback();
         }
 
         // Page transitions (progressive enhancement)

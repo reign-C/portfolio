@@ -466,7 +466,7 @@ export const projects: Project[] = [
       ],
       demoNote: "Live terminal and admin dashboard ported from source (sample data).",
       demoHint:
-        "Tap the terminal screen to advance a borrow session, or switch to Dashboard.",
+        "Tap the terminal screen to advance a borrow session, or switch to Dashboard. The sidebar opens Inventory, Kits, Users, Transactions, and Reports — all sample data.",
       demoScreens: [
         {
           label: "TFT terminal",
@@ -481,6 +481,27 @@ export const projects: Project[] = [
           width: 1440,
           height: 900,
           title: "Lab borrowing dashboard",
+        },
+        {
+          label: "Inventory",
+          src: "/demos/lab/inventory.html",
+          width: 1440,
+          height: 900,
+          title: "Lab inventory",
+        },
+        {
+          label: "Transactions",
+          src: "/demos/lab/transactions.html",
+          width: 1440,
+          height: 900,
+          title: "Lab borrowing transactions",
+        },
+        {
+          label: "Reports",
+          src: "/demos/lab/reports.html",
+          width: 1440,
+          height: 900,
+          title: "Lab borrowing reports",
         },
       ],
     },
