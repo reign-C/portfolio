@@ -466,7 +466,7 @@ export const projects: Project[] = [
       ],
       demoNote: "Live terminal and admin dashboard ported from source (sample data).",
       demoHint:
-        "Tap the terminal screen to advance a borrow session, or switch to Dashboard. The sidebar opens Inventory, Kits, Users, Transactions, and Reports — all sample data.",
+        "Tap the terminal screen to advance a borrow session, or switch to Admin dashboard. The sidebar opens Inventory, Kits, Categories, Users, Admins, Transactions, Reports, Activity Logs, and Settings — all sample data.",
       demoScreens: [
         {
           label: "TFT terminal",

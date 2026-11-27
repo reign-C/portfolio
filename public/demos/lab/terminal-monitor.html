@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Borrow &amp; Return - Laboratory Equipment and Materials Borrowing System</title>
+    <script src="assets/js/jquery.min.js"></script>
+    <link href="assets/vendor/fontawesome/css/all.min.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script>
+        (function () {
+            try {
+                if (localStorage.getItem('theme') === 'dark') {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                } else {
+                    document.documentElement.removeAttribute('data-theme');
+                }
+            } catch (e) {}
+        })();
+    </script>
+    <style>
+        :root {
+            --primary: #10b981; --primary-dark: #059669; --primary-light: #34d399; --primary-bg: #ecfdf5;
+            --sidebar-bg: #064e3b; --sidebar-dark: #022c22;
+            --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --info: #3b82f6;
+            --text-dark: #1f2937; --text-muted: #6b7280; --text-light: #9ca3af;
+            --border-color: #e5e7eb; --bg-light: #f9fafb; --bg-white: #ffffff; --on-primary: #ffffff;
+        }
+        html[data-theme="dark"] {
+            --primary-bg: rgba(16, 185, 129, 0.15);
+            --text-dark: #e2e8f0; --text-muted: #aab8cc; --text-light: #7a90ad;
+            --border-color: #2a3a52; --bg-light: #0f172a; --bg-white: #1e2938; --on-primary: #06281e;
+            --bs-body-bg: var(--bg-light); --bs-body-color: var(--text-dark); --bs-border-color: var(--border-color);
+            color-scheme: dark;
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        body { margin: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-light); color: var(--text-dark); font-size: 0.9375rem; overflow-x: hidden; }
+        .sidebar { position: fixed; top: 0; left: 0; width: 260px; height: 100vh; background: linear-gradient(180deg, var(--sidebar-bg) 0%, var(--sidebar-dark) 100%); z-index: 1000; transition: all 0.3s ease; overflow-y: auto; display: flex; flex-direction: column; }
+        .sidebar-header { padding: 1.5rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .sidebar-brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+        .sidebar-brand-icon { width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; }
+        .sidebar-brand-text { color: #fff; font-weight: 600; font-size: 1rem; line-height: 1.2; }
+        .sidebar-brand-text small { display: block; font-weight: 400; font-size: 0.75rem; color: rgba(255, 255, 255, 0.6); }
+        .sidebar-nav { padding: 1rem 0; flex: 1; }
+        .nav-section { padding: 0.75rem 1.5rem 0.5rem; font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255, 255, 255, 0.4); }
+        .nav-item { padding: 0 0.75rem; margin-bottom: 2px; }
+        .nav-link { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: rgba(255, 255, 255, 0.7); text-decoration: none; border-radius: 8px; font-size: 0.875rem; font-weight: 500; transition: all 0.2s ease; }
+        .nav-link:hover { color: #fff; background: rgba(255, 255, 255, 0.1); }
+        .nav-link.active { color: var(--sidebar-bg); background: #fff; }
+        .nav-link i { width: 20px; text-align: center; font-size: 1rem; }
+        .nav-link.active i { color: var(--primary); }
+        .sidebar-footer { padding: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        .terminal-status { background: rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 1rem; text-align: center; }
+        .terminal-status h6 { color: #fff; font-size: 0.8125rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .terminal-status p { color: rgba(255, 255, 255, 0.7); font-size: 0.75rem; margin: 0; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+        .status-dot.offline { background: var(--danger); }
+        .status-dot.online { background: var(--success); }
+        .main-content { margin-left: 260px; width: calc(100% - 260px); min-height: 100vh; display: flex; flex-direction: column; }
+        .navbar-top { background: var(--bg-white); padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+        .page-title h1 { font-size: 1.25rem; font-weight: 600; color: var(--text-dark); margin: 0; }
+        .page-title .breadcrumb { margin: 0; padding: 0; list-style: none; display: flex; gap: 0.35rem; background: none; font-size: 0.8125rem; }
+        .page-title .breadcrumb-item { color: var(--text-muted); }
+        .page-title .breadcrumb-item a { color: var(--primary); text-decoration: none; }
+        .navbar-actions { display: flex; align-items: center; gap: 1rem; }
+        .theme-toggle { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.6rem; border-radius: 999px; background: var(--bg-light); border: 1px solid var(--border-color); }
+        .theme-toggle .theme-icon { color: var(--text-muted); font-size: 0.95rem; line-height: 1; }
+        .theme-toggle .form-check { margin: 0; }
+        .theme-toggle .form-check-input { cursor: pointer; background-color: var(--border-color); border-color: var(--border-color); }
+        .theme-toggle .form-check-input:checked { background-color: var(--primary); border-color: var(--primary); }
+        .user-dropdown { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 1rem; background: var(--bg-light); border-radius: 8px; cursor: pointer; border: none; color: var(--text-dark); }
+        html[data-theme="dark"] .user-dropdown { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); }
+        .user-avatar { width: 36px; height: 36px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 600; font-size: 0.875rem; }
+        .user-info { text-align: left; }
+        .user-name { font-weight: 600; font-size: 0.875rem; line-height: 1.2; }
+        .user-role { font-size: 0.75rem; color: var(--text-muted); }
+        .content-wrapper { padding: 1.5rem; flex: 1; }
+        .card { background: var(--bg-white); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04); margin-bottom: 1.25rem; }
+        .card-header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-color); background: transparent; }
+        .card-body { padding: 1.25rem; }
+        .terminal-status-pill {
+            display: inline-flex; align-items: center; gap: 0.75rem; padding: 0.45rem 0.75rem;
+            background: var(--bg-white); border: 1px solid var(--border-color); border-radius: 10px; font-size: 0.8125rem;
+        }
+        .source-group .btn { font-size: 0.75rem; padding: 0.25rem 0.65rem; border-color: var(--border-color); color: var(--text-muted); background: var(--bg-white); }
+        .source-group .btn.active { background: var(--bg-light); color: var(--text-dark); font-weight: 600; }
+        .terminal-screen-card {
+            background: linear-gradient(135deg, #065f46 0%, #022c22 100%);
+            color: #fff; border-radius: 14px; padding: 2.25rem 1.5rem; text-align: center;
+            box-shadow: 0 12px 28px rgba(2, 44, 34, 0.18); margin-bottom: 1.25rem;
+        }
+        .terminal-screen-card .icon-box { font-size: 2rem; opacity: 0.9; margin-bottom: 0.6rem; }
+        .terminal-screen-card h4 { font-size: 1.125rem; font-weight: 600; margin-bottom: 0.2rem; }
+        .terminal-screen-card .term-id { font-size: 0.75rem; letter-spacing: 0.04em; opacity: 0.75; margin-bottom: 0.9rem; }
+        .terminal-screen-card .term-state { font-size: 0.8125rem; opacity: 0.9; }
+        .quick-btn { display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; padding: 0.55rem 1rem; border-radius: 8px; font-size: 0.8125rem; font-weight: 500; background: transparent; transition: all 0.15s ease; }
+        .quick-btn-green { border: 1px solid var(--primary); color: var(--primary-dark); }
+        .quick-btn-green:hover { background: var(--primary); color: #fff; }
+        .quick-btn-red { border: 1px solid rgba(239, 68, 68, 0.45); color: var(--danger); }
+        .quick-btn-red:hover { background: var(--danger); color: #fff; }
+        .recent-scans-box { background: var(--bg-light); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.8125rem; color: var(--text-muted); min-height: 44px; }
+        .active-session-empty { min-height: 260px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: var(--text-muted); }
+        .active-session-empty .qr-badge { width: 40px; height: 40px; border-radius: 10px; background: var(--bg-light); border: 1px solid var(--border-color); display: grid; place-items: center; margin-bottom: 0.75rem; color: var(--text-dark); }
+        html[data-theme="dark"] .dropdown-menu { background-color: var(--bg-white); border-color: var(--border-color); }
+        html[data-theme="dark"] .dropdown-item { color: var(--text-dark); }
+        html[data-theme="dark"] .text-muted { color: var(--text-muted) !important; }
+        html[data-theme="dark"] .form-control { background: rgba(255,255,255,0.04); border-color: var(--border-color); color: var(--text-dark); }
+        @media (max-width: 991.98px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.show { transform: translateX(0); }
+            .main-content { margin-left: 0; width: 100%; }
+        }
+    </style>
+    <script src="assets/js/lab-vendor-bundle.js"></script>
+    <script src="assets/js/lab-data.js"></script>
+</head>
+<body>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-brand">
+                <div class="sidebar-brand-icon">
+                    <svg viewBox="0 0 64 64" width="46" height="46" aria-hidden="true">
+                        <circle cx="32" cy="32" r="30" fill="#065f46" stroke="#facc15" stroke-width="2.5"/>
+                        <circle cx="32" cy="32" r="22" fill="#064e3b" stroke="#facc15" stroke-width="1.5"/>
+                        <polygon points="32,16 37,26 48,26 39,33 42,44 32,37 22,44 25,33 16,26 27,26" fill="#facc15"/>
+                        <circle cx="32" cy="32" r="6" fill="#10b981" stroke="#ffffff" stroke-width="1.5"/>
+                    </svg>
+                </div>
+                <div class="sidebar-brand-text">
+                    Lab Equipment<br>and Materials
+                    <small>Borrowing System</small>
+                </div>
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-section">Main</div>
+            <div class="nav-item"><a href="dashboard.html" class="nav-link"><i class="fas fa-home"></i><span>Dashboard</span></a></div>
+            <div class="nav-item"><a href="terminal-monitor.html" class="nav-link active" aria-current="page"><i class="fas fa-tablet-alt"></i><span>Terminal Monitor</span></a></div>
+            <div class="nav-section">Management</div>
+            <div class="nav-item"><a href="inventory.html" class="nav-link"><i class="fas fa-boxes-stacked"></i><span>Inventory</span></a></div>
+            <div class="nav-item"><a href="kits.html" class="nav-link"><i class="fas fa-box-open"></i><span>Kits</span></a></div>
+            <div class="nav-item"><a href="categories.html" class="nav-link"><i class="fas fa-folder"></i><span>Categories</span></a></div>
+            <div class="nav-item"><a href="users.html" class="nav-link"><i class="fas fa-users"></i><span>Users</span></a></div>
+            <div class="nav-item"><a href="admins.html" class="nav-link"><i class="fas fa-user-shield"></i><span>Admins</span></a></div>
+            <div class="nav-section">Reports</div>
+            <div class="nav-item"><a href="transactions.html" class="nav-link"><i class="fas fa-exchange-alt"></i><span>Transactions</span></a></div>
+            <div class="nav-item"><a href="reports.html" class="nav-link"><i class="fas fa-chart-bar"></i><span>Reports</span></a></div>
+            <div class="nav-section">System</div>
+            <div class="nav-item"><a href="activity-logs.html" class="nav-link"><i class="fas fa-history"></i><span>Activity Logs</span></a></div>
+            <div class="nav-item"><a href="settings.html" class="nav-link"><i class="fas fa-cog"></i><span>Settings</span></a></div>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="terminal-status">
+                <h6><i class="fas fa-microchip me-2"></i>Scanning Terminal</h6>
+                <p><span class="status-dot offline me-1"></span> <span>Terminal Offline</span></p>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <nav class="navbar-top">
+            <div class="page-title">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="dashboard.html"><i class="fas fa-home"></i></a></li>
+                        <li class="breadcrumb-item active">Borrow &amp; Return</li>
+                    </ol>
+                </nav>
+                <h1>Borrow &amp; Return</h1>
+            </div>
+            <div class="navbar-actions">
+                <div class="server-time d-none d-md-flex align-items-center me-3" title="Server Time">
+                    <i class="fas fa-clock text-success me-2"></i>
+                    <div>
+                        <small class="text-muted d-block" style="font-size: 0.65rem; line-height: 1;">SERVER TIME</small>
+                        <span class="fw-semibold" style="font-size: 0.85rem;" data-demo-date>Nov 27, 2026 03:01:04 PM</span>
+                    </div>
+                </div>
+                <div class="theme-toggle" title="Toggle Dark Mode">
+                    <i class="fas fa-sun theme-icon" aria-hidden="true"></i>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="themeToggle" aria-label="Toggle dark mode">
+                    </div>
+                    <i class="fas fa-moon theme-icon" aria-hidden="true"></i>
+                </div>
+                <button class="btn btn-outline-secondary d-lg-none" id="sidebarToggle" type="button" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
+                <div class="dropdown">
+                    <button class="user-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="user-avatar">R</div>
+                        <div class="user-info d-none d-md-block">
+                            <div class="user-name">Reign Admin</div>
+                            <div class="user-role">Admin</div>
+                        </div>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><span class="dropdown-item text-muted"><i class="fas fa-info-circle"></i> Demo account</span></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="content-wrapper">
+            <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
+                <div>
+                    <h4 class="fw-semibold mb-1" style="font-size: 1.2rem;">Borrow &amp; Return Terminal <span class="text-muted fw-normal">&middot; TERMINAL-01</span></h4>
+                    <p class="text-muted small mb-0">Monitor scanning terminal sessions.</p>
+                </div>
+                <div class="terminal-status-pill">
+                    <span><span class="status-dot offline me-2" id="topDot"></span><strong id="topState">Offline</strong> <span class="text-danger ms-1" id="lockNotice">Locked by Custodian</span></span>
+                    <div class="btn-group source-group" role="group" aria-label="Scanner source">
+                        <button type="button" class="btn active" data-src="Auto">Auto</button>
+                        <button type="button" class="btn" data-src="ESP32">ESP32</button>
+                        <button type="button" class="btn" data-src="PC">PC</button>
+                    </div>
+                    <span class="text-muted small" id="activeSourceLabel">Auto &middot; PC</span>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="refreshBtn" title="Refresh status"><i class="fas fa-sync-alt"></i></button>
+                </div>
+            </div>
+
+            <!-- PC Scanner Card -->
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span class="fw-semibold">PC scanner</span>
+                    <span class="small text-muted" id="pcStatusText"><span class="status-dot offline me-1"></span> Idle &mdash; scan a user QR</span>
+                </div>
+                <div class="card-body">
+                    <div class="row g-4 align-items-start">
+                        <div class="col-lg-7">
+                            <label class="form-label small text-muted mb-1" for="scanInput">Scan input</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-barcode"></i></span>
+                                <input type="text" class="form-control" id="scanInput" placeholder="Scan a user QR to start (e.g. 29380 or INV-00017-0001)">
+                                <button type="button" class="btn btn-success px-3" id="scanBtn">Scan <span class="badge bg-white text-success ms-1" style="font-size:0.65rem;">Enter</span></button>
+                                <button type="button" class="btn btn-outline-secondary" id="finishBtn">Finish</button>
+                            </div>
+                            <div class="mt-2 small text-muted">
+                                Expecting: <strong class="text-dark">a user QR</strong> to start a session.<br>
+                                <span class="me-3"><strong>1</strong> User QR starts</span>
+                                <span class="me-3"><strong>2</strong> Equipment adds below</span>
+                                <span><strong>3</strong> Same QR or Finish closes</span>
+                            </div>
+                        </div>
+                        <div class="col-lg-5">
+                            <div class="small text-muted mb-1">Recent scans</div>
+                            <div class="recent-scans-box" id="recentScansBox">No scans yet.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lower Split -->
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <div class="terminal-screen-card">
+                        <div class="icon-box"><i class="fas fa-tablet-alt"></i></div>
+                        <h4>Scanning Terminal</h4>
+                        <div class="term-id">TERMINAL-01</div>
+                        <div class="term-state" id="termVisualState">Waiting for user scan</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header"><span class="fw-semibold">Quick actions</span></div>
+                        <div class="card-body d-grid gap-2">
+                            <button type="button" class="quick-btn quick-btn-green" id="btnManualBorrow"><i class="fas fa-hand-holding"></i> Manual Borrow</button>
+                            <button type="button" class="quick-btn quick-btn-green" id="btnManualReturn"><i class="fas fa-undo"></i> Manual Return</button>
+                            <button type="button" class="quick-btn quick-btn-red" id="btnCancelSession"><i class="fas fa-times"></i> Cancel Active Session</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-8">
+                    <div class="card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span class="fw-semibold">Active session</span>
+                            <span class="badge bg-light text-muted" id="sessionBadge">Idle</span>
+                        </div>
+                        <div class="card-body" id="activeSessionBody">
+                            <div class="active-session-empty">
+                                <div class="qr-badge"><i class="fas fa-qrcode"></i></div>
+                                <div class="fw-semibold text-dark mb-1">No active session</div>
+                                <div class="small">Scan a user QR &mdash; from ESP32 or PC &mdash; to begin.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="py-4 px-4 mt-auto">
+            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                <div class="text-muted small">© 2026 Laboratory Equipment and Materials Borrowing System - <strong>College of Engineering</strong></div>
+                <div class="d-flex gap-3">
+                    <a href="dashboard.html" class="text-muted small text-decoration-none">Dashboard</a>
+                    <a href="reports.html" class="text-muted small text-decoration-none">Reports</a>
+                    <a href="settings.html" class="text-muted small text-decoration-none">Settings</a>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <script>
+        (function () {
+            var activeUser = null;
+            var scannedItems = [];
+            var recent = [];
+
+            function renderSession() {
+                var body = document.getElementById('activeSessionBody');
+                var badge = document.getElementById('sessionBadge');
+                var termState = document.getElementById('termVisualState');
+                var pcStatus = document.getElementById('pcStatusText');
+                if (!activeUser) {
+                    badge.className = 'badge bg-light text-muted';
+                    badge.textContent = 'Idle';
+                    termState.textContent = 'Waiting for user scan';
+                    pcStatus.innerHTML = '<span class="status-dot offline me-1"></span> Idle &mdash; scan a user QR';
+                    body.innerHTML = '<div class="active-session-empty"><div class="qr-badge"><i class="fas fa-qrcode"></i></div><div class="fw-semibold text-dark mb-1">No active session</div><div class="small">Scan a user QR &mdash; from ESP32 or PC &mdash; to begin.</div></div>';
+                    return;
+                }
+                badge.className = 'badge bg-success';
+                badge.textContent = 'Session Active';
+                termState.textContent = 'Borrower: ' + activeUser.shortName;
+                pcStatus.innerHTML = '<span class="status-dot online me-1"></span> Session open for ' + activeUser.shortName;
+                var listHtml = scannedItems.length
+                    ? '<ul class="list-group list-group-flush mt-2">' + scannedItems.map(function (it) {
+                        return '<li class="list-group-item d-flex justify-content-between align-items-center bg-transparent px-0"><div><div class="fw-medium">' + it.name + '</div><small class="text-muted">' + it.code + ' &middot; ' + it.unit + '</small></div><span class="badge bg-success">Queued</span></li>';
+                    }).join('') + '</ul>'
+                    : '<p class="text-muted small mt-3 mb-0">No equipment scanned yet. Click <strong>Manual Borrow</strong> or scan an item barcode above.</p>';
+                body.innerHTML = '<div class="d-flex justify-content-between align-items-center pb-3 border-bottom"><div><div class="small text-muted">Active Borrower</div><div class="fw-semibold">' + activeUser.name + '</div><small class="text-muted">' + activeUser.idNo + ' &middot; ' + activeUser.program + '</small></div><span class="badge bg-info">' + activeUser.role + '</span></div>' + listHtml;
+            }
+
+            function pushScan(text) {
+                recent.unshift(text);
+                if (recent.length > 3) recent.pop();
+                document.getElementById('recentScansBox').innerHTML = recent.map(function (r) {
+                    return '<div><i class="fas fa-check text-success me-1"></i>' + r + '</div>';
+                }).join('');
+            }
+
+            function handleScan(raw) {
+                var val = (raw || '').trim();
+                if (!val) {
+                    if (!activeUser) activeUser = LAB_DATA.allUsers[0];
+                    else scannedItems.push(LAB_DATA.allItems[scannedItems.length % LAB_DATA.allItems.length]);
+                } else {
+                    var foundUser = LAB_DATA.allUsers.filter(function (u) { return u.idNo === val || u.id === val; })[0];
+                    var foundItem = LAB_DATA.allItems.filter(function (i) { return i.code === val || i.id === val; })[0];
+                    if (foundUser) {
+                        activeUser = foundUser;
+                        pushScan('User ' + foundUser.shortName + ' (' + foundUser.idNo + ')');
+                    } else if (foundItem) {
+                        if (!activeUser) activeUser = LAB_DATA.allUsers[0];
+                        scannedItems.push(foundItem);
+                        pushScan('Item ' + foundItem.name);
+                    } else if (!activeUser) {
+                        activeUser = LAB_DATA.allUsers[0];
+                        pushScan('Mock user ' + activeUser.shortName + ' (' + val + ')');
+                    } else {
+                        var fallback = LAB_DATA.allItems[scannedItems.length % LAB_DATA.allItems.length];
+                        scannedItems.push(fallback);
+                        pushScan('Item ' + fallback.name);
+                    }
+                }
+                document.getElementById('scanInput').value = '';
+                renderSession();
+            }
+
+            document.getElementById('scanBtn').addEventListener('click', function () {
+                handleScan(document.getElementById('scanInput').value);
+            });
+            document.getElementById('scanInput').addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') { e.preventDefault(); handleScan(this.value); }
+            });
+            document.getElementById('finishBtn').addEventListener('click', function () {
+                if (activeUser) pushScan('Committed session (' + scannedItems.length + ' item/s)');
+                activeUser = null; scannedItems = []; renderSession();
+            });
+            document.getElementById('btnManualBorrow').addEventListener('click', function () {
+                if (!activeUser) activeUser = LAB_DATA.allUsers[0];
+                var item = LAB_DATA.allItems[scannedItems.length % LAB_DATA.allItems.length];
+                scannedItems.push(item);
+                pushScan('Manual Borrow: ' + item.name);
+                renderSession();
+            });
+            document.getElementById('btnManualReturn').addEventListener('click', function () {
+                pushScan('Manual Return recorded (sample)');
+                activeUser = null; scannedItems = []; renderSession();
+            });
+            document.getElementById('btnCancelSession').addEventListener('click', function () {
+                activeUser = null; scannedItems = [];
+                pushScan('Session cancelled');
+                renderSession();
+            });
+
+            document.querySelectorAll('.source-group .btn').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    document.querySelectorAll('.source-group .btn').forEach(function (b) { b.classList.remove('active'); });
+                    btn.classList.add('active');
+                    document.getElementById('activeSourceLabel').innerHTML = btn.getAttribute('data-src') + ' &middot; PC';
+                });
+            });
+
+            document.getElementById('sidebarToggle')?.addEventListener('click', function () {
+                document.getElementById('sidebar').classList.toggle('show');
+            });
+            document.addEventListener('click', function (e) {
+                var sidebar = document.getElementById('sidebar');
+                var toggle = document.getElementById('sidebarToggle');
+                if (window.innerWidth < 992 && !sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                    sidebar.classList.remove('show');
+                }
+            });
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('[data-demo-date]').forEach(function (el) {
+                    el.textContent = LAB_DATA.serverTimeLabel || LAB_DATA.todayLabel;
+                });
+                var toggle = document.getElementById('themeToggle');
+                if (toggle) {
+                    toggle.checked = document.documentElement.getAttribute('data-theme') === 'dark';
+                    toggle.addEventListener('change', function () {
+                        var nextTheme = toggle.checked ? 'dark' : 'light';
+                        document.documentElement[nextTheme === 'dark' ? 'setAttribute' : 'removeAttribute']('data-theme', 'dark');
+                        try { localStorage.setItem('theme', nextTheme); } catch (e) {}
+                    });
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

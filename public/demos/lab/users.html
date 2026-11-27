@@ -3,995 +3,111 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Dashboard - Laboratory Equipment and Materials Borrowing System</title>
-    
-    
-    <!-- jQuery - Load first so it's available for inline scripts; add CDN fallback -->
+    <title>User Management - Laboratory Equipment and Materials Borrowing System</title>
     <script src="assets/js/jquery.min.js"></script>
-    
-    <!-- Fonts: keep system/local-only for offline mode -->
-    
-    <!-- Font Awesome (local) -->
     <link href="assets/vendor/fontawesome/css/all.min.css" rel="stylesheet">
-    
-    <!-- Bootstrap 5 (local) -->
     <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- DataTables CSS (local) -->
-    <link href="assets/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
-    <link href="assets/vendor/datatables/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-    
-    <!-- DataTables JS - Load early for inline scripts; CDN fallback if local is blocked -->
-    <script src="assets/js/dataTables.min.js"></script>
-    <script src="assets/js/dataTables.bootstrap5.min.js"></script>
-
     <script>
         (function () {
             try {
-                var stored = localStorage.getItem('theme');
-                var prefersDark = false;
-                var theme = stored ? stored : (prefersDark ? 'dark' : 'light');
-                if (theme === 'dark') {
+                if (localStorage.getItem('theme') === 'dark') {
                     document.documentElement.setAttribute('data-theme', 'dark');
                 } else {
                     document.documentElement.removeAttribute('data-theme');
                 }
-            } catch (e) {
-                // If storage is blocked, silently fall back to light.
-            }
+            } catch (e) {}
         })();
     </script>
-    
     <style>
         :root {
-            --primary: #10b981;
-            --primary-dark: #059669;
-            --primary-light: #34d399;
-            --primary-bg: #ecfdf5;
-            --sidebar-bg: #064e3b;
-            --sidebar-dark: #022c22;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --info: #3b82f6;
-            --text-dark: #1f2937;
-            --text-muted: #6b7280;
-            --text-light: #9ca3af;
-            --border-color: #e5e7eb;
-            --bg-light: #f9fafb;
-            --bg-white: #ffffff;
-            --on-primary: #ffffff;
+            --primary: #10b981; --primary-dark: #059669; --primary-bg: #ecfdf5;
+            --sidebar-bg: #064e3b; --sidebar-dark: #022c22;
+            --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --info: #3b82f6;
+            --text-dark: #1f2937; --text-muted: #6b7280; --text-light: #9ca3af;
+            --border-color: #e5e7eb; --bg-light: #f9fafb; --bg-white: #ffffff;
         }
-
         html[data-theme="dark"] {
             --primary-bg: rgba(16, 185, 129, 0.15);
-            /* Softer, lower-contrast dark palette (closer to modern chat UI) */
-            --text-dark: #e2e8f0;
-            --text-muted: #aab8cc;
-            --text-light: #7a90ad;
-            --border-color: #2a3a52;
-            --bg-light: #0f172a;
-            --bg-white: #1e2938;
-            --on-primary: #06281e;
-
-            /* Bootstrap alignment (prevents "black" defaults in dark mode) */
-            --bs-body-bg: var(--bg-light);
-            --bs-body-color: var(--text-dark);
-            --bs-heading-color: var(--text-dark);
-            --bs-border-color: var(--border-color);
-            --bs-secondary-color: var(--text-muted);
-            --bs-tertiary-color: var(--text-light);
-
-            /* Hint native widgets (select dropdown, scrollbars) to render for dark */
+            --text-dark: #e2e8f0; --text-muted: #aab8cc; --text-light: #7a90ad;
+            --border-color: #2a3a52; --bg-light: #0f172a; --bg-white: #1e2938;
+            --bs-body-bg: var(--bg-light); --bs-body-color: var(--text-dark); --bs-border-color: var(--border-color);
             color-scheme: dark;
         }
-        
-        *, *::before, *::after {
-            box-sizing: border-box;
-        }
-        
-        body {
-            margin: 0;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: var(--bg-light);
-            color: var(--text-dark);
-            font-size: 0.9375rem;
-            overflow-x: auto;
-        }
-        
-        /* Sidebar */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 260px;
-            height: 100vh;
-            background: linear-gradient(180deg, var(--sidebar-bg) 0%, var(--sidebar-dark) 100%);
-            z-index: 1000;
-            transition: all 0.3s ease;
-            overflow-y: auto;
-        }
-        
-        .sidebar-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .sidebar-brand {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            text-decoration: none;
-        }
-        
-        .sidebar-brand-icon {
-            width: 56px;
-            height: 56px;
-            background: transparent;
-            border-radius: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .sidebar-brand-icon i {
-            color: #fff;
-            font-size: 1.125rem;
-        }
-
-        .sidebar-brand-icon img {
-            width: 56px;
-            height: 56px;
-            object-fit: contain;
-            display: block;
-        }
-        
-        .sidebar-brand-text {
-            color: #fff;
-            font-weight: 600;
-            font-size: 1rem;
-            line-height: 1.2;
-        }
-        
-        .sidebar-brand-text small {
-            display: block;
-            font-weight: 400;
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.6);
-        }
-        
-        .sidebar-nav {
-            padding: 1rem 0;
-        }
-        
-        .nav-section {
-            padding: 0.75rem 1.5rem 0.5rem;
-            font-size: 0.6875rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: rgba(255, 255, 255, 0.4);
-        }
-        
-        .nav-item {
-            padding: 0 0.75rem;
-            margin-bottom: 2px;
-        }
-        
-        .nav-link {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
-        }
-        
-        .nav-link:hover {
-            color: #fff;
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        .nav-link.active {
-            color: var(--sidebar-bg);
-            background: #fff;
-        }
-        
-        .nav-link i {
-            width: 20px;
-            text-align: center;
-            font-size: 1rem;
-        }
-        
-        .nav-link.active i {
-            color: var(--primary);
-        }
-        
-        /* Main Content */
-        .main-content {
-            margin-left: 260px;
-            width: calc(100% - 260px);
-            min-height: 100vh;
-            transition: all 0.3s ease;
-        }
-        
-        /* Top Navbar */
-        .navbar-top {
-            background: var(--bg-white);
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .page-title h1 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--text-dark);
-            margin: 0;
-        }
-        
-        .page-title .breadcrumb {
-            margin: 0;
-            padding: 0;
-            list-style: none;
-            display: flex;
-            gap: 0.35rem;
-            background: none;
-            font-size: 0.8125rem;
-        }
-        
-        .page-title .breadcrumb-item {
-            color: var(--text-muted);
-        }
-        
-        .page-title .breadcrumb-item a {
-            color: var(--primary);
-            text-decoration: none;
-        }
-        
-        .navbar-actions {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .theme-toggle {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.35rem 0.6rem;
-            border-radius: 999px;
-            background: var(--bg-light);
-            border: 1px solid var(--border-color);
-        }
-
-        .theme-toggle .theme-icon {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            line-height: 1;
-        }
-
-        .theme-toggle .form-check {
-            margin: 0;
-        }
-
-        .theme-toggle .form-check-input {
-            cursor: pointer;
-            background-color: var(--border-color);
-            border-color: var(--border-color);
-        }
-
-        .theme-toggle .form-check-input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
-        }
-
-        .theme-toggle .form-check-input:checked {
-            background-color: var(--primary);
-            border-color: var(--primary);
-        }
-        
-        .user-dropdown {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.5rem 1rem;
-            background: var(--bg-light);
-            border-radius: 8px;
-            cursor: pointer;
-            border: none;
-            text-decoration: none;
-            color: var(--text-dark);
-        }
-
-        html[data-theme="dark"] .user-dropdown {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-color);
-        }
-        
-        .user-dropdown:hover {
-            background: var(--border-color);
-        }
-
-        html[data-theme="dark"] .user-dropdown:hover {
-            background: rgba(255, 255, 255, 0.08);
-        }
-        
-        .user-avatar {
-            width: 36px;
-            height: 36px;
-            background: var(--primary);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-weight: 600;
-            font-size: 0.875rem;
-        }
-        
-        .user-info {
-            text-align: left;
-        }
-        
-        .user-name {
-            font-weight: 600;
-            font-size: 0.875rem;
-            line-height: 1.2;
-        }
-        
-        .user-role {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-        
-        /* Content Area */
-        .content-wrapper {
-            padding: 1.5rem;
-        }
-        
-        /* Cards */
-        .card {
-            background: var(--bg-white);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            margin-bottom: 1.5rem;
-        }
-        
-        .card-header {
-            padding: 1.25rem 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-            background: transparent;
-        }
-        
-        .card-header h5, .card-header h6 {
-            margin: 0;
-            font-weight: 600;
-            color: var(--text-dark);
-        }
-        
-        .card-body {
-            padding: 1.5rem;
-        }
-
-        /* Dark-mode-friendly Bootstrap defaults */
-        html[data-theme="dark"] .dropdown-menu {
-            background-color: var(--bg-white);
-            border-color: var(--border-color);
-        }
-
-        html[data-theme="dark"] .dropdown-item {
-            color: var(--text-dark);
-        }
-
-        html[data-theme="dark"] .dropdown-item:hover,
-        html[data-theme="dark"] .dropdown-item:focus {
-            background-color: rgba(148, 163, 184, 0.12);
-            color: var(--text-dark);
-        }
-
-        html[data-theme="dark"] .dropdown-divider {
-            border-top-color: var(--border-color);
-        }
-
-        html[data-theme="dark"] .text-muted {
-            color: var(--text-muted) !important;
-        }
-
-        html[data-theme="dark"] .text-secondary {
-            color: var(--text-muted) !important;
-        }
-
-        html[data-theme="dark"] .text-dark {
-            color: var(--text-dark) !important;
-        }
-
-        html[data-theme="dark"] .bg-white {
-            background-color: var(--bg-white) !important;
-        }
-
-        html[data-theme="dark"] .bg-light {
-            /* Bootstrap's bg-light is a surface tint, not the page background */
-            background-color: rgba(255, 255, 255, 0.04) !important;
-        }
-
-        html[data-theme="dark"] .badge.bg-light {
-            background-color: rgba(255, 255, 255, 0.06) !important;
-            border: 1px solid var(--border-color);
-        }
-
-        html[data-theme="dark"] .badge.bg-light.text-dark {
-            color: var(--text-dark) !important;
-        }
-
-        html[data-theme="dark"] .badge.bg-light.text-muted {
-            color: var(--text-muted) !important;
-        }
-
-        html[data-theme="dark"] .form-control,
-        html[data-theme="dark"] .form-select {
-            background-color: rgba(255, 255, 255, 0.04) !important;
-            border-color: var(--border-color) !important;
-            color: var(--text-dark) !important;
-        }
-
-        /* Native <select> dropdown list (options) readability in dark mode */
-        html[data-theme="dark"] select,
-        html[data-theme="dark"] option,
-        html[data-theme="dark"] optgroup {
-            color: var(--text-dark);
-        }
-
-        html[data-theme="dark"] select option,
-        html[data-theme="dark"] select optgroup {
-            background-color: var(--bg-white);
-        }
-
-        html[data-theme="dark"] select option:disabled {
-            color: var(--text-light);
-        }
-
-        html[data-theme="dark"] .form-control::placeholder {
-            color: var(--text-light) !important;
-        }
-
-        html[data-theme="dark"] .form-control:focus,
-        html[data-theme="dark"] .form-select:focus {
-            background-color: rgba(255, 255, 255, 0.06) !important;
-            border-color: var(--primary) !important;
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.18);
-            color: var(--text-dark) !important;
-        }
-
-        html[data-theme="dark"] .input-group-text {
-            background-color: rgba(255, 255, 255, 0.04) !important;
-            border-color: var(--border-color) !important;
-            color: var(--text-muted) !important;
-        }
-
-        html[data-theme="dark"] .modal-content {
-            background-color: var(--bg-white);
-            border-color: var(--border-color);
-            color: var(--text-dark);
-        }
-
-        html[data-theme="dark"] .modal-header,
-        html[data-theme="dark"] .modal-footer {
-            border-color: var(--border-color);
-        }
-
-        html[data-theme="dark"] .table {
-            --bs-table-color: var(--text-dark);
-            --bs-table-border-color: var(--border-color);
-            --bs-table-striped-color: var(--text-dark);
-            --bs-table-striped-bg: rgba(255, 255, 255, 0.02);
-            --bs-table-active-color: var(--text-dark);
-            --bs-table-active-bg: rgba(16, 185, 129, 0.12);
-            --bs-table-hover-color: var(--text-dark);
-            --bs-table-hover-bg: rgba(255, 255, 255, 0.03);
-            color: var(--text-dark);
-        }
-
-        html[data-theme="dark"] .table > :not(caption) > * > * {
-            background-color: var(--bg-white);
-            border-color: var(--border-color);
-        }
-
-        html[data-theme="dark"] .table thead th {
-            color: var(--text-muted);
-        }
-
-        html[data-theme="dark"] .table thead.table-light {
-            --bs-table-bg: rgba(255, 255, 255, 0.02);
-            --bs-table-color: var(--text-muted);
-            --bs-table-border-color: var(--border-color);
-        }
-
-        /* Many pages use section header rows like: <tr class="table-light"><th colspan="2">...</th></tr> */
-        html[data-theme="dark"] .table-light {
-            --bs-table-bg: rgba(255, 255, 255, 0.03);
-            --bs-table-color: var(--text-muted);
-            --bs-table-border-color: var(--border-color);
-            color: var(--text-muted) !important;
-        }
-
-        html[data-theme="dark"] tr.table-light > th,
-        html[data-theme="dark"] tr.table-light > td {
-            color: var(--text-muted) !important;
-        }
-
-        html[data-theme="dark"] .dataTables_wrapper .dataTables_length,
-        html[data-theme="dark"] .dataTables_wrapper .dataTables_filter,
-        html[data-theme="dark"] .dataTables_wrapper .dataTables_info,
-        html[data-theme="dark"] .dataTables_wrapper .dataTables_paginate {
-            color: var(--text-muted) !important;
-        }
-
-        html[data-theme="dark"] .dataTables_wrapper .dataTables_filter input,
-        html[data-theme="dark"] .dataTables_wrapper .dataTables_length select {
-            background-color: rgba(255, 255, 255, 0.04) !important;
-            border: 1px solid var(--border-color) !important;
-            color: var(--text-dark) !important;
-        }
-
-        html[data-theme="dark"] .dataTables_wrapper .dataTables_filter input::placeholder {
-            color: var(--text-light) !important;
-        }
-
-        html[data-theme="dark"] .btn-outline-secondary {
-            color: var(--text-dark);
-            border-color: var(--border-color);
-        }
-
-        html[data-theme="dark"] .btn-outline-secondary:hover {
-            background-color: rgba(255, 255, 255, 0.06);
-            border-color: rgba(255, 255, 255, 0.12);
-            color: var(--text-dark);
-        }
-
-        /* Keep warning badges readable: they intentionally need dark text */
-        html[data-theme="dark"] .bg-warning.text-dark,
-        html[data-theme="dark"] .badge.bg-warning.text-dark,
-        html[data-theme="dark"] .btn.bg-warning.text-dark {
-            color: #0b1220 !important;
-        }
-
-        /* Inventory units panel uses Bootstrap var(--bs-light); make it dark-friendly */
-        html[data-theme="dark"] .unit-panel {
-            background: rgba(255, 255, 255, 0.03) !important;
-        }
-        
-        /* Stats Cards */
-        .stat-card {
-            padding: 1.25rem;
-        }
-        
-        .stat-card .stat-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-            color: #fff;
-        }
-        
-        .stat-card .stat-icon.primary { background: var(--primary); }
-        .stat-card .stat-icon.success { background: var(--success); }
-        .stat-card .stat-icon.warning { background: var(--warning); }
-        .stat-card .stat-icon.danger { background: var(--danger); }
-        .stat-card .stat-icon.info { background: var(--info); }
-        
-        .stat-card .stat-label {
-            font-size: 0.75rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.025em;
-            color: var(--text-muted);
-            margin-bottom: 0.25rem;
-        }
-        
-        .stat-card .stat-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-dark);
-            line-height: 1;
-        }
-        
-        /* Buttons */
-        .btn {
-            font-weight: 500;
-            font-size: 0.875rem;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-        }
-        
-        .btn-primary {
-            background: var(--primary);
-            border-color: var(--primary);
-            color: #fff;
-        }
-        
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            border-color: var(--primary-dark);
-        }
-        
-        .btn-outline-primary {
-            color: var(--primary);
-            border-color: var(--primary);
-        }
-        
-        .btn-outline-primary:hover {
-            background: var(--primary);
-            color: #fff;
-        }
-        
-        .btn-success { background: var(--success); border-color: var(--success); }
-        .btn-warning { background: var(--warning); border-color: var(--warning); }
-        .btn-danger { background: var(--danger); border-color: var(--danger); }
-        .btn-info { background: var(--info); border-color: var(--info); }
-        
-        /* Tables */
-        .table {
-            margin: 0;
-        }
-        
-        .table thead th {
-            background: var(--bg-light);
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.025em;
-            color: var(--text-muted);
-            padding: 0.875rem 1rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .table tbody td {
-            padding: 1rem;
-            vertical-align: middle;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 0.875rem;
-        }
-        
-        .table tbody tr:hover {
-            background: var(--bg-light);
-        }
-        
-        /* Badges */
-        .badge {
-            font-weight: 500;
-            font-size: 0.75rem;
-            padding: 0.375rem 0.625rem;
-            border-radius: 6px;
-        }
-        
-        .badge-primary { background: var(--primary-bg); color: var(--primary-dark); }
-        .badge-success { background: #dcfce7; color: #166534; }
-        .badge-warning { background: #fef3c7; color: #92400e; }
-        .badge-danger { background: #fee2e2; color: #991b1b; }
-        .badge-info { background: #dbeafe; color: #1e40af; }
-        .badge-secondary { background: #f3f4f6; color: #4b5563; }
-        
-        /* Forms */
-        .form-control, .form-select {
-            font-size: 0.875rem;
-            padding: 0.625rem 0.875rem;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background: var(--bg-white);
-        }
-        
-        .form-control:focus, .form-select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
-        }
-        
-        .form-label {
-            font-size: 0.8125rem;
-            font-weight: 500;
-            color: var(--text-dark);
-            margin-bottom: 0.5rem;
-        }
-        
-        /* Status Indicator */
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-        
-        .status-dot.online {
-            background: var(--success);
-            animation: pulse 2s infinite;
-        }
-        
-        .status-dot.offline {
-            background: var(--danger);
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        /* Dropdown */
-        .dropdown-menu {
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            padding: 0.5rem;
-        }
-        
-        .dropdown-item {
-            font-size: 0.875rem;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            color: var(--text-dark);
-        }
-        
-        .dropdown-item:hover {
-            background: var(--bg-light);
-        }
-        
-        .dropdown-item i {
-            width: 20px;
-            margin-right: 0.5rem;
-            color: var(--text-muted);
-        }
-        
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: var(--bg-light);
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: var(--text-light);
-            border-radius: 3px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--text-muted);
-        }
-        
-        /* Mobile Responsive */
+        *, *::before, *::after { box-sizing: border-box; }
+        body { margin: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-light); color: var(--text-dark); font-size: 0.9375rem; overflow-x: hidden; }
+        .sidebar { position: fixed; top: 0; left: 0; width: 260px; height: 100vh; background: linear-gradient(180deg, var(--sidebar-bg) 0%, var(--sidebar-dark) 100%); z-index: 1000; transition: all 0.3s ease; overflow-y: auto; display: flex; flex-direction: column; }
+        .sidebar-header { padding: 1.5rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .sidebar-brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+        .sidebar-brand-icon { width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; }
+        .sidebar-brand-text { color: #fff; font-weight: 600; font-size: 1rem; line-height: 1.2; }
+        .sidebar-brand-text small { display: block; font-weight: 400; font-size: 0.75rem; color: rgba(255, 255, 255, 0.6); }
+        .sidebar-nav { padding: 1rem 0; flex: 1; }
+        .nav-section { padding: 0.75rem 1.5rem 0.5rem; font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255, 255, 255, 0.4); }
+        .nav-item { padding: 0 0.75rem; margin-bottom: 2px; }
+        .nav-link { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: rgba(255, 255, 255, 0.7); text-decoration: none; border-radius: 8px; font-size: 0.875rem; font-weight: 500; transition: all 0.2s ease; }
+        .nav-link:hover { color: #fff; background: rgba(255, 255, 255, 0.1); }
+        .nav-link.active { color: var(--sidebar-bg); background: #fff; }
+        .nav-link i { width: 20px; text-align: center; font-size: 1rem; }
+        .nav-link.active i { color: var(--primary); }
+        .sidebar-footer { padding: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        .terminal-status { background: rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 1rem; text-align: center; }
+        .terminal-status h6 { color: #fff; font-size: 0.8125rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .terminal-status p { color: rgba(255, 255, 255, 0.7); font-size: 0.75rem; margin: 0; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+        .status-dot.offline { background: var(--danger); }
+        .main-content { margin-left: 260px; width: calc(100% - 260px); min-height: 100vh; display: flex; flex-direction: column; }
+        .navbar-top { background: var(--bg-white); padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+        .page-title h1 { font-size: 1.25rem; font-weight: 600; color: var(--text-dark); margin: 0; }
+        .page-title .breadcrumb { margin: 0; padding: 0; list-style: none; display: flex; gap: 0.35rem; background: none; font-size: 0.8125rem; }
+        .page-title .breadcrumb-item { color: var(--text-muted); }
+        .page-title .breadcrumb-item a { color: var(--primary); text-decoration: none; }
+        .navbar-actions { display: flex; align-items: center; gap: 1rem; }
+        .theme-toggle { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.6rem; border-radius: 999px; background: var(--bg-light); border: 1px solid var(--border-color); }
+        .theme-toggle .theme-icon { color: var(--text-muted); font-size: 0.95rem; line-height: 1; }
+        .theme-toggle .form-check { margin: 0; }
+        .theme-toggle .form-check-input { cursor: pointer; background-color: var(--border-color); border-color: var(--border-color); }
+        .theme-toggle .form-check-input:checked { background-color: var(--primary); border-color: var(--primary); }
+        .user-dropdown { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 1rem; background: var(--bg-light); border-radius: 8px; cursor: pointer; border: none; color: var(--text-dark); }
+        html[data-theme="dark"] .user-dropdown { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); }
+        .user-avatar { width: 36px; height: 36px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 600; font-size: 0.875rem; }
+        .user-info { text-align: left; }
+        .user-name { font-weight: 600; font-size: 0.875rem; line-height: 1.2; }
+        .user-role { font-size: 0.75rem; color: var(--text-muted); }
+        .content-wrapper { padding: 1.5rem; flex: 1; }
+        .card { background: var(--bg-white); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04); margin-bottom: 1.25rem; }
+        .kpi-card { padding: 1.15rem 1.25rem; display: flex; flex-direction: row; align-items: center; text-align: left; gap: 1rem; height: 100%; }
+        .kpi-icon { width: 44px; height: 44px; border-radius: 10px; display: grid; place-items: center; font-size: 1.15rem; flex-shrink: 0; }
+        .kpi-green { background: #ecfdf5; color: #059669; }
+        .kpi-cyan { background: #e0f2fe; color: #0284c7; }
+        .kpi-amber { background: #fef3c7; color: #d97706; }
+        .kpi-blue { background: #dbeafe; color: #2563eb; }
+        .kpi-label { font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.04em; color: var(--text-muted); text-transform: uppercase; }
+        .kpi-val { font-size: 1.45rem; font-weight: 700; line-height: 1.15; }
+        .search-pill-wrap { position: relative; display: flex; align-items: center; }
+        .search-pill-input { border-radius: 999px; padding-right: 2.75rem; height: 38px; font-size: 0.85rem; }
+        .search-pill-btn { position: absolute; right: 4px; width: 30px; height: 30px; border-radius: 50%; border: none; background: var(--primary); color: #fff; display: grid; place-items: center; font-size: 0.8rem; }
+        .id-chip { display: inline-block; padding: 0.22rem 0.65rem; border: 1px solid var(--border-color); border-radius: 6px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.78rem; background: var(--bg-light); color: var(--text-dark); }
+        .role-pill { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.25rem 0.6rem; border-radius: 6px; font-size: 0.74rem; font-weight: 600; }
+        .role-student { background: #06b6d4; color: #fff; }
+        .role-faculty { background: #f59e0b; color: #111827; }
+        .role-staff { background: #3b82f6; color: #fff; }
+        .act-group { display: inline-flex; border: 1px solid var(--border-color); border-radius: 6px; overflow: hidden; }
+        .act-group button { border: none; background: transparent; padding: 0.32rem 0.55rem; font-size: 0.8rem; cursor: pointer; }
+        .act-group button + button { border-left: 1px solid var(--border-color); }
+        .act-group button:hover { background: var(--bg-light); }
+        .table thead th { background: var(--bg-light); font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; color: var(--text-muted); padding: 0.75rem 0.85rem; border-bottom: 1px solid var(--border-color); }
+        .table tbody td { padding: 0.8rem 0.85rem; vertical-align: middle; border-bottom: 1px solid var(--border-color); font-size: 0.84rem; }
+        html[data-theme="dark"] .table > :not(caption) > * > * { background-color: var(--bg-white); border-color: var(--border-color); color: var(--text-dark); }
+        html[data-theme="dark"] .form-control, html[data-theme="dark"] .form-select { background: rgba(255,255,255,0.04); border-color: var(--border-color); color: var(--text-dark); }
+        html[data-theme="dark"] .dropdown-menu { background-color: var(--bg-white); border-color: var(--border-color); }
+        html[data-theme="dark"] .dropdown-item { color: var(--text-dark); }
+        html[data-theme="dark"] .text-muted { color: var(--text-muted) !important; }
         @media (max-width: 991.98px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            
-            .sidebar.show {
-                transform: translateX(0);
-            }
-            
-            .main-content {
-                margin-left: 0;
-                width: 100%;
-            }
-        }
-
-        @media (max-width: 767.98px) {
-            .navbar-top {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.75rem;
-            }
-
-            .navbar-actions {
-                width: 100%;
-                justify-content: space-between;
-                flex-wrap: wrap;
-                gap: 0.75rem;
-            }
-
-            .user-dropdown {
-                width: 100%;
-                justify-content: space-between;
-            }
-
-            .card-header.d-flex {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
-            }
-
-            .card-header .btn {
-                width: 100%;
-                text-align: center;
-            }
-
-            .content-wrapper {
-                padding: 1rem;
-            }
-
-            .row.g-4, .row.g-3 {
-                --bs-gutter-x: 1rem;
-                --bs-gutter-y: 1rem;
-
-            /* Page transition (progressive enhancement) */
-            .page-transition-enabled .content-wrapper {
-                opacity: 0;
-                transform: translateY(6px);
-                transition: opacity 180ms ease, transform 180ms ease;
-                will-change: opacity, transform;
-            }
-
-            .page-transition-enabled .content-wrapper.page-enter {
-                opacity: 1;
-                transform: translateY(0);
-            }
-
-            .page-transition-enabled .content-wrapper.page-exit {
-                opacity: 0;
-                transform: translateY(-6px);
-            }
-
-            @media (prefers-reduced-motion: reduce) {
-                .page-transition-enabled .content-wrapper {
-                    transition: none;
-                    transform: none;
-                    opacity: 1;
-                }
-            }
-            }
-
-            .card-body[style*="height: 300px"] {
-                height: auto !important;
-                min-height: 240px;
-            }
-        }
-
-        @media (max-width: 575.98px) {
-            .user-info {
-                display: none;
-            }
-
-            .card-body {
-                padding: 1rem;
-            }
-
-            .table {
-                font-size: 0.8125rem;
-            }
-        }
-        
-        /* Sidebar Footer */
-        .sidebar-footer {
-            padding: 1rem;
-            margin-top: auto;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .terminal-status {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            padding: 1rem;
-            text-align: center;
-        }
-        
-        .terminal-status h6 {
-            color: #fff;
-            font-size: 0.8125rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        
-        .terminal-status p {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.75rem;
-            margin: 0;
-        }
-
-        /* Pagination (match docs/terminal_ui_mock.html pill style) */
-        .pagination,
-        .dataTables_wrapper .dataTables_paginate .pagination {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 8px 10px;
-            border-radius: 999px;
-            background: var(--bg-white);
-            border: 1px solid var(--border-color);
-            margin: 0;
-            width: fit-content;
-            max-width: 100%;
-            box-shadow: none;
-            filter:
-                drop-shadow(0 14px 26px rgba(17, 24, 39, 0.12))
-                drop-shadow(0 2px 0 rgba(2, 44, 34, 0.05));
-        }
-
-        /* Undo Bootstrap's connected-border pagination look */
-        .pagination .page-item:not(:first-child) .page-link {
-            margin-left: 0;
-        }
-
-        .pagination .page-link {
-            border: 0;
-            background: transparent;
-            color: var(--text-muted);
-            font-weight: 600;
-            min-width: 34px;
-            height: 34px;
-            padding: 0 12px;
-            border-radius: 999px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            line-height: 1;
-        }
-
-        .pagination .page-link:hover {
-            background: transparent;
-            color: var(--primary-dark);
-        }
-
-        .pagination .page-link:focus {
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
-        }
-
-        .pagination .page-item.active .page-link,
-        .pagination .page-item.active > span.page-link {
-            background: var(--primary);
-            color: var(--on-primary);
-            box-shadow: 0 10px 18px rgba(16, 185, 129, 0.22);
-        }
-
-        .pagination .page-item.disabled .page-link,
-        .pagination .page-item.disabled > span.page-link {
-            opacity: 0.55;
-            pointer-events: none;
-        }
-
-        .pagination .page-link i {
-            font-size: 0.875rem;
-        }
-
-        /* DataTables core CSS adds a black gradient hover on `.paginate_button`.
-           Override it so our pill pagination remains clean. */
-        .dataTables_wrapper .dataTables_paginate .paginate_button,
-        .dataTables_wrapper .dataTables_paginate .paginate_button:hover,
-        .dataTables_wrapper .dataTables_paginate .paginate_button:active,
-        .dataTables_wrapper .dataTables_paginate .paginate_button.current,
-        .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
-            background: transparent !important;
-            border: 0 !important;
-            box-shadow: none !important;
-        }
-
-        .dataTables_wrapper .dataTables_paginate .paginate_button:hover,
-        .dataTables_wrapper .dataTables_paginate .paginate_button:hover .page-link {
-            color: var(--primary-dark) !important;
-        }
-
-        /* Keep DataTables info subtle (pairs well with pill pagination) */
-        .dataTables_wrapper .dataTables_info {
-            color: var(--text-muted);
-            font-size: 0.875rem;
-            padding-top: 0.75rem;
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.show { transform: translateX(0); }
+            .main-content { margin-left: 0; width: 100%; }
         }
     </style>
-<style>html,body{overflow-x:hidden}</style>    <script src="assets/js/lab-vendor-bundle.js"></script>
     <script src="assets/js/lab-vendor-bundle.js"></script>
     <script src="assets/js/lab-data.js"></script>
 </head>
@@ -1000,7 +116,12 @@
         <div class="sidebar-header">
             <a href="dashboard.html" class="sidebar-brand">
                 <div class="sidebar-brand-icon">
-                    <span aria-hidden="true" style="display:grid;place-items:center;width:100%;height:100%;font-size:11px;font-weight:800;color:#10b981">SKSU</span>
+                    <svg viewBox="0 0 64 64" width="46" height="46" aria-hidden="true">
+                        <circle cx="32" cy="32" r="30" fill="#065f46" stroke="#facc15" stroke-width="2.5"/>
+                        <circle cx="32" cy="32" r="22" fill="#064e3b" stroke="#facc15" stroke-width="1.5"/>
+                        <polygon points="32,16 37,26 48,26 39,33 42,44 32,37 22,44 25,33 16,26 27,26" fill="#facc15"/>
+                        <circle cx="32" cy="32" r="6" fill="#10b981" stroke="#ffffff" stroke-width="1.5"/>
+                    </svg>
                 </div>
                 <div class="sidebar-brand-text">
                     Lab Equipment<br>and Materials
@@ -1010,50 +131,20 @@
         </div>
         <nav class="sidebar-nav">
             <div class="nav-section">Main</div>
-            <div class="nav-item">
-                <a href="dashboard.html" class="nav-link">
-                    <i class="fas fa-home"></i>
-                    <span>Dashboard</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="terminal.html" class="nav-link">
-                    <i class="fas fa-tablet-alt"></i>
-                    <span>Terminal Monitor</span>
-                </a>
-            </div>
+            <div class="nav-item"><a href="dashboard.html" class="nav-link"><i class="fas fa-home"></i><span>Dashboard</span></a></div>
+            <div class="nav-item"><a href="terminal-monitor.html" class="nav-link"><i class="fas fa-tablet-alt"></i><span>Terminal Monitor</span></a></div>
             <div class="nav-section">Management</div>
-            <div class="nav-item">
-                <a href="inventory.html" class="nav-link">
-                    <i class="fas fa-boxes-stacked"></i>
-                    <span>Inventory</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="kits.html" class="nav-link">
-                    <i class="fas fa-box-open"></i>
-                    <span>Kits</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="users.html" class="nav-link active" aria-current="page">
-                    <i class="fas fa-users"></i>
-                    <span>Users</span>
-                </a>
-            </div>
+            <div class="nav-item"><a href="inventory.html" class="nav-link"><i class="fas fa-boxes-stacked"></i><span>Inventory</span></a></div>
+            <div class="nav-item"><a href="kits.html" class="nav-link"><i class="fas fa-box-open"></i><span>Kits</span></a></div>
+            <div class="nav-item"><a href="categories.html" class="nav-link"><i class="fas fa-folder"></i><span>Categories</span></a></div>
+            <div class="nav-item"><a href="users.html" class="nav-link active" aria-current="page"><i class="fas fa-users"></i><span>Users</span></a></div>
+            <div class="nav-item"><a href="admins.html" class="nav-link"><i class="fas fa-user-shield"></i><span>Admins</span></a></div>
             <div class="nav-section">Reports</div>
-            <div class="nav-item">
-                <a href="transactions.html" class="nav-link">
-                    <i class="fas fa-exchange-alt"></i>
-                    <span>Transactions</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="reports.html" class="nav-link">
-                    <i class="fas fa-chart-bar"></i>
-                    <span>Reports</span>
-                </a>
-            </div>
+            <div class="nav-item"><a href="transactions.html" class="nav-link"><i class="fas fa-exchange-alt"></i><span>Transactions</span></a></div>
+            <div class="nav-item"><a href="reports.html" class="nav-link"><i class="fas fa-chart-bar"></i><span>Reports</span></a></div>
+            <div class="nav-section">System</div>
+            <div class="nav-item"><a href="activity-logs.html" class="nav-link"><i class="fas fa-history"></i><span>Activity Logs</span></a></div>
+            <div class="nav-item"><a href="settings.html" class="nav-link"><i class="fas fa-cog"></i><span>Settings</span></a></div>
         </nav>
         <div class="sidebar-footer">
             <div class="terminal-status">
@@ -1069,22 +160,19 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="dashboard.html"><i class="fas fa-home"></i></a></li>
-                        <li class="breadcrumb-item"><a href="dashboard.html">Dashboard</a></li>
-                        <li class="breadcrumb-item active">Users</li>
+                        <li class="breadcrumb-item active">User Management</li>
                     </ol>
                 </nav>
-                <h1>Users</h1>
+                <h1>User Management</h1>
             </div>
-
             <div class="navbar-actions">
-                <div class="server-time d-none d-md-flex align-items-center me-3">
+                <div class="server-time d-none d-md-flex align-items-center me-3" title="Server Time">
                     <i class="fas fa-clock text-success me-2"></i>
                     <div>
-                        <small class="text-muted d-block" style="font-size: 0.65rem; line-height: 1;">DEMO DATE</small>
-                        <span class="fw-semibold" style="font-size: 0.85rem;" data-demo-date>Jun 22, 2026</span>
+                        <small class="text-muted d-block" style="font-size: 0.65rem; line-height: 1;">SERVER TIME</small>
+                        <span class="fw-semibold" style="font-size: 0.85rem;" data-demo-date>Nov 27, 2026 03:26:27 PM</span>
                     </div>
                 </div>
-
                 <div class="theme-toggle" title="Toggle Dark Mode">
                     <i class="fas fa-sun theme-icon" aria-hidden="true"></i>
                     <div class="form-check form-switch">
@@ -1092,17 +180,13 @@
                     </div>
                     <i class="fas fa-moon theme-icon" aria-hidden="true"></i>
                 </div>
-
-                <button class="btn btn-outline-secondary d-lg-none" id="sidebarToggle" type="button" aria-label="Toggle navigation">
-                    <i class="fas fa-bars"></i>
-                </button>
-
+                <button class="btn btn-outline-secondary d-lg-none" id="sidebarToggle" type="button" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
                 <div class="dropdown">
                     <button class="user-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <div class="user-avatar">A</div>
+                        <div class="user-avatar">R</div>
                         <div class="user-info d-none d-md-block">
-                            <div class="user-name">Admin</div>
-                            <div class="user-role">Laboratory Custodian</div>
+                            <div class="user-name">Reign Admin</div>
+                            <div class="user-role">Admin</div>
                         </div>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
@@ -1113,96 +197,226 @@
         </nav>
 
         <div class="content-wrapper">
-<style>
-    .page-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .5rem; margin-bottom: 1rem; }
-    .page-head h2 { font-size: 1.05rem; font-weight: 600; margin: 0; }
-    .page-head p { margin: 0; font-size: .8125rem; color: var(--text-muted); }
-    .data-note { font-size: .75rem; color: var(--text-muted); margin: 0 0 1rem; }
-    .card-header .badge { font-size: .6875rem; }
-</style>
-<div class="page-head">
-    <h2>Borrower accounts</h2>
-    <p><span data-count="users"></span> registered accounts</p>
-</div>
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+                <div>
+                    <h4 class="fw-semibold mb-1" style="font-size: 1.2rem;"><i class="fas fa-users text-success me-2"></i>User Management</h4>
+                    <p class="text-muted small mb-0">Manage students, faculty, and staff accounts</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-secondary btn-sm px-3" id="batchImportBtn"><i class="fas fa-file-import me-1"></i> Batch Import</button>
+                    <button type="button" class="btn btn-success btn-sm px-3" id="addUserBtn"><i class="fas fa-user-plus me-1"></i> Add User</button>
+                </div>
+            </div>
 
-<div class="card">
-    <div class="table-responsive">
-        <table class="table datatable mb-0">
-            <thead>
-                <tr><th>ID number</th><th>Name</th><th>Program</th><th>Active loans</th><th>Status</th></tr>
-            </thead>
-            <tbody id="userRows"></tbody>
-        </table>
-    </div>
-</div>
+            <!-- 5 KPI Cards -->
+            <div class="row g-3 row-cols-2 row-cols-md-3 row-cols-xl-5 mb-4">
+                <div class="col">
+                    <div class="card kpi-card mb-0">
+                        <div class="kpi-icon kpi-green"><i class="fas fa-users"></i></div>
+                        <div><div class="kpi-label">Total Users</div><div class="kpi-val" id="kpiTotalUsers">984</div></div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card kpi-card mb-0">
+                        <div class="kpi-icon kpi-cyan"><i class="fas fa-user-graduate"></i></div>
+                        <div><div class="kpi-label">Students</div><div class="kpi-val" id="kpiStudents">958</div></div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card kpi-card mb-0">
+                        <div class="kpi-icon kpi-amber"><i class="fas fa-chalkboard-teacher"></i></div>
+                        <div><div class="kpi-label">Faculty</div><div class="kpi-val" id="kpiFaculty">24</div></div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card kpi-card mb-0">
+                        <div class="kpi-icon kpi-blue"><i class="fas fa-user-tie"></i></div>
+                        <div><div class="kpi-label">Staff</div><div class="kpi-val" id="kpiStaff">2</div></div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card kpi-card mb-0">
+                        <div class="kpi-icon kpi-green"><i class="fas fa-user-check"></i></div>
+                        <div><div class="kpi-label">Active Users</div><div class="kpi-val" id="kpiActiveUsers">984</div></div>
+                    </div>
+                </div>
+            </div>
 
-<script>
-    (function () {
-        var tbody = document.getElementById('userRows');
-        LAB_DATA.allUsers.forEach(function (user) {
-            var open = LAB_DATA.allTransactions.filter(function (t) {
-                return t.user.id === user.id && !t.returned;
-            }).length;
-            var tr = document.createElement('tr');
-            tr.innerHTML =
-                '<td class="mono">' + user.idNo + '</td>' +
-                '<td><div class="d-flex align-items-center gap-2">' +
-                '<div class="user-avatar" style="width:32px;height:32px;font-size:.75rem">' + LAB_DATA.initial(user.name) + '</div>' +
-                '<div><div class="fw-medium">' + user.name + '</div>' +
-                '<small class="text-muted">' + user.id + '</small></div></div></td>' +
-                '<td>' + user.program + '</td>' +
-                '<td>' + (open ? open : '—') + '</td>' +
-                '<td><span class="badge bg-success">' + user.status + '</span></td>';
-            tbody.appendChild(tr);
-        });
-        document.querySelector('[data-count="users"]').textContent = LAB_DATA.allUsers.length;
-    })();
-</script>
+            <!-- User List Card -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 pb-3 mb-3 border-bottom">
+                        <h6 class="fw-semibold mb-0 mt-1"><i class="fas fa-list text-success me-2"></i>User List</h6>
+                        <div class="d-flex flex-column gap-2" style="min-width: min(100%, 440px);">
+                            <div class="d-flex flex-wrap gap-2">
+                                <select class="form-select form-select-sm flex-fill" id="roleFilter" style="min-width: 110px;">
+                                    <option value="">All Roles</option>
+                                    <option value="Student">Student</option>
+                                    <option value="Faculty">Faculty</option>
+                                    <option value="Staff">Staff</option>
+                                </select>
+                                <select class="form-select form-select-sm flex-fill" id="programFilter" style="min-width: 120px;">
+                                    <option value="">All Programs</option>
+                                    <option value="BSCpE">BSCpE</option>
+                                    <option value="BSECE">BSECE</option>
+                                    <option value="BSCE">BSCE</option>
+                                    <option value="BSEE">BSEE</option>
+                                    <option value="COE Lab">COE Lab</option>
+                                </select>
+                                <select class="form-select form-select-sm flex-fill" id="yearFilter" style="min-width: 105px;">
+                                    <option value="">All Years</option>
+                                    <option value="1st Year">1st Year</option>
+                                    <option value="2nd Year">2nd Year</option>
+                                    <option value="3rd Year">3rd Year</option>
+                                    <option value="4th Year">4th Year</option>
+                                </select>
+                                <button type="button" class="btn btn-outline-secondary btn-sm px-3" id="clearUserFilters"><i class="fas fa-undo me-1"></i>Clear</button>
+                            </div>
+                            <div class="search-pill-wrap">
+                                <input type="text" class="form-control search-pill-input" id="userSearch" placeholder="Search users...">
+                                <button type="button" class="search-pill-btn" id="userSearchBtn" aria-label="Search"><i class="fas fa-search"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-3 small text-muted">
+                        <div>Show <select class="form-select form-select-sm d-inline-block w-auto mx-1"><option>25</option><option>50</option></select> entries</div>
+                        <div id="userStatusNote">Sample mock records shown from 984 enrolled accounts</div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table mb-0 align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Student ID</th>
+                                    <th>Role</th>
+                                    <th>Program</th>
+                                    <th>Year</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userRows"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <footer class="py-4 px-4 mt-auto">
             <div class="d-flex flex-wrap justify-content-between align-items-center">
-                <div class="text-muted small">
-                    © 2026 Laboratory Equipment and Materials Borrowing System - <strong>College of Engineering</strong>
-                </div>
+                <div class="text-muted small">© 2026 Laboratory Equipment and Materials Borrowing System - <strong>College of Engineering</strong></div>
                 <div class="d-flex gap-3">
                     <a href="dashboard.html" class="text-muted small text-decoration-none">Dashboard</a>
                     <a href="reports.html" class="text-muted small text-decoration-none">Reports</a>
+                    <a href="settings.html" class="text-muted small text-decoration-none">Settings</a>
                 </div>
             </div>
         </footer>
     </main>
 
     <script>
-        document.getElementById('sidebarToggle')?.addEventListener('click', function () {
-            document.getElementById('sidebar').classList.toggle('show');
-        });
+        (function () {
+            var s = LAB_DATA.summary();
+            document.getElementById('kpiTotalUsers').textContent = s.userDirTotal;
+            document.getElementById('kpiStudents').textContent = s.userStudents;
+            document.getElementById('kpiFaculty').textContent = s.userFaculty;
+            document.getElementById('kpiStaff').textContent = s.userStaff;
+            document.getElementById('kpiActiveUsers').textContent = s.userActive;
 
-        document.addEventListener('click', function (e) {
-            var sidebar = document.getElementById('sidebar');
-            var toggle = document.getElementById('sidebarToggle');
-            if (window.innerWidth < 992 && !sidebar.contains(e.target) && !toggle.contains(e.target)) {
-                sidebar.classList.remove('show');
+            function roleBadge(role) {
+                if (role === 'Faculty') return '<span class="role-pill role-faculty"><i class="fas fa-chalkboard-teacher"></i>Faculty</span>';
+                if (role === 'Staff') return '<span class="role-pill role-staff"><i class="fas fa-user-tie"></i>Staff</span>';
+                return '<span class="role-pill role-student"><i class="fas fa-user-graduate"></i>Student</span>';
             }
-        });
 
-        document.addEventListener('DOMContentLoaded', function () {
-            document.querySelectorAll('[data-demo-date]').forEach(function (el) {
-                el.textContent = LAB_DATA.todayLabel;
-            });
+            function render() {
+                var role = document.getElementById('roleFilter').value;
+                var program = document.getElementById('programFilter').value;
+                var year = document.getElementById('yearFilter').value;
+                var q = (document.getElementById('userSearch').value || '').trim().toLowerCase();
 
-            if (window.jQuery && jQuery.fn.DataTable) {
-                jQuery('.datatable').DataTable({
-                    responsive: true,
-                    pageLength: 10,
-                    paging: LAB_DATA.allTransactions.length > 10,
-                    info: LAB_DATA.allTransactions.length > 10,
-                    lengthChange: false,
-                    order: [],
-                    language: { search: '', searchPlaceholder: 'Search…' },
+                var filtered = LAB_DATA.allUsers.filter(function (u) {
+                    if (role && u.role !== role) return false;
+                    if (program && u.program !== program) return false;
+                    if (year && u.year !== year) return false;
+                    if (q && (u.name + ' ' + u.idNo + ' ' + u.program + ' ' + u.role).toLowerCase().indexOf(q) === -1) return false;
+                    return true;
+                });
+
+                var tbody = document.getElementById('userRows');
+                tbody.innerHTML = '';
+                if (!filtered.length) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-4">No matching mock user accounts found.</td></tr>';
+                    return;
+                }
+
+                filtered.forEach(function (u) {
+                    var tr = document.createElement('tr');
+                    tr.innerHTML =
+                        '<td class="fw-semibold">' + u.name + '</td>' +
+                        '<td><span class="id-chip">' + u.idNo + '</span></td>' +
+                        '<td>' + roleBadge(u.role) + '</td>' +
+                        '<td>' + u.program + '</td>' +
+                        '<td>' + u.year + '</td>' +
+                        '<td><span class="badge bg-success">' + u.status + '</span></td>' +
+                        '<td><div class="act-group">' +
+                        '<button type="button" class="text-success" title="View User"><i class="fas fa-eye"></i></button>' +
+                        '<button type="button" class="text-primary" title="Edit User"><i class="fas fa-edit"></i></button>' +
+                        '<button type="button" class="text-danger" title="Delete User"><i class="fas fa-trash"></i></button>' +
+                        '</div></td>';
+                    tbody.appendChild(tr);
                 });
             }
-        });
+
+            ['roleFilter', 'programFilter', 'yearFilter', 'userSearch'].forEach(function (id) {
+                var el = document.getElementById(id);
+                el.addEventListener('input', render);
+                el.addEventListener('change', render);
+            });
+            document.getElementById('userSearchBtn').addEventListener('click', render);
+            document.getElementById('clearUserFilters').addEventListener('click', function () {
+                document.getElementById('roleFilter').value = '';
+                document.getElementById('programFilter').value = '';
+                document.getElementById('yearFilter').value = '';
+                document.getElementById('userSearch').value = '';
+                render();
+            });
+            document.getElementById('batchImportBtn').addEventListener('click', function () {
+                document.getElementById('userStatusNote').textContent = 'Demo mode: CSV batch import template verified (984 mock users).';
+            });
+            document.getElementById('addUserBtn').addEventListener('click', function () {
+                document.getElementById('userStatusNote').textContent = 'Demo mode: Account creation form disabled for static preview.';
+            });
+
+            render();
+
+            document.getElementById('sidebarToggle')?.addEventListener('click', function () {
+                document.getElementById('sidebar').classList.toggle('show');
+            });
+            document.addEventListener('click', function (e) {
+                var sidebar = document.getElementById('sidebar');
+                var toggle = document.getElementById('sidebarToggle');
+                if (window.innerWidth < 992 && !sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                    sidebar.classList.remove('show');
+                }
+            });
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('[data-demo-date]').forEach(function (el) {
+                    el.textContent = LAB_DATA.serverTimeLabel || LAB_DATA.todayLabel;
+                });
+                var toggle = document.getElementById('themeToggle');
+                if (toggle) {
+                    toggle.checked = document.documentElement.getAttribute('data-theme') === 'dark';
+                    toggle.addEventListener('change', function () {
+                        var nextTheme = toggle.checked ? 'dark' : 'light';
+                        document.documentElement[nextTheme === 'dark' ? 'setAttribute' : 'removeAttribute']('data-theme', 'dark');
+                        try { localStorage.setItem('theme', nextTheme); } catch (e) {}
+                    });
+                }
+            });
+        })();
     </script>
 </body>
 </html>

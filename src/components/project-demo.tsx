@@ -18,8 +18,11 @@ function ScreenFrame({ screen }: { screen: Screen }) {
   useEffect(() => {
     const element = box.current;
     if (!element) return;
-    const fit = () =>
-      setScale(Math.max(element.clientWidth / screen.width, 0.55));
+    const fit = () => {
+      const ratio = element.clientWidth / screen.width;
+      const minScale = element.clientWidth >= 640 ? 0.45 : 0.55;
+      setScale(Math.min(1, Math.max(ratio, minScale)));
+    };
     fit();
     const observer = new ResizeObserver(fit);
     observer.observe(element);

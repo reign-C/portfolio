@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Settings - Laboratory Equipment and Materials Borrowing System</title>
+    <script src="assets/js/jquery.min.js"></script>
+    <link href="assets/vendor/fontawesome/css/all.min.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script>
+        (function () {
+            try {
+                if (localStorage.getItem('theme') === 'dark') {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                } else {
+                    document.documentElement.removeAttribute('data-theme');
+                }
+            } catch (e) {}
+        })();
+    </script>
+    <style>
+        :root {
+            --primary: #10b981; --primary-dark: #059669; --primary-bg: #ecfdf5;
+            --sidebar-bg: #064e3b; --sidebar-dark: #022c22;
+            --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --info: #3b82f6;
+            --text-dark: #1f2937; --text-muted: #6b7280; --text-light: #9ca3af;
+            --border-color: #e5e7eb; --bg-light: #f9fafb; --bg-white: #ffffff;
+        }
+        html[data-theme="dark"] {
+            --primary-bg: rgba(16, 185, 129, 0.15);
+            --text-dark: #e2e8f0; --text-muted: #aab8cc; --text-light: #7a90ad;
+            --border-color: #2a3a52; --bg-light: #0f172a; --bg-white: #1e2938;
+            --bs-body-bg: var(--bg-light); --bs-body-color: var(--text-dark); --bs-border-color: var(--border-color);
+            color-scheme: dark;
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        body { margin: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-light); color: var(--text-dark); font-size: 0.9375rem; overflow-x: hidden; }
+        .sidebar { position: fixed; top: 0; left: 0; width: 260px; height: 100vh; background: linear-gradient(180deg, var(--sidebar-bg) 0%, var(--sidebar-dark) 100%); z-index: 1000; transition: all 0.3s ease; overflow-y: auto; display: flex; flex-direction: column; }
+        .sidebar-header { padding: 1.5rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .sidebar-brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+        .sidebar-brand-icon { width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; }
+        .sidebar-brand-text { color: #fff; font-weight: 600; font-size: 1rem; line-height: 1.2; }
+        .sidebar-brand-text small { display: block; font-weight: 400; font-size: 0.75rem; color: rgba(255, 255, 255, 0.6); }
+        .sidebar-nav { padding: 1rem 0; flex: 1; }
+        .nav-section { padding: 0.75rem 1.5rem 0.5rem; font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255, 255, 255, 0.4); }
+        .nav-item { padding: 0 0.75rem; margin-bottom: 2px; }
+        .nav-link { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: rgba(255, 255, 255, 0.7); text-decoration: none; border-radius: 8px; font-size: 0.875rem; font-weight: 500; transition: all 0.2s ease; }
+        .nav-link:hover { color: #fff; background: rgba(255, 255, 255, 0.1); }
+        .nav-link.active { color: var(--sidebar-bg); background: #fff; }
+        .nav-link i { width: 20px; text-align: center; font-size: 1rem; }
+        .nav-link.active i { color: var(--primary); }
+        .sidebar-footer { padding: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        .terminal-status { background: rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 1rem; text-align: center; }
+        .terminal-status h6 { color: #fff; font-size: 0.8125rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .terminal-status p { color: rgba(255, 255, 255, 0.7); font-size: 0.75rem; margin: 0; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+        .status-dot.offline { background: var(--danger); }
+        .main-content { margin-left: 260px; width: calc(100% - 260px); min-height: 100vh; display: flex; flex-direction: column; }
+        .navbar-top { background: var(--bg-white); padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+        .page-title h1 { font-size: 1.25rem; font-weight: 600; color: var(--text-dark); margin: 0; }
+        .page-title .breadcrumb { margin: 0; padding: 0; list-style: none; display: flex; gap: 0.35rem; background: none; font-size: 0.8125rem; }
+        .page-title .breadcrumb-item { color: var(--text-muted); }
+        .page-title .breadcrumb-item a { color: var(--primary); text-decoration: none; }
+        .navbar-actions { display: flex; align-items: center; gap: 1rem; }
+        .theme-toggle { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.6rem; border-radius: 999px; background: var(--bg-light); border: 1px solid var(--border-color); }
+        .theme-toggle .theme-icon { color: var(--text-muted); font-size: 0.95rem; line-height: 1; }
+        .theme-toggle .form-check { margin: 0; }
+        .theme-toggle .form-check-input { cursor: pointer; background-color: var(--border-color); border-color: var(--border-color); }
+        .theme-toggle .form-check-input:checked { background-color: var(--primary); border-color: var(--primary); }
+        .user-dropdown { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 1rem; background: var(--bg-light); border-radius: 8px; cursor: pointer; border: none; color: var(--text-dark); }
+        html[data-theme="dark"] .user-dropdown { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); }
+        .user-avatar { width: 36px; height: 36px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 600; font-size: 0.875rem; }
+        .user-info { text-align: left; }
+        .user-name { font-weight: 600; font-size: 0.875rem; line-height: 1.2; }
+        .user-role { font-size: 0.75rem; color: var(--text-muted); }
+        .content-wrapper { padding: 1.5rem; flex: 1; }
+        .settings-card { background: var(--bg-white); border: 1px solid var(--border-color); border-radius: 10px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04); overflow: hidden; }
+        .settings-head { padding: 1rem 1.25rem; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; }
+        .settings-head:hover { background: rgba(16, 185, 129, 0.03); }
+        .settings-title { display: flex; align-items: center; gap: 0.65rem; font-weight: 600; font-size: 0.98rem; color: var(--text-dark); }
+        .settings-toggle-btn { width: 32px; height: 30px; border: 1px solid var(--border-color); border-radius: 6px; background: transparent; color: var(--text-muted); display: grid; place-items: center; font-size: 0.8rem; }
+        .settings-body { padding: 0 1.25rem 1.15rem; border-top: 1px solid var(--border-color); padding-top: 1rem; font-size: 0.85rem; }
+        html[data-theme="dark"] .form-control, html[data-theme="dark"] .form-select { background: rgba(255,255,255,0.04); border-color: var(--border-color); color: var(--text-dark); }
+        html[data-theme="dark"] .dropdown-menu { background-color: var(--bg-white); border-color: var(--border-color); }
+        html[data-theme="dark"] .dropdown-item { color: var(--text-dark); }
+        html[data-theme="dark"] .text-muted { color: var(--text-muted) !important; }
+        @media (max-width: 991.98px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.show { transform: translateX(0); }
+            .main-content { margin-left: 0; width: 100%; }
+        }
+    </style>
+    <script src="assets/js/lab-vendor-bundle.js"></script>
+    <script src="assets/js/lab-data.js"></script>
+</head>
+<body>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-brand">
+                <div class="sidebar-brand-icon">
+                    <svg viewBox="0 0 64 64" width="46" height="46" aria-hidden="true">
+                        <circle cx="32" cy="32" r="30" fill="#065f46" stroke="#facc15" stroke-width="2.5"/>
+                        <circle cx="32" cy="32" r="22" fill="#064e3b" stroke="#facc15" stroke-width="1.5"/>
+                        <polygon points="32,16 37,26 48,26 39,33 42,44 32,37 22,44 25,33 16,26 27,26" fill="#facc15"/>
+                        <circle cx="32" cy="32" r="6" fill="#10b981" stroke="#ffffff" stroke-width="1.5"/>
+                    </svg>
+                </div>
+                <div class="sidebar-brand-text">
+                    Lab Equipment<br>and Materials
+                    <small>Borrowing System</small>
+                </div>
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-section">Main</div>
+            <div class="nav-item"><a href="dashboard.html" class="nav-link"><i class="fas fa-home"></i><span>Dashboard</span></a></div>
+            <div class="nav-item"><a href="terminal-monitor.html" class="nav-link"><i class="fas fa-tablet-alt"></i><span>Terminal Monitor</span></a></div>
+            <div class="nav-section">Management</div>
+            <div class="nav-item"><a href="inventory.html" class="nav-link"><i class="fas fa-boxes-stacked"></i><span>Inventory</span></a></div>
+            <div class="nav-item"><a href="kits.html" class="nav-link"><i class="fas fa-box-open"></i><span>Kits</span></a></div>
+            <div class="nav-item"><a href="categories.html" class="nav-link"><i class="fas fa-folder"></i><span>Categories</span></a></div>
+            <div class="nav-item"><a href="users.html" class="nav-link"><i class="fas fa-users"></i><span>Users</span></a></div>
+            <div class="nav-item"><a href="admins.html" class="nav-link"><i class="fas fa-user-shield"></i><span>Admins</span></a></div>
+            <div class="nav-section">Reports</div>
+            <div class="nav-item"><a href="transactions.html" class="nav-link"><i class="fas fa-exchange-alt"></i><span>Transactions</span></a></div>
+            <div class="nav-item"><a href="reports.html" class="nav-link"><i class="fas fa-chart-bar"></i><span>Reports</span></a></div>
+            <div class="nav-section">System</div>
+            <div class="nav-item"><a href="activity-logs.html" class="nav-link"><i class="fas fa-history"></i><span>Activity Logs</span></a></div>
+            <div class="nav-item"><a href="settings.html" class="nav-link active" aria-current="page"><i class="fas fa-cog"></i><span>Settings</span></a></div>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="terminal-status">
+                <h6><i class="fas fa-microchip me-2"></i>Scanning Terminal</h6>
+                <p><span class="status-dot offline me-1"></span> <span>Offline</span></p>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <nav class="navbar-top">
+            <div class="page-title">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="dashboard.html"><i class="fas fa-home"></i></a></li>
+                        <li class="breadcrumb-item active">Settings</li>
+                    </ol>
+                </nav>
+                <h1>Settings</h1>
+            </div>
+            <div class="navbar-actions">
+                <div class="server-time d-none d-md-flex align-items-center me-3" title="Server Time">
+                    <i class="fas fa-clock text-success me-2"></i>
+                    <div>
+                        <small class="text-muted d-block" style="font-size: 0.65rem; line-height: 1;">SERVER TIME</small>
+                        <span class="fw-semibold" style="font-size: 0.85rem;" data-demo-date>Nov 27, 2026 03:27:11 PM</span>
+                    </div>
+                </div>
+                <div class="theme-toggle" title="Toggle Dark Mode">
+                    <i class="fas fa-sun theme-icon" aria-hidden="true"></i>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="themeToggle" aria-label="Toggle dark mode">
+                    </div>
+                    <i class="fas fa-moon theme-icon" aria-hidden="true"></i>
+                </div>
+                <button class="btn btn-outline-secondary d-lg-none" id="sidebarToggle" type="button" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
+                <div class="dropdown">
+                    <button class="user-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="user-avatar">R</div>
+                        <div class="user-info d-none d-md-block">
+                            <div class="user-name">Reign Admin</div>
+                            <div class="user-role">Admin</div>
+                        </div>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><span class="dropdown-item text-muted"><i class="fas fa-info-circle"></i> Demo account</span></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="content-wrapper">
+            <div class="mb-4">
+                <h4 class="fw-semibold mb-1" style="font-size: 1.2rem;"><i class="fas fa-cog text-success me-2"></i>System Settings</h4>
+                <p class="text-muted small mb-0">Configure system preferences and options</p>
+            </div>
+
+            <div class="row g-3" id="settingsGrid">
+                <div class="col-lg-6">
+                    <div class="settings-card">
+                        <div class="settings-head" data-acc="sec-general">
+                            <div class="settings-title"><i class="fas fa-sliders-h text-success"></i><span>General Settings</span></div>
+                            <button type="button" class="settings-toggle-btn" aria-label="Toggle General Settings"><i class="fas fa-chevron-down"></i></button>
+                        </div>
+                        <div class="settings-body" id="sec-general" style="display: none;">
+                            <div class="mb-2"><label class="form-label small fw-semibold mb-1">System Name</label><input type="text" class="form-control form-control-sm" value="Laboratory Equipment &amp; Materials Borrowing System"></div>
+                            <div class="mb-2"><label class="form-label small fw-semibold mb-1">Default Borrow Limit (Days)</label><input type="number" class="form-control form-control-sm" value="7"></div>
+                            <button type="button" class="btn btn-success btn-sm mt-1 demo-save-btn">Save General</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="settings-card">
+                        <div class="settings-head" data-acc="sec-terminal">
+                            <div class="settings-title"><i class="fas fa-tablet-alt text-success"></i><span>Terminal Settings</span></div>
+                            <button type="button" class="settings-toggle-btn" aria-label="Toggle Terminal Settings"><i class="fas fa-chevron-down"></i></button>
+                        </div>
+                        <div class="settings-body" id="sec-terminal" style="display: none;">
+                            <div class="mb-2"><label class="form-label small fw-semibold mb-1">Active Terminal ID</label><input type="text" class="form-control form-control-sm" value="TERMINAL-01"></div>
+                            <div class="mb-2"><label class="form-label small fw-semibold mb-1">Session Timeout (Seconds)</label><input type="number" class="form-control form-control-sm" value="60"></div>
+                            <button type="button" class="btn btn-success btn-sm mt-1 demo-save-btn">Save Terminal</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="settings-card">
+                        <div class="settings-head" data-acc="sec-data">
+                            <div class="settings-title"><i class="fas fa-database text-success"></i><span>Data Management</span></div>
+                            <button type="button" class="settings-toggle-btn" aria-label="Toggle Data Management"><i class="fas fa-chevron-down"></i></button>
+                        </div>
+                        <div class="settings-body" id="sec-data" style="display: none;">
+                            <p class="text-muted mb-2">Mock dataset: 2,913 items, 984 users, 176 transactions.</p>
+                            <button type="button" class="btn btn-outline-success btn-sm demo-save-btn">Export Mock Snapshot</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="settings-card">
+                        <div class="settings-head" data-acc="sec-network">
+                            <div class="settings-title"><i class="fas fa-wifi text-success"></i><span>Scanning Terminal Network Configuration</span><span class="badge bg-danger ms-1" style="font-size: 0.7rem;">Offline</span></div>
+                            <button type="button" class="settings-toggle-btn" aria-label="Toggle Network Configuration"><i class="fas fa-chevron-down"></i></button>
+                        </div>
+                        <div class="settings-body" id="sec-network" style="display: none;">
+                            <div class="mb-2"><label class="form-label small fw-semibold mb-1">ESP32 Endpoint</label><input type="text" class="form-control form-control-sm" value="http://192.168.1.42/api/scan"></div>
+                            <button type="button" class="btn btn-outline-secondary btn-sm demo-save-btn">Ping Terminal</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="settings-card">
+                        <div class="settings-head" data-acc="sec-status">
+                            <div class="settings-title"><i class="fas fa-microchip text-success"></i><span>Scanning Terminal Status</span></div>
+                            <button type="button" class="settings-toggle-btn" aria-label="Toggle Terminal Status"><i class="fas fa-chevron-down"></i></button>
+                        </div>
+                        <div class="settings-body" id="sec-status" style="display: none;">
+                            <div class="d-flex justify-content-between"><span class="text-muted">Hardware Unit</span><strong>ESP32-S3 + 2.8" ILI9341 TFT</strong></div>
+                            <div class="d-flex justify-content-between mt-1"><span class="text-muted">State</span><span class="text-danger fw-semibold">Offline (Demo Preview)</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="settings-card">
+                        <div class="settings-head" data-acc="sec-notify">
+                            <div class="settings-title"><i class="fas fa-bell text-success"></i><span>Notification Settings</span></div>
+                            <button type="button" class="settings-toggle-btn" aria-label="Toggle Notification Settings"><i class="fas fa-chevron-down"></i></button>
+                        </div>
+                        <div class="settings-body" id="sec-notify" style="display: none;">
+                            <div class="form-check form-switch mb-2"><input class="form-check-input" type="checkbox" checked id="notifOverdue"><label class="form-check-label" for="notifOverdue">Overdue alerts</label></div>
+                            <div class="form-check form-switch"><input class="form-check-input" type="checkbox" checked id="notifLock"><label class="form-check-label" for="notifLock">Custodian terminal lock notices</label></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="settings-card">
+                        <div class="settings-head" data-acc="sec-account">
+                            <div class="settings-title"><i class="fas fa-user-cog text-success"></i><span>Account Settings</span></div>
+                            <button type="button" class="settings-toggle-btn" aria-label="Toggle Account Settings"><i class="fas fa-chevron-down"></i></button>
+                        </div>
+                        <div class="settings-body" id="sec-account" style="display: none;">
+                            <div class="mb-2"><label class="form-label small fw-semibold mb-1">Display Name</label><input type="text" class="form-control form-control-sm" value="Reign Admin"></div>
+                            <div class="mb-2"><label class="form-label small fw-semibold mb-1">Username</label><input type="text" class="form-control form-control-sm" value="reignadmin" readonly></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="settings-card">
+                        <div class="settings-head" data-acc="sec-info">
+                            <div class="settings-title"><i class="fas fa-info-circle text-success"></i><span>System Information</span></div>
+                            <button type="button" class="settings-toggle-btn" aria-label="Toggle System Information"><i class="fas fa-chevron-down"></i></button>
+                        </div>
+                        <div class="settings-body" id="sec-info" style="display: none;">
+                            <div class="d-flex justify-content-between"><span class="text-muted">Edition</span><strong>COE Lab Borrowing v2.4 (Mock)</strong></div>
+                            <div class="d-flex justify-content-between mt-1"><span class="text-muted">Database Mode</span><span>Static Mock Dataset</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="settings-card">
+                        <div class="settings-head" data-acc="sec-backup">
+                            <div class="settings-title"><i class="fas fa-hdd text-success"></i><span>Backup &amp; Restore</span></div>
+                            <button type="button" class="settings-toggle-btn" aria-label="Toggle Backup and Restore"><i class="fas fa-chevron-down"></i></button>
+                        </div>
+                        <div class="settings-body" id="sec-backup" style="display: none;">
+                            <p class="text-muted mb-2">Last mock checkpoint: Nov 27, 2026 03:00 PM.</p>
+                            <button type="button" class="btn btn-outline-success btn-sm demo-save-btn">Create Checkpoint</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="py-4 px-4 mt-auto">
+            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                <div class="text-muted small">© 2026 Laboratory Equipment and Materials Borrowing System - <strong>College of Engineering</strong></div>
+                <div class="d-flex gap-3">
+                    <a href="dashboard.html" class="text-muted small text-decoration-none">Dashboard</a>
+                    <a href="reports.html" class="text-muted small text-decoration-none">Reports</a>
+                    <a href="settings.html" class="text-muted small text-decoration-none">Settings</a>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <script>
+        (function () {
+            document.querySelectorAll('.settings-head').forEach(function (head) {
+                head.addEventListener('click', function () {
+                    var target = document.getElementById(head.getAttribute('data-acc'));
+                    var icon = head.querySelector('.settings-toggle-btn i');
+                    if (!target) return;
+                    var open = target.style.display === 'none';
+                    target.style.display = open ? 'block' : 'none';
+                    if (icon) icon.className = open ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
+                });
+            });
+
+            document.querySelectorAll('.demo-save-btn').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var orig = btn.textContent;
+                    btn.textContent = 'Saved (Demo)';
+                    setTimeout(function () { btn.textContent = orig; }, 1400);
+                });
+            });
+
+            document.getElementById('sidebarToggle')?.addEventListener('click', function () {
+                document.getElementById('sidebar').classList.toggle('show');
+            });
+            document.addEventListener('click', function (e) {
+                var sidebar = document.getElementById('sidebar');
+                var toggle = document.getElementById('sidebarToggle');
+                if (window.innerWidth < 992 && !sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                    sidebar.classList.remove('show');
+                }
+            });
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('[data-demo-date]').forEach(function (el) {
+                    el.textContent = LAB_DATA.serverTimeLabel || LAB_DATA.todayLabel;
+                });
+                var toggle = document.getElementById('themeToggle');
+                if (toggle) {
+                    toggle.checked = document.documentElement.getAttribute('data-theme') === 'dark';
+                    toggle.addEventListener('change', function () {
+                        var nextTheme = toggle.checked ? 'dark' : 'light';
+                        document.documentElement[nextTheme === 'dark' ? 'setAttribute' : 'removeAttribute']('data-theme', 'dark');
+                        try { localStorage.setItem('theme', nextTheme); } catch (e) {}
+                    });
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

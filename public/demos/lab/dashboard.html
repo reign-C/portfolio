@@ -1001,7 +1001,12 @@
         <div class="sidebar-header">
             <a href="dashboard.html" class="sidebar-brand">
                 <div class="sidebar-brand-icon">
-                    <span aria-hidden="true" style="display:grid;place-items:center;width:100%;height:100%;font-size:11px;font-weight:800;color:#10b981">SKSU</span>
+                    <svg viewBox="0 0 64 64" width="46" height="46" aria-hidden="true">
+                        <circle cx="32" cy="32" r="30" fill="#065f46" stroke="#facc15" stroke-width="2.5"/>
+                        <circle cx="32" cy="32" r="22" fill="#064e3b" stroke="#facc15" stroke-width="1.5"/>
+                        <polygon points="32,16 37,26 48,26 39,33 42,44 32,37 22,44 25,33 16,26 27,26" fill="#facc15"/>
+                        <circle cx="32" cy="32" r="6" fill="#10b981" stroke="#ffffff" stroke-width="1.5"/>
+                    </svg>
                 </div>
                 <div class="sidebar-brand-text">
                     Lab Equipment<br>and Materials
@@ -1013,14 +1018,19 @@
         <nav class="sidebar-nav">
             <div class="nav-section">Main</div>
             <div class="nav-item"><a href="dashboard.html" class="nav-link active" aria-current="page"><i class="fas fa-home"></i><span>Dashboard</span></a></div>
-            <div class="nav-item"><a href="terminal.html" class="nav-link"><i class="fas fa-tablet-alt"></i><span>Terminal Monitor</span></a></div>
+            <div class="nav-item"><a href="terminal-monitor.html" class="nav-link"><i class="fas fa-tablet-alt"></i><span>Terminal Monitor</span></a></div>
             <div class="nav-section">Management</div>
             <div class="nav-item"><a href="inventory.html" class="nav-link"><i class="fas fa-boxes-stacked"></i><span>Inventory</span></a></div>
             <div class="nav-item"><a href="kits.html" class="nav-link"><i class="fas fa-box-open"></i><span>Kits</span></a></div>
+            <div class="nav-item"><a href="categories.html" class="nav-link"><i class="fas fa-folder"></i><span>Categories</span></a></div>
             <div class="nav-item"><a href="users.html" class="nav-link"><i class="fas fa-users"></i><span>Users</span></a></div>
+            <div class="nav-item"><a href="admins.html" class="nav-link"><i class="fas fa-user-shield"></i><span>Admins</span></a></div>
             <div class="nav-section">Reports</div>
             <div class="nav-item"><a href="transactions.html" class="nav-link"><i class="fas fa-exchange-alt"></i><span>Transactions</span></a></div>
             <div class="nav-item"><a href="reports.html" class="nav-link"><i class="fas fa-chart-bar"></i><span>Reports</span></a></div>
+            <div class="nav-section">System</div>
+            <div class="nav-item"><a href="activity-logs.html" class="nav-link"><i class="fas fa-history"></i><span>Activity Logs</span></a></div>
+            <div class="nav-item"><a href="settings.html" class="nav-link"><i class="fas fa-cog"></i><span>Settings</span></a></div>
         </nav>
         
         <div class="sidebar-footer">
@@ -1051,7 +1061,7 @@
                     <i class="fas fa-clock text-success me-2"></i>
                     <div>
                         <small class="text-muted d-block" style="font-size: 0.65rem; line-height: 1;">SERVER TIME</small>
-                        <span id="serverTime" class="fw-semibold" style="font-size: 0.85rem;">Nov 24, 2026 05:06:04 PM</span>
+                        <span id="serverTime" class="fw-semibold" style="font-size: 0.85rem;">Nov 27, 2026 03:01:04 PM</span>
                     </div>
                 </div>
 
@@ -1073,9 +1083,9 @@
                 <div class="dropdown">
                                         <button class="user-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <div class="user-avatar">
-                            A                        </div>
+                            R                        </div>
                         <div class="user-info d-none d-md-block">
-                            <div class="user-name">Admin</div>
+                            <div class="user-name">Reign Admin</div>
                             <div class="user-role">Admin</div>
                         </div>
                     </button>
@@ -1208,7 +1218,7 @@
         <div class="card stat-card">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
-                    <p class="stat-label">Borrowed Today</p>
+                    <p class="stat-label">Today's Borrows</p>
                     <h3 class="stat-value" data-stat="todayBorrows">0</h3>
                 </div>
                 <div class="stat-icon info">
@@ -1223,7 +1233,7 @@
         <div class="card stat-card">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
-                    <p class="stat-label">Returned Today</p>
+                    <p class="stat-label">Today's Returns</p>
                     <h3 class="stat-value" data-stat="todayReturns">0</h3>
                 </div>
                 <div class="stat-icon success">
@@ -1234,12 +1244,12 @@
         </a>
     </div>
     <div class="col-xl-3 col-md-6">
-        <a class="stat-card-link" href="kits.html">
+        <a class="stat-card-link" href="inventory.html">
         <div class="card stat-card">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
-                    <p class="stat-label">Kits</p>
-                    <h3 class="stat-value" data-stat="totalKits">0</h3>
+                    <p class="stat-label">Maintenance</p>
+                    <h3 class="stat-value" data-stat="maintenanceItems">0</h3>
                 </div>
                 <div class="stat-icon warning">
                     <i class="fas fa-wrench"></i>
@@ -1337,7 +1347,7 @@
             </div>
             <div class="card-body">
                 <div class="d-grid gap-2">
-                    <a href="terminal.html" class="btn btn-primary">
+                    <a href="terminal-monitor.html" class="btn btn-primary">
                         <i class="fas fa-tablet-alt me-2"></i>Terminal Monitor
                     </a>
                     <a href="inventory.html" class="btn btn-outline-primary">
@@ -1600,7 +1610,7 @@ document.addEventListener('DOMContentLoaded', function() {
             datasets: [{
                 data: categoryData,
                 backgroundColor: [
-                    '#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#f97316', '#6366f1'
+                    '#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#f97316', '#6366f1', '#14b8a6'
                 ],
                 borderWidth: 0
             }]
@@ -1612,7 +1622,7 @@ document.addEventListener('DOMContentLoaded', function() {
             plugins: {
                 legend: {
                     position: 'bottom',
-                    labels: { padding: 15, usePointStyle: true, font: { size: 11 } }
+                    labels: { padding: 12, usePointStyle: true, font: { size: 11 } }
                 }
             },
             cutout: '65%'
@@ -1633,7 +1643,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="d-flex gap-3">
                     <a href="dashboard.html" class="text-muted small text-decoration-none">Dashboard</a>
                     <a href="reports.html" class="text-muted small text-decoration-none">Reports</a>
-                    <a href="users.html" class="text-muted small text-decoration-none">Users</a>
+                    <a href="settings.html" class="text-muted small text-decoration-none">Settings</a>
                 </div>
             </div>
         </footer>
@@ -1698,12 +1708,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Demo date (static): the dataset is a fixed day, not the visitor's clock
+        // Server time display matching sample snapshot
         (function () {
             var el = document.getElementById('serverTime');
-            if (el) el.textContent = LAB_DATA.todayLabel;
-            var label = document.querySelector('.server-time small');
-            if (label) label.textContent = 'DEMO DATE';
+            if (el) el.textContent = LAB_DATA.serverTimeLabel || LAB_DATA.todayLabel;
         })();
         
         // Toast Notification (Sweetalert is not bundled in the demo)
