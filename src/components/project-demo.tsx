@@ -86,7 +86,7 @@ export default function ProjectDemo({ slug }: { slug: string }) {
           <button
             type="button"
             onClick={reset}
-            className="keycap-btn inline-flex min-h-10 items-center rounded-[10px] px-3 text-[13px] font-medium text-ink transition-all duration-150"
+            className="keycap-btn inline-flex min-h-10 cursor-pointer items-center rounded-[10px] px-3 text-[13px] font-medium text-ink transition-all duration-150"
           >
             Reset demo
           </button>
@@ -106,7 +106,7 @@ export default function ProjectDemo({ slug }: { slug: string }) {
               role="tab"
               aria-selected={index === tab}
               onClick={() => setTab(index)}
-              className={`min-h-10 rounded-[8px] px-3 text-[14px] whitespace-nowrap transition-colors duration-150 ${
+              className={`min-h-10 cursor-pointer rounded-[8px] px-3 text-[14px] whitespace-nowrap transition-colors duration-150 ${
                 index === tab
                   ? "bg-surface font-semibold text-ink shadow-xs"
                   : "font-medium text-muted hover:text-ink"

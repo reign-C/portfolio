@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   output: "standalone",
+  allowedDevOrigins: ["**.run.app", "**.aistudio.google.com", "**.googleusercontent.com"],
   cacheComponents: true,
   partialPrefetching: true,
   // Cap at the widest source (1600 px) so the optimizer never upscales a plate.
