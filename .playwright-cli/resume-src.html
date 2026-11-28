@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Reign Marc L. Cipriano — Resume</title>
+  <style>
+    @page {
+      size: letter portrait;
+      margin: 0.55in 0.65in 0.55in 0.65in;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: "Liberation Serif", "Noto Serif", Georgia, "Times New Roman", serif;
+      color: #111111;
+      font-size: 10.2pt;
+      line-height: 1.34;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 11pt;
+    }
+    h1 {
+      font-size: 16.5pt;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      margin-bottom: 2.5pt;
+    }
+    .contact {
+      font-size: 9.7pt;
+      color: #1a1a1a;
+    }
+    section {
+      margin-bottom: 10pt;
+    }
+    h2 {
+      font-size: 10.8pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      border-bottom: 0.85pt solid #222222;
+      padding-bottom: 1.5pt;
+      margin-bottom: 5.5pt;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12pt;
+    }
+    .entry {
+      margin-bottom: 5.5pt;
+    }
+    .entry:last-child {
+      margin-bottom: 0;
+    }
+    .org {
+      font-weight: 700;
+    }
+    .sub {
+      font-style: italic;
+    }
+    .right {
+      white-space: nowrap;
+      text-align: right;
+    }
+    ul {
+      margin-top: 2pt;
+      padding-left: 15pt;
+    }
+    li {
+      margin-bottom: 2pt;
+    }
+    li:last-child {
+      margin-bottom: 0;
+    }
+    .proj-head {
+      margin-bottom: 1.5pt;
+    }
+    .skills-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2.8pt;
+    }
+    .skill-row {
+      line-height: 1.32;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Reign Marc L. Cipriano</h1>
+    <div class="contact">
+      Tacurong City, Sultan Kudarat, 9800 | 0951 923 6198 | ciprianoreignmarc@gmail.com
+    </div>
+  </header>
+
+  <section>
+    <h2>Education</h2>
+    <div class="entry">
+      <div class="row">
+        <span class="org">Sultan Kudarat State University, Isulan Campus</span>
+        <span class="right">Isulan, Sultan Kudarat</span>
+      </div>
+      <div class="row">
+        <span class="sub">Bachelor of Science in Computer Engineering</span>
+        <span class="right">June 2026</span>
+      </div>
+      <ul>
+        <li>President's List, 2nd Semester of A.Y. 2025–2026</li>
+        <li>Relevant Coursework: Microprocessors; Embedded Systems; Computer Engineering Drafting and Design (PCB); Computer Networks and Security</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>Experience</h2>
+    <div class="entry">
+      <div class="row">
+        <span class="org">Unicenter Communications</span>
+        <span></span>
+      </div>
+      <div class="row">
+        <span class="sub">On-the-Job Trainee</span>
+        <span class="right">June 2025</span>
+      </div>
+      <ul>
+        <li>Assisted in installing CCTV and IP cameras, ceiling and horn speakers, and telephone units at client sites</li>
+        <li>Configured IP settings on new units and diagnosed network, hardware, and firmware issues on installed devices</li>
+        <li>Soldered PCBs when needed; drafted circuits in KiCad and technical drawings in AutoCAD and SketchUp</li>
+      </ul>
+    </div>
+
+    <div class="entry">
+      <div class="row">
+        <span class="org">Commissioned IoT Electronics Projects</span>
+        <span class="right">2024–2026</span>
+      </div>
+      <ul>
+        <li>Built and troubleshot IoT prototypes and thesis projects using microcontrollers and sensors, including wiring, soldering, and programming</li>
+        <li>Accelerated development with datasheets and AI tools; applied UI/UX design to project software</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>Projects</h2>
+    <div class="entry">
+      <div class="proj-head">
+        <span class="org">Clinic Queue System (Commissioned Build)</span> | <span class="sub">Raspberry Pi, FastAPI, SQLite</span>
+      </div>
+      <ul>
+        <li>Deployed a self-hosted queue server on one Raspberry Pi with touch kiosk ticketing, USB thermal printing, a staff call console, and a lobby TV display, running offline on the clinic's local network</li>
+        <li>Integrated ESC/POS receipt output and offline text-to-speech callouts, with systemd auto-restart so the queue recovers after a power cycle</li>
+      </ul>
+    </div>
+
+    <div class="entry">
+      <div class="proj-head">
+        <span class="org">Laboratory Materials and Equipment Borrowing System (Capstone Project)</span> | <span class="sub">ESP32-S3, MySQL</span>
+      </div>
+      <ul>
+        <li>Built an inventory tracker around an ESP32-S3 and a 1D/2D barcode scanner for automated item tracking</li>
+        <li>Designed the MySQL schema, user interface, wiring, and 3D-modeled enclosure; collaborated on integration, testing, and documentation</li>
+      </ul>
+    </div>
+
+    <div class="entry">
+      <div class="proj-head">
+        <span class="org">Scheduled School Bell System</span> | <span class="sub">ESP32, DFPlayer, audio amplifier</span>
+      </div>
+      <ul>
+        <li>Built an automated school-wide bell with real-time clock and network time synchronization and a browser dashboard for Monday-Wednesday-Friday, Tuesday-Thursday, and event schedules</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>Skills &amp; Certifications</h2>
+    <div class="skills-list">
+      <div class="skill-row">
+        <span class="org">Embedded and Hardware:</span> ESP32, ESP32-S3, Arduino, PCB design and soldering (KiCad), sensor and audio module integration
+      </div>
+      <div class="skill-row">
+        <span class="org">Networking:</span> LAN setup, IP configuration for cameras, speakers, and telephones; network and firmware troubleshooting
+      </div>
+      <div class="skill-row">
+        <span class="org">Software and Edge:</span> Raspberry Pi, Linux, systemd, FastAPI, SQLite, MySQL, Python, C++ (fundamentals)
+      </div>
+      <div class="skill-row">
+        <span class="org">Tools:</span> AutoCAD, SketchUp, Tinkercad, Figma, Adobe Photoshop, GitHub Copilot, OpenCode
+      </div>
+      <div class="skill-row">
+        <span class="org">Certifications:</span> National Certificate II in Computer Systems Servicing, TESDA; Civil Service Examination, Professional Level, Passer (March 2026)
+      </div>
+    </div>
+  </section>
+</body>
+</html>
