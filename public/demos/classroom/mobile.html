@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Classroom Manager — Mobile Mock UI</title>
+<style>
+  :root {
+    --bg: #f6f8f7;
+    --surface: #ffffff;
+    --line: #e2e8f0;
+    --ink: #0f172a;
+    --muted: #64748b;
+    --brand: #1b6543;
+    --brand-soft: #e8f5ee;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 14px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .screen {
+    flex: 1;
+    padding: 18px 18px 96px;
+    overflow-y: auto;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+  }
+  .header-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
+  .bell-btn {
+    width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--line);
+    background: var(--surface); display: grid; place-items: center; cursor: pointer; position: relative;
+  }
+  .bell-dot { position: absolute; top: 9px; right: 10px; width: 7px; height: 7px; border-radius: 50%; background: #f59e0b; }
+  .next-card { padding: 18px; margin-bottom: 14px; }
+  .primary-btn {
+    width: 100%; border: 0; border-radius: 999px;
+    background: var(--brand); color: #fff; padding: 13px 16px;
+    font-size: 15px; font-weight: 700; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .ring-card { padding: 16px 18px; display: flex; align-items: center; gap: 18px; margin-bottom: 14px; }
+  .mini-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .mini-card { padding: 16px; }
+  .mini-ico { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; font-weight: 700; margin-bottom: 12px; }
+  .sched-card { padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+  .start-outline {
+    border: 1.5px solid var(--brand); background: transparent; color: var(--brand);
+    border-radius: 999px; padding: 7px 16px; font-weight: 700; font-size: 13px; cursor: pointer;
+  }
+  .search-input {
+    width: 100%; height: 44px; border-radius: 999px; border: 1px solid var(--line);
+    background: var(--surface); padding: 0 16px; font-size: 14px; margin-bottom: 14px;
+  }
+  .init-pills { display: flex; align-items: center; gap: 6px; margin: 12px 0 14px; flex-wrap: wrap; }
+  .init-pill {
+    width: 32px; height: 32px; border-radius: 50%; background: var(--brand-soft);
+    color: var(--brand); font-weight: 700; font-size: 11px; display: grid; place-items: center;
+  }
+  .subj-item { padding: 16px; margin-bottom: 12px; }
+  .scanner-viewfinder {
+    position: relative; background: #090d16; border-radius: 22px; height: 280px;
+    margin: 14px 0 18px; overflow: hidden; display: grid; place-items: center;
+  }
+  .corner { position: absolute; width: 28px; height: 28px; border: 3px solid #6ee7b7; }
+  .tl { top: 18px; left: 18px; border-right: 0; border-bottom: 0; border-radius: 8px 0 0 0; }
+  .tr { top: 18px; right: 18px; border-left: 0; border-bottom: 0; border-radius: 0 8px 0 0; }
+  .bl { bottom: 18px; left: 18px; border-right: 0; border-top: 0; border-radius: 0 0 0 8px; }
+  .br { bottom: 18px; right: 18px; border-left: 0; border-top: 0; border-radius: 0 0 8px 0; }
+  .laser {
+    position: absolute; left: 22px; right: 22px; height: 2px; background: #6ee7b7;
+    box-shadow: 0 0 12px #6ee7b7; animation: mscan 2.4s ease-in-out infinite;
+  }
+  @keyframes mscan {
+    0%, 100% { transform: translateY(-95px); }
+    50% { transform: translateY(95px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .laser { animation: none; }
+  }
+  .scan-chip {
+    position: absolute; top: 16px; right: 18px; background: rgba(15, 23, 42, 0.72);
+    color: #fff; font-size: 12px; font-weight: 700; padding: 5px 10px; border-radius: 999px;
+  }
+  .tool-row { display: flex; justify-content: center; gap: 14px; margin-top: 14px; }
+  .tool-btn {
+    width: 46px; height: 46px; border-radius: 14px; border: 1px solid var(--line);
+    background: var(--surface); font-size: 16px; cursor: pointer; display: grid; place-items: center;
+  }
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 74px;
+    background: rgba(255, 255, 255, 0.96); border-top: 1px solid var(--line);
+    display: grid; grid-template-columns: 1fr 1fr 68px 1fr 1fr; align-items: center;
+    padding: 0 8px; z-index: 20;
+  }
+  .b-btn {
+    border: 0; background: transparent; color: var(--muted); font-size: 11px; font-weight: 600;
+    display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; padding: 6px 0;
+  }
+  .b-btn.active { color: var(--brand); }
+  .fab-scan {
+    width: 56px; height: 56px; border-radius: 50%; border: 4px solid var(--bg);
+    background: var(--brand); color: #fff; font-size: 19px; cursor: pointer;
+    margin: -24px auto 0; display: grid; place-items: center;
+    box-shadow: 0 8px 18px rgba(27, 101, 67, 0.35);
+  }
+</style>
+<script src="classroom-data.js"></script>
+</head>
+<body>
+<div class="screen" id="mobileScreen"></div>
+
+<nav class="bottom-nav" id="bottomNav">
+  <button type="button" class="b-btn active" data-tab="home"><span>&#8962;</span><span>Home</span></button>
+  <button type="button" class="b-btn" data-tab="subjects"><span>&#128214;</span><span>Subjects</span></button>
+  <button type="button" class="fab-scan" data-tab="scanner" aria-label="Open QR Scanner">&#9635;</button>
+  <button type="button" class="b-btn" data-tab="history"><span>&#8634;</span><span>History</span></button>
+  <button type="button" class="b-btn" data-tab="more"><span>&#9776;</span><span>More</span></button>
+</nav>
+
+<script>
+  (function () {
+    var tab = "home";
+    var subjQuery = "";
+    var activeSubjectId = "PROG11";
+    var lastScanBanner = "";
+    var torchOn = false;
+
+    function render() {
+      var state = CLASSROOM_DEMO.loadState();
+      document.querySelectorAll("[data-tab]").forEach(function (el) {
+        el.classList.toggle("active", el.getAttribute("data-tab") === tab);
+      });
+      var nav = document.getElementById("bottomNav");
+      nav.style.display = tab === "scanner" ? "none" : "grid";
+
+      var el = document.getElementById("mobileScreen");
+      if (tab === "home") renderHome(el, state);
+      else if (tab === "subjects") renderSubjects(el);
+      else if (tab === "scanner") renderScanner(el, state);
+      else if (tab === "history") renderHistory(el, state);
+      else renderMore(el, state);
+    }
+
+    function renderHome(el, state) {
+      var present = state.scans.filter(function (s) { return s.status === "Present"; }).length;
+      var late = state.scans.filter(function (s) { return s.status === "Late"; }).length;
+      var pct = Math.round((state.scans.length / 32) * 100);
+      var offset = 226 - (226 * pct) / 100;
+
+      el.innerHTML =
+        '<div class="header-row">' +
+          '<div>' +
+            '<div style="font-size:13px;color:var(--muted);">Good evening</div>' +
+            '<div style="font-size:24px;font-weight:800;letter-spacing:-0.02em;line-height:1.15;">' + CLASSROOM_DEMO.teacher + '</div>' +
+            '<div style="font-size:12.5px;color:var(--muted);margin-top:4px;">' + CLASSROOM_DEMO.school + '<br>' + CLASSROOM_DEMO.dateLabel + '</div>' +
+          '</div>' +
+          '<button type="button" class="bell-btn" id="mobBell" aria-label="Notifications">&#128276;<span class="bell-dot"></span></button>' +
+        '</div>' +
+        '<div class="card next-card">' +
+          '<div style="font-size:12px;color:var(--muted);">Next class</div>' +
+          '<div style="font-size:23px;font-weight:800;margin:2px 0;">Programming</div>' +
+          '<div style="font-size:13px;color:var(--muted);">Room 204 &middot; PROG11</div>' +
+          '<div style="font-size:12.5px;color:#b45309;margin:8px 0 14px;font-weight:600;">32 students enrolled</div>' +
+          '<button type="button" class="primary-btn" id="mobStartBtn">&#9654; Start Attendance</button>' +
+        '</div>' +
+        '<div class="card ring-card">' +
+          '<div style="position:relative;width:86px;height:86px;flex-shrink:0;">' +
+            '<svg width="86" height="86" viewBox="0 0 86 86">' +
+              '<circle cx="43" cy="43" r="36" fill="none" stroke="#e2e8f0" stroke-width="8"/>' +
+              '<circle cx="43" cy="43" r="36" fill="none" stroke="#22c55e" stroke-width="8" stroke-linecap="round" stroke-dasharray="226" stroke-dashoffset="' + offset + '" transform="rotate(-90 43 43)"/>' +
+            '</svg>' +
+            '<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">' +
+              '<strong style="font-size:18px;">' + pct + '%</strong>' +
+              '<span style="font-size:10px;color:var(--muted);">Attendance</span>' +
+            '</div>' +
+          '</div>' +
+          '<div style="flex:1;display:flex;flex-direction:column;gap:6px;font-size:13.5px;">' +
+            '<div style="display:flex;justify-content:space-between;"><span style="color:var(--muted);">&#9679; Present</span><strong>' + present + '</strong></div>' +
+            '<div style="display:flex;justify-content:space-between;"><span style="color:var(--muted);">&#9679; Late</span><strong>' + late + '</strong></div>' +
+            '<div style="display:flex;justify-content:space-between;"><span style="color:var(--muted);">&#9679; Absent</span><strong>0</strong></div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="mini-row">' +
+          '<div class="card mini-card"><div class="mini-ico" style="background:#fef3c7;color:#b45309;">&#8635;</div><div style="font-size:20px;font-weight:800;">' + (11 + state.pendingChanges) + '</div><div style="font-size:12px;color:var(--muted);">Pending changes</div><div style="font-size:11px;color:#b45309;">Saved on this phone</div></div>' +
+          '<div class="card mini-card"><div class="mini-ico" style="background:#fee2e2;color:#b91c1c;">&#9729;</div><div style="font-size:20px;font-weight:800;">Never</div><div style="font-size:12px;color:#dc2626;">Needs attention</div></div>' +
+        '</div>' +
+        '<h3 style="font-size:17px;font-weight:800;margin:0 0 10px;">Today\'s schedule</h3>' +
+        '<div class="card sched-card"><div><strong style="font-size:15px;">Programming</strong><div style="font-size:12px;color:var(--muted);">Grade 11 &middot; STEM A &middot; Rm 204</div></div><button type="button" class="start-outline" data-start-subj="PROG11">Start</button></div>' +
+        '<div class="card sched-card"><div><strong style="font-size:15px;">Physics</strong><div style="font-size:12px;color:var(--muted);">Grade 11 &middot; STEM A &middot; Rm 210</div></div><button type="button" class="start-outline" data-start-subj="PHYS11">Start</button></div>';
+
+      document.getElementById("mobStartBtn").addEventListener("click", function () { activeSubjectId = "PROG11"; tab = "scanner"; render(); });
+      document.getElementById("mobBell").addEventListener("click", function () { tab = "history"; render(); });
+      el.querySelectorAll("[data-start-subj]").forEach(function (b) {
+        b.addEventListener("click", function () {
+          activeSubjectId = b.getAttribute("data-start-subj");
+          tab = "scanner";
+          render();
+        });
+      });
+    }
+
+    function renderSubjects(el) {
+      var list = CLASSROOM_DEMO.subjects.filter(function (s) {
+        return !subjQuery || (s.name + " " + s.id + " " + s.section).toLowerCase().indexOf(subjQuery.toLowerCase()) !== -1;
+      });
+      var sel = CLASSROOM_DEMO.subjects.filter(function (s) { return s.id === activeSubjectId; })[0] || CLASSROOM_DEMO.subjects[0];
+
+      el.innerHTML =
+        '<div class="header-row"><div><div style="font-size:24px;font-weight:800;">Classes</div><div style="font-size:12.5px;color:var(--muted);">5 assigned subjects</div></div></div>' +
+        '<input type="text" class="search-input" id="mobSubjSearch" placeholder="Search subjects..." value="' + subjQuery.replace(/"/g, "&quot;") + '">' +
+        '<div class="card" style="padding:18px;margin-bottom:14px;">' +
+          '<div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:11px;font-weight:700;color:var(--muted);">SELECTED CLASS</span><strong style="color:#d97706;font-size:18px;">' + sel.rate + '%</strong></div>' +
+          '<div style="font-size:21px;font-weight:800;margin:2px 0;">' + sel.name + '</div>' +
+          '<div style="font-size:12.5px;color:var(--muted);">' + sel.grade + ' &middot; ' + sel.strand + ' &middot; ' + sel.section + ' &middot; ' + sel.room + '</div>' +
+          '<div style="font-size:12.5px;color:var(--muted);margin-top:8px;">' + sel.enrolled + ' students &middot; ' + sel.id + '</div>' +
+          '<div class="init-pills">' +
+            sel.initialsPreview.map(function (i) { return '<span class="init-pill">' + i.replace(/\./g, "") + '</span>'; }).join("") +
+            '<span style="font-size:12px;color:var(--muted);font-weight:600;">+27</span>' +
+          '</div>' +
+          '<button type="button" class="primary-btn" id="selSubjScanBtn">&#9654; Start Attendance</button>' +
+        '</div>' +
+        list.map(function (s) {
+          return '<div class="card subj-item" style="cursor:pointer;" data-pick-subj="' + s.id + '">' +
+            '<div style="display:flex;justify-content:space-between;"><strong>' + s.name + '</strong><span style="color:#d97706;font-weight:700;">' + s.rate + '%</span></div>' +
+            '<div style="font-size:12.5px;color:var(--muted);margin-top:4px;">' + s.grade + ' &middot; ' + s.section + '<br>' + s.enrolled + ' students &middot; ' + s.room + '</div>' +
+          '</div>';
+        }).join("");
+
+      var inp = document.getElementById("mobSubjSearch");
+      inp.addEventListener("input", function () {
+        subjQuery = inp.value;
+        renderSubjects(el);
+        var next = document.getElementById("mobSubjSearch");
+        next.focus();
+      });
+      document.getElementById("selSubjScanBtn").addEventListener("click", function () { tab = "scanner"; render(); });
+      el.querySelectorAll("[data-pick-subj]").forEach(function (card) {
+        card.addEventListener("click", function () {
+          activeSubjectId = card.getAttribute("data-pick-subj");
+          render();
+        });
+      });
+    }
+
+    function renderScanner(el, state) {
+      var subj = CLASSROOM_DEMO.subjects.filter(function (s) { return s.id === activeSubjectId; })[0] || CLASSROOM_DEMO.subjects[0];
+      var count = state.scans.length;
+      var pct = Math.round((count / 32) * 100);
+      var offset = 276 - (276 * pct) / 100;
+
+      el.innerHTML =
+        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">' +
+          '<button type="button" class="bell-btn" id="scanBackBtn" aria-label="Back">&larr;</button>' +
+          '<div style="text-align:center;">' +
+            '<span style="display:inline-block;background:var(--brand-soft);color:var(--brand);font-size:10.5px;font-weight:700;padding:3px 10px;border-radius:999px;">&#9679; LIVE NOW</span>' +
+            '<div style="font-size:20px;font-weight:800;margin-top:2px;">' + subj.name + '</div>' +
+            '<div style="font-size:12px;color:var(--muted);">' + subj.id + ' &middot; ' + subj.room + '</div>' +
+          '</div>' +
+          '<div style="width:42px;"></div>' +
+        '</div>' +
+        '<div class="scanner-viewfinder" style="background:' + (torchOn ? "#182436" : "#090d16") + ';">' +
+          '<div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>' +
+          '<div class="laser"></div>' +
+          '<div class="scan-chip">' + count + ' / 32 scanned</div>' +
+          '<div style="color:#e2e8f0;font-size:13px;font-weight:600;text-align:center;padding:0 24px;">' + (lastScanBanner || "Software camera QR viewfinder ready") + '</div>' +
+        '</div>' +
+        '<div style="display:grid;place-items:center;margin:10px 0 22px;">' +
+          '<div style="position:relative;width:104px;height:104px;">' +
+            '<svg width="104" height="104" viewBox="0 0 104 104">' +
+              '<circle cx="52" cy="52" r="44" fill="none" stroke="#e2e8f0" stroke-width="8"/>' +
+              '<circle cx="52" cy="52" r="44" fill="none" stroke="#1b6543" stroke-width="8" stroke-linecap="round" stroke-dasharray="276" stroke-dashoffset="' + offset + '" transform="rotate(-90 52 52)"/>' +
+            '</svg>' +
+            '<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">' +
+              '<div><strong style="font-size:22px;">' + count + '</strong><span style="color:var(--muted);">/32</span></div>' +
+              '<div style="font-size:11px;color:var(--muted);">' + pct + '% scanned</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<button type="button" class="primary-btn" id="mobDoScanBtn">&#9635; Scan QR Code</button>' +
+        '<div class="tool-row">' +
+          '<button type="button" class="tool-btn" id="torchBtn" title="Toggle light" aria-label="Toggle light">&#128294;</button>' +
+          '<button type="button" class="tool-btn" id="doneScanBtn" title="Finish &amp; return" aria-label="Done">&#10003;</button>' +
+        '</div>';
+
+      document.getElementById("scanBackBtn").addEventListener("click", function () { tab = "home"; render(); });
+      document.getElementById("doneScanBtn").addEventListener("click", function () { tab = "home"; render(); });
+      document.getElementById("torchBtn").addEventListener("click", function () { torchOn = !torchOn; render(); });
+      document.getElementById("mobDoScanBtn").addEventListener("click", function () {
+        var res = CLASSROOM_DEMO.scanNextStudent(activeSubjectId);
+        if (res.scanned) {
+          lastScanBanner = "Scanned " + res.scanned.initials + " (" + res.scanned.id + ") · " + res.scanned.status;
+        } else {
+          lastScanBanner = "All 12 sample QR codes scanned";
+        }
+        render();
+      });
+    }
+
+    function renderHistory(el, state) {
+      el.innerHTML =
+        '<div class="header-row"><div><div style="font-size:24px;font-weight:800;">Scan History</div><div style="font-size:12.5px;color:var(--muted);">Student initials only</div></div></div>' +
+        (state.scans.length
+          ? state.scans.map(function (s) {
+              return '<div class="card sched-card"><div><strong>' + s.initials + '</strong><div style="font-size:12px;color:var(--muted);">' + s.id + ' &middot; ' + s.subjectId + ' &middot; ' + s.timeIn + '</div></div><span style="font-weight:700;color:var(--brand);font-size:12.5px;">' + s.status + '</span></div>';
+            }).join("")
+          : '<div class="card" style="padding:24px;text-align:center;color:var(--muted);">No QR scans recorded yet. Tap the center green QR button to simulate scanning a student pass.</div>');
+    }
+
+    function renderMore(el, state) {
+      el.innerHTML =
+        '<div class="header-row"><div><div style="font-size:24px;font-weight:800;">More</div><div style="font-size:12.5px;color:var(--muted);">' + CLASSROOM_DEMO.teacher + '</div></div></div>' +
+        '<div class="card" style="padding:18px;margin-bottom:12px;">' +
+          '<div style="font-weight:700;margin-bottom:4px;">Offline Sync Queue</div>' +
+          '<div style="font-size:13px;color:var(--muted);margin-bottom:12px;">' + state.pendingChanges + ' change(s) stored locally</div>' +
+          '<button type="button" class="primary-btn" id="mobSyncBtn">Sync Pending Now</button>' +
+        '</div>' +
+        '<div class="card" style="padding:18px;"><strong>Privacy Mode</strong><div style="font-size:13px;color:var(--muted);margin-top:4px;">Student full names and LRNs are replaced with initials only in this portfolio preview.</div></div>';
+      document.getElementById("mobSyncBtn").addEventListener("click", function () {
+        CLASSROOM_DEMO.clearPending();
+        render();
+      });
+    }
+
+    document.querySelectorAll("[data-tab]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        tab = btn.getAttribute("data-tab");
+        render();
+      });
+    });
+
+    render();
+  })();
+</script>
+</body>
+</html>

@@ -96,9 +96,20 @@ export function MoreWork() {
                 </p>
                 <p className="mt-0.5 text-[13px] text-muted">{item.stack}</p>
               </div>
-              <p className="text-[14.5px] leading-[1.55] text-muted">
-                {item.detail}
-              </p>
+              <div>
+                <p className="text-[14.5px] leading-[1.55] text-muted">
+                  {item.detail}
+                </p>
+                {item.href ? (
+                  <Link
+                    href={item.href}
+                    className="mt-2 inline-flex min-h-9 items-center gap-1.5 text-[13.5px] font-medium text-ink underline decoration-muted transition-colors duration-150 hover:decoration-ink"
+                  >
+                    <span>{item.ctaLabel ?? "Preview UI"}</span>
+                    <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                  </Link>
+                ) : null}
+              </div>
               <span className="text-[13.5px] text-muted tabular sm:text-right">
                 {item.year}
               </span>

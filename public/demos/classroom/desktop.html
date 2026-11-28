@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Classroom Manager — Desktop Mock UI</title>
+<style>
+  :root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --sidebar: #f1f7f4;
+    --line: #e2e8f0;
+    --ink: #0f172a;
+    --muted: #64748b;
+    --brand: #1b6543;
+    --brand-dark: #145336;
+    --brand-soft: #e8f5ee;
+    --amber-bg: #fef3c7;
+    --amber-ink: #92400e;
+    --red-bg: #fee2e2;
+    --red-ink: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.45;
+  }
+  .app { display: flex; min-height: 100vh; }
+  .sidebar {
+    width: 224px;
+    flex-shrink: 0;
+    background: var(--sidebar);
+    border-right: 1px solid var(--line);
+    padding: 16px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 6px;
+  }
+  .brand-mark {
+    width: 34px; height: 34px;
+    border-radius: 10px;
+    background: var(--brand);
+    color: #fff;
+    display: grid; place-items: center;
+    font-weight: 700; font-size: 16px;
+  }
+  .brand-name { font-weight: 700; font-size: 14px; color: var(--brand); line-height: 1.15; }
+  .brand-sub { font-size: 11px; color: var(--muted); }
+  .scan-cta {
+    width: 100%;
+    border: 0;
+    border-radius: 10px;
+    background: var(--brand);
+    color: #fff;
+    padding: 10px 12px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .scan-cta:hover { background: var(--brand-dark); }
+  .nav-list { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+  .nav-btn {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    color: #334155;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .nav-btn:hover { background: rgba(27, 101, 67, 0.08); color: var(--ink); }
+  .nav-btn.active { background: var(--brand); color: #fff; font-weight: 600; }
+  .sidebar-notes { display: flex; flex-direction: column; gap: 6px; margin-top: auto; padding-top: 8px; }
+  .note-chip {
+    background: var(--amber-bg);
+    color: var(--amber-ink);
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .note-dot { width: 6px; height: 6px; border-radius: 50%; background: #d97706; flex-shrink: 0; }
+
+  .main { flex: 1; padding: 24px 32px 36px; min-width: 0; }
+  .top-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 20px; }
+  .greeting-kicker { font-size: 13px; color: var(--muted); }
+  .page-h1 { margin: 2px 0 4px; font-size: 28px; font-weight: 700; letter-spacing: -0.02em; }
+  .page-sub { font-size: 13px; color: var(--muted); }
+  .top-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .icon-btn, .outline-btn, .solid-btn {
+    height: 36px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 0 13px;
+  }
+  .icon-btn { width: 36px; padding: 0; justify-content: center; background: var(--surface); border: 1px solid var(--line); color: var(--ink); }
+  .outline-btn { background: var(--surface); border: 1px solid #cbd5e1; color: var(--ink); }
+  .solid-btn { background: var(--brand); border: 1px solid var(--brand); color: #fff; }
+  .solid-btn:hover { background: var(--brand-dark); }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  }
+  .dash-grid { display: grid; grid-template-columns: 1.85fr 1fr; gap: 18px; margin-bottom: 24px; }
+  .hero-class { padding: 26px; display: flex; flex-direction: column; justify-content: space-between; min-height: 224px; }
+  .hero-kicker { font-size: 12px; color: var(--muted); }
+  .hero-title { font-size: 26px; font-weight: 700; margin: 4px 0 6px; letter-spacing: -0.015em; }
+  .hero-meta { font-size: 13px; color: var(--muted); }
+  .hero-enrolled { margin-top: 10px; font-size: 13px; color: #b45309; font-weight: 500; }
+
+  .right-stack { display: flex; flex-direction: column; gap: 14px; }
+  .att-card { padding: 18px 20px; display: flex; align-items: center; gap: 18px; }
+  .ring-wrap { position: relative; width: 78px; height: 78px; flex-shrink: 0; }
+  .ring-center {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    line-height: 1.05;
+  }
+  .ring-pct { font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .ring-lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); margin-top: 2px; }
+  .att-rows { flex: 1; display: flex; flex-direction: column; gap: 5px; font-size: 13px; }
+  .att-row { display: flex; justify-content: space-between; align-items: center; }
+  .dot-lbl { display: flex; align-items: center; gap: 7px; color: var(--muted); }
+  .s-dot { width: 7px; height: 7px; border-radius: 50%; }
+  .mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .mini-card { padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .mini-ico { width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center; font-weight: 700; font-size: 13px; }
+  .mini-val { font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .mini-cap { font-size: 12px; color: var(--muted); }
+
+  .section-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .section-h2 { font-size: 16px; font-weight: 700; margin: 0; }
+  .sched-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; }
+  .sched-row {
+    padding: 14px 18px;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  }
+  .sched-left { display: flex; align-items: center; gap: 22px; }
+  .sched-code { width: 88px; font-size: 12px; }
+  .sched-code strong { display: block; font-size: 12.5px; }
+  .sched-code span { color: var(--muted); font-size: 11px; }
+  .sched-name strong { display: block; font-size: 14.5px; }
+  .sched-name span { color: var(--muted); font-size: 12.5px; }
+  .start-pill {
+    border: 1px solid var(--brand);
+    background: transparent;
+    color: var(--brand);
+    border-radius: 999px;
+    padding: 6px 16px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .start-pill:hover { background: var(--brand); color: #fff; }
+
+  .search-bar {
+    width: 100%;
+    max-width: 340px;
+    height: 38px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    padding: 0 12px;
+    font-size: 13px;
+    color: var(--ink);
+  }
+  .students-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 14px;
+  }
+  .student-card {
+    padding: 14px 16px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .student-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .avatar-init {
+    width: 38px; height: 38px; border-radius: 50%;
+    display: grid; place-items: center;
+    font-weight: 700; font-size: 13px; flex-shrink: 0;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+  }
+  .student-name { font-weight: 700; font-size: 14px; }
+  .student-id { font-size: 12px; color: var(--muted); font-family: ui-monospace, monospace; }
+  .tag-row { display: flex; gap: 6px; margin-top: 5px; }
+  .tag-chip { font-size: 11px; padding: 2px 7px; border-radius: 6px; background: #f1f5f9; color: #475569; font-weight: 500; }
+  .tag-chip.green { background: var(--brand-soft); color: var(--brand); }
+  .rate-num { font-weight: 700; color: var(--brand); font-size: 13.5px; font-variant-numeric: tabular-nums; }
+
+  .rep-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .rep-tab {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+    border-radius: 999px;
+    padding: 7px 14px;
+    font-size: 13px; font-weight: 500;
+    cursor: pointer;
+  }
+  .rep-tab.active { background: var(--brand); border-color: var(--brand); color: #fff; font-weight: 600; }
+  .filters-card { padding: 16px 18px; margin-bottom: 18px; }
+  .filters-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-top: 10px; }
+  .f-lbl { display: block; font-size: 11px; color: var(--muted); margin-bottom: 4px; font-weight: 600; }
+  .f-ctrl { width: 100%; height: 34px; border-radius: 8px; border: 1px solid var(--line); padding: 0 9px; font-size: 12.5px; background: #fff; }
+  .register-head { text-align: center; padding: 12px 0 18px; border-bottom: 1px solid var(--line); margin-bottom: 14px; }
+  .register-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .register-table th { background: var(--brand); color: #fff; text-align: left; padding: 10px 12px; font-size: 12px; font-weight: 600; }
+  .register-table td { padding: 10px 12px; border-bottom: 1px solid var(--line); background: #fff; font-variant-numeric: tabular-nums; }
+  .rem-badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 11.5px; font-weight: 600; background: #dcfce7; color: #166534; }
+  .rem-badge.late { background: #fef3c7; color: #92400e; }
+
+  .scanner-modal {
+    position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55);
+    display: none; align-items: center; justify-content: center; padding: 20px; z-index: 50;
+  }
+  .scanner-modal.open { display: flex; }
+  .scanner-box {
+    width: 100%; max-width: 520px; background: #fff; border-radius: 16px;
+    padding: 22px; box-shadow: 0 24px 60px rgba(15, 23, 42, 0.25);
+  }
+  .viewfinder {
+    position: relative; background: #0b1220; border-radius: 14px; height: 220px;
+    margin: 14px 0; overflow: hidden; display: grid; place-items: center; color: #cbd5e1;
+  }
+  .vf-line {
+    position: absolute; left: 18px; right: 18px; height: 2px; background: #34d399;
+    box-shadow: 0 0 10px #34d399; animation: scanline 2.2s ease-in-out infinite;
+  }
+  @keyframes scanline {
+    0%, 100% { transform: translateY(-76px); }
+    50% { transform: translateY(76px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .vf-line { animation: none; }
+  }
+</style>
+<script src="classroom-data.js"></script>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">T</div>
+      <div>
+        <div class="brand-name">Classroom</div>
+        <div class="brand-sub">Manager</div>
+      </div>
+    </div>
+    <button type="button" class="scan-cta" id="openLiveScanBtn">Live Scanning Preview</button>
+    <nav class="nav-list" id="navList">
+      <button type="button" class="nav-btn active" data-view="dashboard">Dashboard</button>
+      <button type="button" class="nav-btn" data-view="subjects">Subjects</button>
+      <button type="button" class="nav-btn" data-view="students">Students</button>
+      <button type="button" class="nav-btn" data-view="data">Data Management</button>
+      <button type="button" class="nav-btn" data-view="attendance">Attendance</button>
+      <button type="button" class="nav-btn" data-view="analytics">Analytics</button>
+      <button type="button" class="nav-btn" data-view="reports">Reports</button>
+      <button type="button" class="nav-btn" data-view="schedule">Schedule</button>
+      <button type="button" class="nav-btn" data-view="sync">Sync &amp; Devices</button>
+      <button type="button" class="nav-btn" data-view="license">License Manager</button>
+      <button type="button" class="nav-btn" data-view="settings">Settings</button>
+    </nav>
+    <div class="sidebar-notes">
+      <div class="note-chip"><span class="note-dot"></span><span id="sidebarPending">1 changes pending</span></div>
+      <div class="note-chip"><span class="note-dot"></span><span>Backup overdue · 9 days</span></div>
+    </div>
+  </aside>
+
+  <main class="main" id="mainView"></main>
+</div>
+
+<div class="scanner-modal" id="scannerModal" role="dialog" aria-modal="true" aria-labelledby="scanModalTitle">
+  <div class="scanner-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="font-size:11px;font-weight:700;color:#1b6543;text-transform:uppercase;">Software QR Attendance Scanner</div>
+        <h3 id="scanModalTitle" style="margin:2px 0 0;font-size:18px;">Oral Communication · Room 108</h3>
+      </div>
+      <button type="button" class="outline-btn" id="closeScanModal">Close</button>
+    </div>
+    <div class="viewfinder">
+      <div class="vf-line"></div>
+      <div style="text-align:center;z-index:2;padding:0 16px;">
+        <div id="vfScanStatus" style="font-size:15px;font-weight:700;color:#fff;">Ready to scan student QR</div>
+        <div id="vfScanCount" style="font-size:12px;color:#94a3b8;margin-top:4px;">0 / 32 scanned (sample initials only)</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button type="button" class="solid-btn" style="flex:1;justify-content:center;" id="simScanBtn">Scan Next Student QR</button>
+      <button type="button" class="outline-btn" id="syncNowBtn">Sync Pending</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var activeView = "dashboard";
+    var studentQuery = "";
+    var activeReportTab = "Class Register";
+    var reportSubjectFilter = "All";
+
+    function render() {
+      var state = CLASSROOM_DEMO.loadState();
+      var pendingEl = document.getElementById("sidebarPending");
+      if (pendingEl) pendingEl.textContent = state.pendingChanges + " changes pending";
+
+      document.querySelectorAll(".nav-btn").forEach(function (b) {
+        b.classList.toggle("active", b.getAttribute("data-view") === activeView);
+      });
+
+      var main = document.getElementById("mainView");
+      if (activeView === "dashboard") renderDashboard(main, state);
+      else if (activeView === "students") renderStudents(main, state);
+      else if (activeView === "reports") renderReports(main, state);
+      else if (activeView === "subjects") renderSubjects(main);
+      else if (activeView === "attendance") renderAttendance(main, state);
+      else renderGenericSection(main, activeView, state);
+    }
+
+    function renderDashboard(main, state) {
+      var present = state.scans.filter(function (s) { return s.status === "Present"; }).length;
+      var late = state.scans.filter(function (s) { return s.status === "Late"; }).length;
+      var total = state.scans.length;
+      var pct = Math.round((total / 32) * 100);
+      var dashOffset = 201 - (201 * pct) / 100;
+
+      main.innerHTML =
+        '<div class="top-row">' +
+          '<div>' +
+            '<div class="greeting-kicker">Good evening</div>' +
+            '<h1 class="page-h1">' + CLASSROOM_DEMO.teacher + '</h1>' +
+            '<div class="page-sub">' + CLASSROOM_DEMO.school + '<br>' + CLASSROOM_DEMO.dateLabel + '</div>' +
+          '</div>' +
+          '<div class="top-actions">' +
+            '<button type="button" class="icon-btn" title="Jump to Students" id="dashSearchBtn">&#128269;</button>' +
+            '<button type="button" class="icon-btn" title="Pending sync notice">&#128276;</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="dash-grid">' +
+          '<div class="card hero-class">' +
+            '<div>' +
+              '<div class="hero-kicker">Next class</div>' +
+              '<div class="hero-title">Oral Communication</div>' +
+              '<div class="hero-meta">Room 108 &middot; ORAL11</div>' +
+              '<div class="hero-enrolled">32 students enrolled</div>' +
+            '</div>' +
+            '<div><button type="button" class="solid-btn" id="dashStartScan">&#9654; Start Scan</button></div>' +
+          '</div>' +
+          '<div class="right-stack">' +
+            '<div class="card att-card">' +
+              '<div class="ring-wrap">' +
+                '<svg width="78" height="78" viewBox="0 0 78 78">' +
+                  '<circle cx="39" cy="39" r="32" fill="none" stroke="#e2e8f0" stroke-width="7"/>' +
+                  '<circle cx="39" cy="39" r="32" fill="none" stroke="#16a34a" stroke-width="7" stroke-linecap="round" stroke-dasharray="201" stroke-dashoffset="' + dashOffset + '" transform="rotate(-90 39 39)"/>' +
+                '</svg>' +
+                '<div class="ring-center"><span class="ring-pct">' + pct + '%</span><span class="ring-lbl">Attendance</span></div>' +
+              '</div>' +
+              '<div class="att-rows">' +
+                '<div style="font-size:12px;color:var(--muted);margin-bottom:2px;">Today</div>' +
+                '<div class="att-row"><span class="dot-lbl"><span class="s-dot" style="background:#16a34a;"></span>Present</span><strong>' + present + '</strong></div>' +
+                '<div class="att-row"><span class="dot-lbl"><span class="s-dot" style="background:#d97706;"></span>Late</span><strong>' + late + '</strong></div>' +
+                '<div class="att-row"><span class="dot-lbl"><span class="s-dot" style="background:#dc2626;"></span>Absent</span><strong>0</strong></div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="mini-grid">' +
+              '<div class="card mini-card"><div class="mini-ico" style="background:#fef3c7;color:#b45309;">!</div><div><div class="mini-val">' + state.pendingChanges + '</div><div class="mini-cap">Pending changes</div></div></div>' +
+              '<div class="card mini-card"><div class="mini-ico" style="background:#fee2e2;color:#b91c1c;">&#9729;</div><div><div class="mini-val">9d ago</div><div class="mini-cap" style="color:#dc2626;">Needs attention</div></div></div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="section-head"><h2 class="section-h2">Today\'s schedule</h2><button type="button" class="nav-btn" style="width:auto;padding:4px 8px;color:var(--brand);" data-jump="schedule">Full schedule &rsaquo;</button></div>' +
+        '<div class="sched-list">' +
+          '<div class="card sched-row"><div class="sched-left"><div class="sched-code"><strong>ORAL11</strong><span>Wed/Fri · 11:00–12:00</span></div><div class="sched-name"><strong>Oral Communication</strong><span>Room 108</span></div></div><button type="button" class="start-pill" data-scan-subj="ORAL11">Start</button></div>' +
+          '<div class="card sched-row"><div class="sched-left"><div class="sched-code"><strong>PHYS11</strong><span>Mon/Wed/Fri · 8:00–9:00 AM</span></div><div class="sched-name"><strong>Physics</strong><span>Room 210</span></div></div><button type="button" class="start-pill" data-scan-subj="PHYS11">Start</button></div>' +
+        '</div>' +
+        '<div style="font-size:11.5px;font-weight:700;letter-spacing:0.05em;color:var(--muted);text-transform:uppercase;margin-bottom:8px;">Recent Activity</div>' +
+        '<div class="card" style="padding:14px 18px;font-size:13px;color:var(--muted);">' +
+          (state.scans.length
+            ? state.scans.slice(0, 4).map(function (s) { return '<div style="padding:4px 0;">Scanned <strong>' + s.initials + '</strong> (' + s.id + ') &middot; ' + s.status + ' at ' + s.timeIn + '</div>'; }).join("")
+            : 'No scans recorded yet today. Click <strong>Start Scan</strong> or <strong>Live Scanning Preview</strong> to test the software QR scanner.') +
+        '</div>';
+
+      document.getElementById("dashStartScan").addEventListener("click", function () { openScanner("ORAL11"); });
+      document.getElementById("dashSearchBtn").addEventListener("click", function () { activeView = "students"; render(); });
+      main.querySelectorAll("[data-scan-subj]").forEach(function (btn) {
+        btn.addEventListener("click", function () { openScanner(btn.getAttribute("data-scan-subj")); });
+      });
+      main.querySelectorAll("[data-jump]").forEach(function (btn) {
+        btn.addEventListener("click", function () { activeView = btn.getAttribute("data-jump"); render(); });
+      });
+    }
+
+    function renderStudents(main) {
+      var list = CLASSROOM_DEMO.students.filter(function (st) {
+        if (!studentQuery) return true;
+        var q = studentQuery.toLowerCase();
+        return st.initials.toLowerCase().indexOf(q) !== -1 || st.id.toLowerCase().indexOf(q) !== -1 || st.section.toLowerCase().indexOf(q) !== -1;
+      });
+
+      main.innerHTML =
+        '<div class="top-row">' +
+          '<div><h1 class="page-h1" style="font-size:24px;">Students</h1><div class="page-sub">32 enrolled &middot; Initials-only privacy mode</div></div>' +
+          '<div class="top-actions">' +
+            '<button type="button" class="outline-btn">Filter</button>' +
+            '<button type="button" class="outline-btn">Import</button>' +
+            '<button type="button" class="outline-btn" id="qrCardsBtn">Download QR Cards</button>' +
+            '<button type="button" class="solid-btn">+ Add Student</button>' +
+          '</div>' +
+        '</div>' +
+        '<input type="text" class="search-bar" id="studentSearchInput" placeholder="Search initials, ID, section..." value="' + studentQuery.replace(/"/g, "&quot;") + '">' +
+        '<div class="students-grid">' +
+          list.map(function (st) {
+            var cleanInit = st.initials.replace(/[^A-Z]/g, "");
+            return '<div class="card student-card">' +
+              '<div class="student-left">' +
+                '<div class="avatar-init" style="background:' + st.bg + ';color:' + st.color + ';">' + cleanInit + '</div>' +
+                '<div>' +
+                  '<div class="student-name">' + st.initials + '</div>' +
+                  '<div class="student-id">' + st.id + '</div>' +
+                  '<div class="tag-row"><span class="tag-chip green">' + st.grade + '</span><span class="tag-chip">' + st.section + '</span></div>' +
+                '</div>' +
+              '</div>' +
+              '<div class="rate-num">' + st.rate + '%</div>' +
+            '</div>';
+          }).join("") +
+        '</div>';
+
+      var inp = document.getElementById("studentSearchInput");
+      inp.addEventListener("input", function () {
+        studentQuery = inp.value;
+        renderStudents(main);
+        var nextInp = document.getElementById("studentSearchInput");
+        nextInp.focus();
+        nextInp.setSelectionRange(nextInp.value.length, nextInp.value.length);
+      });
+    }
+
+    function renderReports(main, state) {
+      var tabs = ["Class Register", "Attendance Summary", "Student Report", "Grade Sheet", "Report Card"];
+      var rows = CLASSROOM_DEMO.students.slice(0, 8).map(function (st, idx) {
+        var scanned = state.scans.filter(function (s) { return s.id === st.id; })[0];
+        var status = scanned ? scanned.status : "Present";
+        var timeIn = scanned ? scanned.timeIn : "08:00";
+        return '<tr>' +
+          '<td>' + (idx + 1) + '</td>' +
+          '<td style="font-family:ui-monospace,monospace;">' + st.id + '</td>' +
+          '<td style="font-weight:600;">' + st.registerInitials + '</td>' +
+          '<td>' + st.sex + '</td>' +
+          '<td>' + timeIn + '</td>' +
+          '<td>09:00</td>' +
+          '<td><span class="rem-badge ' + (status === "Late" ? "late" : "") + '">' + (status === "Late" ? "L Late" : "P Present") + '</span></td>' +
+        '</tr>';
+      }).join("");
+
+      main.innerHTML =
+        '<div class="top-row"><div><h1 class="page-h1" style="font-size:24px;">Reports</h1><div class="page-sub">Attendance and grade reports generated from your assigned classes, sections, and students (initials only).</div></div></div>' +
+        '<div class="rep-tabs">' +
+          tabs.map(function (t) { return '<button type="button" class="rep-tab ' + (t === activeReportTab ? "active" : "") + '" data-rtab="' + t + '">' + t + '</button>'; }).join("") +
+        '</div>' +
+        '<div class="card filters-card">' +
+          '<div style="font-weight:700;font-size:13px;">Filters</div>' +
+          '<div class="filters-grid">' +
+            '<div><span class="f-lbl">School Year</span><select class="f-ctrl"><option>SY 2026-2027</option></select></div>' +
+            '<div><span class="f-lbl">Semester</span><select class="f-ctrl"><option>1st Semester</option></select></div>' +
+            '<div><span class="f-lbl">Quarter</span><select class="f-ctrl"><option>1st Quarter</option></select></div>' +
+            '<div><span class="f-lbl">Date From</span><input type="text" class="f-ctrl" value="06/07/2026" readonly></div>' +
+            '<div><span class="f-lbl">Date To</span><input type="text" class="f-ctrl" value="28/08/2026" readonly></div>' +
+          '</div>' +
+          '<div style="display:flex;gap:8px;margin-top:12px;">' +
+            '<button type="button" class="outline-btn">Reset</button>' +
+            '<button type="button" class="outline-btn">PDF</button>' +
+            '<button type="button" class="outline-btn">Excel</button>' +
+            '<button type="button" class="outline-btn">Print</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="register-head">' +
+          '<div style="font-size:11px;letter-spacing:0.06em;color:var(--muted);">REPUBLIC OF THE PHILIPPINES &middot; DEPARTMENT OF EDUCATION</div>' +
+          '<div style="font-size:18px;font-weight:700;margin:2px 0;">' + CLASSROOM_DEMO.school + '</div>' +
+          '<div style="font-size:12px;color:var(--muted);">One subject &middot; every enrolled learner &middot; per class meeting</div>' +
+          '<div style="font-size:21px;font-weight:800;color:var(--brand);margin:8px 0 4px;">' + activeReportTab.toUpperCase() + '</div>' +
+          '<div style="font-size:12px;color:var(--muted);">School Year: SY 2026-2027 &nbsp;&nbsp; Semester: 1st Semester &nbsp;&nbsp; Teacher: ' + CLASSROOM_DEMO.teacher + '</div>' +
+        '</div>' +
+        '<div class="card" style="overflow:hidden;">' +
+          '<table class="register-table">' +
+            '<thead><tr><th>No.</th><th>Student ID</th><th>Learner Initials</th><th>Sex</th><th>Time In</th><th>Time Out</th><th>Remarks</th></tr></thead>' +
+            '<tbody>' + rows + '</tbody>' +
+          '</table>' +
+        '</div>';
+
+      main.querySelectorAll("[data-rtab]").forEach(function (b) {
+        b.addEventListener("click", function () {
+          activeReportTab = b.getAttribute("data-rtab");
+          render();
+        });
+      });
+    }
+
+    function renderSubjects(main) {
+      main.innerHTML =
+        '<div class="top-row"><div><h1 class="page-h1" style="font-size:24px;">Subjects</h1><div class="page-sub">5 assigned senior high school classes</div></div></div>' +
+        '<div class="students-grid">' +
+          CLASSROOM_DEMO.subjects.map(function (s) {
+            return '<div class="card" style="padding:18px;">' +
+              '<div style="display:flex;justify-content:space-between;align-items:center;"><strong style="font-size:16px;">' + s.name + '</strong><span style="color:#d97706;font-weight:700;">' + s.rate + '%</span></div>' +
+              '<div style="font-size:12.5px;color:var(--muted);margin:4px 0 12px;">' + s.grade + ' &middot; ' + s.section + ' &middot; ' + s.room + '</div>' +
+              '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+                '<span class="tag-chip green">' + s.enrolled + ' enrolled</span>' +
+                '<button type="button" class="start-pill" data-scan-subj="' + s.id + '">Start Scan</button>' +
+              '</div>' +
+            '</div>';
+          }).join("") +
+        '</div>';
+
+      main.querySelectorAll("[data-scan-subj]").forEach(function (btn) {
+        btn.addEventListener("click", function () { openScanner(btn.getAttribute("data-scan-subj")); });
+      });
+    }
+
+    function renderAttendance(main, state) {
+      main.innerHTML =
+        '<div class="top-row"><div><h1 class="page-h1" style="font-size:24px;">Attendance Log</h1><div class="page-sub">Live software QR scan entries (initials only)</div></div><button type="button" class="solid-btn" id="openAttScan">Open QR Scanner</button></div>' +
+        '<div class="card" style="overflow:hidden;">' +
+          '<table class="register-table">' +
+            '<thead><tr><th>Student ID</th><th>Initials</th><th>Subject</th><th>Time In</th><th>Status</th></tr></thead>' +
+            '<tbody>' +
+              (state.scans.length
+                ? state.scans.map(function (s) {
+                    return '<tr><td style="font-family:ui-monospace,monospace;">' + s.id + '</td><td><strong>' + s.initials + '</strong></td><td>' + s.subjectId + '</td><td>' + s.timeIn + '</td><td><span class="rem-badge ' + (s.status === "Late" ? "late" : "") + '">' + s.status + '</span></td></tr>';
+                  }).join("")
+                : '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:28px;">No QR scans yet in this session. Click <strong>Open QR Scanner</strong> above.</td></tr>') +
+            '</tbody>' +
+          '</table>' +
+        '</div>';
+      document.getElementById("openAttScan").addEventListener("click", function () { openScanner("ORAL11"); });
+    }
+
+    function renderGenericSection(main, view, state) {
+      var titles = {
+        data: ["Data Management", "Local browser storage & CSV/JSON mock export"],
+        analytics: ["Analytics", "Section attendance rate comparison across STEM A and Aristotle"],
+        schedule: ["Schedule", "Weekly senior high school teaching timetable"],
+        sync: ["Sync & Devices", "Offline queue & mobile companion sync status"],
+        license: ["License Manager", "School deployment metadata"],
+        settings: ["Settings", "Classroom Manager preferences & privacy mode"],
+      };
+      var info = titles[view] || ["Workspace", "Mock preview"];
+      main.innerHTML =
+        '<div class="top-row"><div><h1 class="page-h1" style="font-size:24px;">' + info[0] + '</h1><div class="page-sub">' + info[1] + '</div></div></div>' +
+        '<div class="card" style="padding:20px;">' +
+          '<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">' +
+            '<div><strong>Pending Offline Changes:</strong> ' + state.pendingChanges + ' record(s) &middot; <strong>Privacy Mode:</strong> Initials only enabled</div>' +
+            '<button type="button" class="solid-btn" id="secScanBtn">Launch Software QR Scanner</button>' +
+          '</div>' +
+        '</div>';
+      document.getElementById("secScanBtn").addEventListener("click", function () { openScanner("ORAL11"); });
+    }
+
+    function openScanner(subjId) {
+      var subj = CLASSROOM_DEMO.subjects.filter(function (s) { return s.id === subjId; })[0] || CLASSROOM_DEMO.subjects[0];
+      document.getElementById("scanModalTitle").textContent = subj.name + " · " + subj.room;
+      updateScannerModal();
+      document.getElementById("scannerModal").classList.add("open");
+    }
+
+    function updateScannerModal(lastMsg) {
+      var state = CLASSROOM_DEMO.loadState();
+      document.getElementById("vfScanCount").textContent = state.scans.length + " / 32 scanned (sample initials only)";
+      if (lastMsg) document.getElementById("vfScanStatus").textContent = lastMsg;
+    }
+
+    document.getElementById("openLiveScanBtn").addEventListener("click", function () { openScanner("ORAL11"); });
+    document.getElementById("closeScanModal").addEventListener("click", function () {
+      document.getElementById("scannerModal").classList.remove("open");
+      render();
+    });
+    document.getElementById("simScanBtn").addEventListener("click", function () {
+      var res = CLASSROOM_DEMO.scanNextStudent("ORAL11");
+      if (res.scanned) {
+        updateScannerModal("Verified: " + res.scanned.initials + " (" + res.scanned.id + ") · " + res.scanned.status);
+      } else {
+        updateScannerModal("All 12 sample students scanned!");
+      }
+      render();
+    });
+    document.getElementById("syncNowBtn").addEventListener("click", function () {
+      CLASSROOM_DEMO.clearPending();
+      updateScannerModal("Offline queue synced (0 pending)");
+      render();
+    });
+
+    document.querySelectorAll(".nav-btn").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        activeView = btn.getAttribute("data-view");
+        render();
+      });
+    });
+
+    render();
+  })();
+</script>
+</body>
+</html>

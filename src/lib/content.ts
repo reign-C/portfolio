@@ -89,7 +89,7 @@ export const site = {
   roleSentence:
     "Computer engineer. I build IoT devices and the local systems they run on.",
   proofSentence:
-    "Deployed an offline Raspberry Pi queue serving 5 clinic services and built an ESP32-S3 barcode ledger tracking 2,913 lab items.",
+    "From ESP32 firmware and PCB soldering to Raspberry Pi edge servers and site CCTV, PA, and LAN setups—built to run reliably offline.",
   availability: "Open to full-time roles and commissioned builds, available now",
   availableDate: "June 2026",
   timezone: "GMT+8",
@@ -819,13 +819,24 @@ export const projects: Project[] = [
   },
 ];
 
-export const alsoBuilt = [
+export type AlsoBuiltItem = {
+  title: string;
+  stack: string;
+  detail: string;
+  year: string;
+  href?: string;
+  ctaLabel?: string;
+};
+
+export const alsoBuilt: AlsoBuiltItem[] = [
   {
     title: "Classroom management UI",
     stack: "Figma (design), AI-assisted web & mobile build",
     detail:
-      "Desktop and mobile front end for Tacurong National High School's senior high school: dashboard, QR attendance scanner, analytics, reports, and schedule on shared design tokens. UI/UX designed in Figma; code delivery was AI-assisted.",
+      "Desktop and mobile front end for Tacurong National High School's senior high school: dashboard, built-in software QR attendance scanner (no external hardware), analytics, reports, and schedule on shared design tokens. UI/UX designed in Figma; code delivery was AI-assisted.",
     year: "2025",
+    href: "/work/classroom-ui",
+    ctaLabel: "Preview UI",
   },
   {
     title: "Commissioned sensor prototypes",
@@ -834,7 +845,46 @@ export const alsoBuilt = [
       "Multiple student thesis hardware builds covering sensor wiring, PCB soldering, firmware, and bench debugging.",
     year: "2024–2026",
   },
-] as const;
+];
+
+export const classroomPreview = {
+  title: "Classroom management UI (desktop & mobile)",
+  shortTitle: "Classroom management UI",
+  year: "2025",
+  kind: "Software UI showcase",
+  summary:
+    "Desktop and mobile attendance and class management interface built for senior high school sections at Tacurong National High School. No external barcode or microcontroller hardware is used—QR scanning runs directly inside the software camera view, and student entries shown here use initials-only mock data.",
+  role: "UI/UX design in Figma, component tokens, desktop and mobile layout architecture (code delivery AI-assisted)",
+  timeframe: "Software UI build, 2025",
+  scope: "Pure software build (desktop + mobile UI, built-in QR scanner, no hardware)",
+  stackList: [
+    "Figma",
+    "Desktop UI",
+    "Mobile UI",
+    "Software QR scanner",
+    "Offline sync queue",
+  ],
+  demoNote:
+    "Interactive desktop and mobile Classroom Manager screens (initials-only mock data, built-in software QR scanner).",
+  demoHint:
+    "Open Live Scanning Preview on Desktop or Start Attendance on Mobile to test the software QR scanner and watch attendance counts and Pending changes sync.",
+  demoScreens: [
+    {
+      label: "Desktop app",
+      src: "/demos/classroom/desktop.html",
+      width: 1440,
+      height: 900,
+      title: "Classroom management desktop UI",
+    },
+    {
+      label: "Mobile app",
+      src: "/demos/classroom/mobile.html",
+      width: 430,
+      height: 860,
+      title: "Classroom management mobile UI",
+    },
+  ],
+};
 
 export type SkillEntry = {
   name: string;

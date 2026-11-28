@@ -20,5 +20,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     ...projectRoutes,
+    {
+      url: `${baseUrl}/work/classroom-ui`,
+      lastModified: new Date("2026-11-27"),
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
   ];
 }

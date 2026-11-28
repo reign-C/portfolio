@@ -32,7 +32,7 @@ function ScreenFrame({ screen }: { screen: Screen }) {
   return (
     <div ref={box} className="w-full overflow-x-auto">
       <div
-        className="relative"
+        className="relative mx-auto"
         style={{ width: screen.width * scale, height: screen.height * scale }}
       >
         <iframe
@@ -52,15 +52,33 @@ function ScreenFrame({ screen }: { screen: Screen }) {
   );
 }
 
-export default function ProjectDemo({ slug }: { slug: string }) {
+type DemoConfig = {
+  demoNote: string;
+  demoHint: string;
+  demoScreens: Screen[];
+};
+
+export default function ProjectDemo({
+  slug,
+  demo,
+}: {
+  slug: string;
+  demo?: DemoConfig;
+}) {
   const project = projects.find((item) => item.id === slug);
   const [tab, setTab] = useState(0);
   const [generation, setGeneration] = useState(0);
 
   const reset = useCallback(() => {
-    if (slug === "clinic-queue") {
+    const key =
+      slug === "clinic-queue"
+        ? "clinic-demo-queue"
+        : slug === "classroom-ui"
+          ? "classroom-demo-state"
+          : null;
+    if (key) {
       try {
-        localStorage.removeItem("clinic-demo-queue");
+        localStorage.removeItem(key);
       } catch {
         // Ignore storage errors
       }
@@ -68,9 +86,10 @@ export default function ProjectDemo({ slug }: { slug: string }) {
     setGeneration((value) => value + 1);
   }, [slug]);
 
-  if (!project || !project.caseStudy.demoScreens.length) return null;
+  const resolved = demo ?? project?.caseStudy;
+  if (!resolved || !resolved.demoScreens.length) return null;
 
-  const { demoNote, demoHint, demoScreens } = project.caseStudy;
+  const { demoNote, demoHint, demoScreens } = resolved;
   const activeScreen = demoScreens[tab] ?? demoScreens[0];
 
   return (
