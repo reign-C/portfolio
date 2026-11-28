@@ -99,7 +99,8 @@ export const site = {
   github: "https://github.com/reign-C",
   githubHandle: "reign-C",
   facebook: "https://www.facebook.com/reign.reign.94801116",
-  resume: "/Resume-Cipriano-Reign-Marc.pdf",
+  resume: "/assets/aistudio/Cipriano_Reign_Marc_Resume_65e7335c.pdf",
+  resumeFilename: "Resume-Cipriano-Reign-Marc.pdf",
   featuredProjectId: "clinic-queue",
 } as const;
 
@@ -898,7 +899,7 @@ export type SkillLayer = {
   appliedIn: {
     label: string;
     href: string;
-  };
+  }[];
 };
 
 export const kicadShowcase = {
@@ -914,28 +915,37 @@ export const skillLayers: SkillLayer[] = [
       { name: "ESP32", mono: true, href: "/work/school-bell" },
       { name: "ESP32-S3", mono: true, href: "/work/lab-tracking" },
       { name: "ESP32-WROOM-32", mono: true, href: "/work/robotics" },
-      { name: "Arduino" },
+      { name: "Arduino", href: "/#projects" },
       { name: "QTR-8RC", mono: true, href: "/work/robotics" },
       { name: "TCRT5000", mono: true, href: "/work/robotics" },
-      { name: "HC-SR04", mono: true },
-      { name: "DHT22", mono: true },
+      { name: "HC-SR04", mono: true, href: "/#projects" },
+      { name: "DHT22", mono: true, href: "/#projects" },
       { name: "TB6612FNG", mono: true, href: "/work/robotics" },
       { name: "XY-160D", mono: true, href: "/work/robotics" },
-      { name: "3S LiPo power" },
+      { name: "3S LiPo power", href: "/work/robotics" },
     ],
-    appliedIn: { label: "Robotics & Lab station", href: "/work/robotics" },
+    appliedIn: [
+      { label: "Robotics", href: "/work/robotics" },
+      { label: "Lab ledger", href: "/work/lab-tracking" },
+      { label: "School bell", href: "/work/school-bell" },
+      { label: "Sensor builds", href: "/#projects" },
+    ],
   },
   {
     layer: "Firmware",
     items: [
-      { name: "C++" },
-      { name: "Arduino IDE" },
+      { name: "C++", href: "/work/robotics" },
+      { name: "Arduino IDE", href: "/work/lab-tracking" },
       { name: "PID control", href: "/work/robotics" },
       { name: "NVS / LittleFS", mono: true, href: "/work/robotics" },
       { name: "DFPlayer drivers", href: "/work/school-bell" },
       { name: "ESC/POS thermal printing", href: "/work/clinic-queue" },
     ],
-    appliedIn: { label: "PID line follower", href: "/work/robotics" },
+    appliedIn: [
+      { label: "Robotics", href: "/work/robotics" },
+      { label: "School bell", href: "/work/school-bell" },
+      { label: "Clinic queue", href: "/work/clinic-queue" },
+    ],
   },
   {
     layer: "Protocols",
@@ -945,9 +955,14 @@ export const skillLayers: SkillLayer[] = [
       { name: "PWM", mono: true, href: "/work/robotics" },
       { name: "GPIO", mono: true, href: "/work/robotics" },
       { name: "HTTP", mono: true, href: "/work/clinic-queue" },
-      { name: "Bluetooth HC-05 / HC-06", mono: true },
+      { name: "Bluetooth HC-05 / HC-06", mono: true, href: "/#projects" },
     ],
-    appliedIn: { label: "Lab barcode ledger", href: "/work/lab-tracking" },
+    appliedIn: [
+      { label: "Lab ledger", href: "/work/lab-tracking" },
+      { label: "Robotics", href: "/work/robotics" },
+      { label: "School bell", href: "/work/school-bell" },
+      { label: "Sensor builds", href: "/#projects" },
+    ],
   },
   {
     layer: "Networking",
@@ -959,7 +974,11 @@ export const skillLayers: SkillLayer[] = [
       { name: "PA & horn speakers", href: "/#experience" },
       { name: "Telephony fault diagnosis", href: "/#experience" },
     ],
-    appliedIn: { label: "Unicenter OJT", href: "/#experience" },
+    appliedIn: [
+      { label: "Unicenter OJT", href: "/#experience" },
+      { label: "Robotics", href: "/work/robotics" },
+      { label: "Clinic queue", href: "/work/clinic-queue" },
+    ],
   },
   {
     layer: "Edge & software",
@@ -969,11 +988,14 @@ export const skillLayers: SkillLayer[] = [
       { name: "SQLite", mono: true, href: "/work/clinic-queue" },
       { name: "MySQL", mono: true, href: "/work/lab-tracking" },
       { name: "systemd", mono: true, href: "/work/clinic-queue" },
-      { name: "Python (fundamentals)", mono: true },
-      { name: "PHP (fundamentals)", mono: true },
-      { name: "Offline TTS (Piper)" },
+      { name: "Python (fundamentals)", mono: true, href: "/work/clinic-queue" },
+      { name: "PHP (fundamentals)", mono: true, href: "/work/lab-tracking" },
+      { name: "Offline TTS (Piper)", href: "/work/clinic-queue" },
     ],
-    appliedIn: { label: "Clinic queue system", href: "/work/clinic-queue" },
+    appliedIn: [
+      { label: "Clinic queue", href: "/work/clinic-queue" },
+      { label: "Lab ledger", href: "/work/lab-tracking" },
+    ],
   },
   {
     layer: "Tools",
@@ -981,13 +1003,17 @@ export const skillLayers: SkillLayer[] = [
       { name: "KiCad", href: "/#experience" },
       { name: "PCB soldering", href: "/#experience" },
       { name: "Circuit troubleshooting", href: "/#experience" },
-      { name: "AutoCAD" },
+      { name: "AutoCAD", href: "/#experience" },
       { name: "SketchUp", href: "/work/lab-tracking" },
-      { name: "Figma" },
-      { name: "Linux", mono: true },
+      { name: "Figma", href: "/work/classroom-ui" },
+      { name: "Linux", mono: true, href: "/work/clinic-queue" },
       { name: "Git", mono: true },
     ],
-    appliedIn: { label: "Lab enclosure & OJT", href: "/#experience" },
+    appliedIn: [
+      { label: "Unicenter OJT", href: "/#experience" },
+      { label: "Lab & Robotics", href: "/work/lab-tracking" },
+      { label: "Classroom UI", href: "/work/classroom-ui" },
+    ],
   },
 ];
 
@@ -1010,7 +1036,7 @@ export const certificationsAndEducation = [
     title: "BS Computer Engineering",
     issuer: "Sultan Kudarat State University, Isulan Campus",
     date: "June 2026",
-    note: "Dean's List, A.Y. 2024–2025",
+    note: "President's List, A.Y. 2025–2026, 2nd Semester",
   },
   {
     title: "TESDA NC II — Computer Systems Servicing",

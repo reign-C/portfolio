@@ -65,7 +65,7 @@ export function Contact() {
         <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-line pt-5">
           <a
             href={site.resume}
-            download
+            download={site.resumeFilename}
             className="inline-flex min-h-11 items-center justify-center rounded-[12px] bg-accent px-5 text-[14.5px] font-medium text-accent-ink no-underline transition-opacity duration-150 hover:opacity-85"
           >
             Download resume

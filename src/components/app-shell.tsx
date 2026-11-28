@@ -273,7 +273,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </a>
               <a
                 href={site.resume}
-                download
+                download={site.resumeFilename}
                 className="flex min-h-9 items-center justify-between rounded-[8px] px-2.5 text-[13.5px] font-medium text-muted no-underline transition-colors duration-150 hover:bg-surface-subtle/60 hover:text-ink"
               >
                 <span className="inline-flex items-center gap-2.5">

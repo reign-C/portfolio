@@ -67,13 +67,22 @@ export function SkillsTable() {
                     </Fragment>
                   ))}
                 </td>
-                <td className="hidden whitespace-nowrap py-4 text-right text-[14px] sm:table-cell">
-                  <Link
-                    href={row.appliedIn.href}
-                    className="font-medium text-ink underline decoration-muted transition-colors duration-150 hover:decoration-ink"
-                  >
-                    {row.appliedIn.label}
-                  </Link>
+                <td className="hidden py-4 text-right text-[14px] leading-[1.6] sm:table-cell sm:max-w-[230px]">
+                  {row.appliedIn.map((target, idx) => (
+                    <Fragment key={target.label}>
+                      {idx > 0 ? (
+                        <span className="text-muted" aria-hidden="true">
+                          {" · "}
+                        </span>
+                      ) : null}
+                      <Link
+                        href={target.href}
+                        className="font-medium whitespace-nowrap text-ink underline decoration-muted transition-colors duration-150 hover:decoration-ink"
+                      >
+                        {target.label}
+                      </Link>
+                    </Fragment>
+                  ))}
                 </td>
               </tr>
             ))}

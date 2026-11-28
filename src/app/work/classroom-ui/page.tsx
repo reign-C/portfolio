@@ -89,7 +89,7 @@ export default function ClassroomUiPage() {
           ))}
           <a
             href={site.resume}
-            download
+            download={site.resumeFilename}
             className="inline-flex min-h-11 items-center rounded-[12px] bg-accent px-4 text-[14px] font-medium text-accent-ink no-underline transition-opacity duration-150 hover:opacity-85"
           >
             Download resume

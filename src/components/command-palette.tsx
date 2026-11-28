@@ -88,7 +88,7 @@ function CommandPaletteDialog({ onClose }: { onClose: () => void }) {
           onClose();
           const a = document.createElement("a");
           a.href = site.resume;
-          a.download = "";
+          a.download = site.resumeFilename;
           a.click();
         },
       },

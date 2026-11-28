@@ -160,7 +160,7 @@ export function Hero() {
 
             <a
               href={site.resume}
-              download
+              download={site.resumeFilename}
               className="keycap-btn inline-flex min-h-11 items-center gap-2 whitespace-nowrap rounded-[12px] px-4 text-[14.5px] font-medium text-ink no-underline transition-all duration-150 active:translate-y-[0.5px]"
             >
               <FileText className="h-4 w-4 text-muted" aria-hidden="true" />
